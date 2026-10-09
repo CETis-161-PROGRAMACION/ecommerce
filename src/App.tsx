@@ -3,4 +3,118 @@ import { router } from '@/router'
 
 export default function App() {
   return <RouterProvider router={router} />
+=======
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <section id="center">
+        <div className="hero">
+          <img src={heroImg} className="base" width="170" height="179" alt="" />
+          <img src={reactLogo} className="framework" alt="Logotipo de React" />
+          <img src={viteLogo} className="vite" alt="Logotipo de Vite" />
+        </div>
+        <div>
+          <h1>Comenzar</h1>
+          <p>
+            Edita <code>src/App.tsx</code> y guarda para probar <code>HMR</code>
+          </p>
+        </div>
+        <button
+          type="button"
+          className="counter"
+          onClick={() => setCount((count) => count + 1)}
+        >
+          El contador es {count}
+        </button>
+      </section>
+
+      <div className="ticks"></div>
+
+      <section id="next-steps">
+        <div id="docs">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#documentation-icon"></use>
+          </svg>
+          <h2>Documentación</h2>
+          <p>Tus preguntas, respondidas</p>
+          <ul>
+            <li>
+              <a href="https://vite.dev/" target="_blank" rel="noopener noreferrer">
+                <img className="logo" src={viteLogo} alt="" />
+                Explorar Vite
+              </a>
+            </li>
+            <li>
+              <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">
+                <img className="button-icon" src={reactLogo} alt="" />
+                Más información
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div id="social">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#social-icon"></use>
+          </svg>
+          <h2>Conéctate con la comunidad</h2>
+          <p>Únete a la comunidad de Vite</p>
+          <ul>
+            <li>
+              <a href="https://github.com/vitejs/vite" target="_blank" rel="noopener noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#github-icon"></use>
+                </svg>
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://chat.vite.dev/" target="_blank" rel="noopener noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#discord-icon"></use>
+                </svg>
+                Discord
+              </a>
+            </li>
+            <li>
+              <a href="https://x.com/vite_js" target="_blank" rel="noopener noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#x-icon"></use>
+                </svg>
+                X.com
+              </a>
+            </li>
+            <li>
+              <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noopener noreferrer">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#bluesky-icon"></use>
+                </svg>
+                Bluesky
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <div className="ticks"></div>
+      <section id="spacer"></section>
+    </>
+  )
 }
