@@ -8,7 +8,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ title, children }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 py-10">
+    <div className="flex min-h-screen flex-col items-center px-6 py-10 motion-safe:animate-page-enter">
       <header className="mb-10 flex w-full px-24 max-w items-start gap-4">
         <Logo className="h-52 w-auto shrink-0" />
         <div className="min-w-0">
