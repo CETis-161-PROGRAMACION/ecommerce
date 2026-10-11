@@ -1,6 +1,7 @@
 const logoModules = import.meta.glob('/src/assets/images/logo.png', {
   eager: true,
 })
+
 const logoUrl = (
   logoModules['/src/assets/images/logo.png'] as { default?: string } | undefined
 )?.default

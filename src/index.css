@@ -1,7 +1,15 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+.message {
+  @apply rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900
+}
+
 @theme {
   --font-sans: 'Open Sans', system-ui, sans-serif;
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
 
   /* Marca */
   --color-brand-400: #6b9bea;
@@ -30,6 +38,15 @@
   }
 }
 
+.dark {
+  color-scheme: dark;
+  --color-background: #171821;
+  --color-surface: #222431;
+  --color-ink: #f1f1f5;
+  --color-ink-muted: #b5b6c5;
+  --color-line: #414354;
+}
+
 @layer base {
   html,
   body,
@@ -38,6 +55,6 @@
   }
 
   body {
-    @apply bg-white font-sans text-ink antialiased;
+    @apply bg-background font-sans text-ink antialiased;
   }
 }
