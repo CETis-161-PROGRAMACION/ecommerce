@@ -15,7 +15,7 @@ export function SplashPage() {
   }, [navigate])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white animate-fade-in motion-reduce:animate-none motion-reduce:transform-none">
+    <div className="flex min-h-screen items-center justify-center bg-background animate-fade-in motion-reduce:animate-none motion-reduce:transform-none">
       <Logo className="h-60 w-auto" />
     </div>
   )

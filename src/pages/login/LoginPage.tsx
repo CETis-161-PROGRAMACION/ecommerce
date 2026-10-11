@@ -13,7 +13,7 @@ import { AuthLayout } from '@/components/layout/AuthLayout'
 export function LoginPage() {
   return (
     <AuthLayout title="Iniciar sesión">
-      <input type="text" placeholder="Número de teléfono" className="mb-4 w-full rounded border border-line p-2 text-sm leading-relaxed text-navy-900" />
+      <input type="text" placeholder="Número de teléfono" className="mb-4 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink" />
       <p className="message">
         Pantalla en construcción. Aquí se mostrará el formulario de inicio de
         sesión.

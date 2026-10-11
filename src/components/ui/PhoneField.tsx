@@ -31,7 +31,7 @@ export function PhoneField({
         {label}
       </label>
       <div
-        className={`flex items-stretch overflow-hidden rounded-xl border bg-white focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-400 ${
+        className={`flex items-stretch overflow-hidden rounded-xl border bg-surface focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-400 ${
           error ? 'border-red-500' : 'border-line'
         } ${className ?? ''}`}
       >

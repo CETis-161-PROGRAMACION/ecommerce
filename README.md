@@ -56,6 +56,10 @@ Todos los scripts están definidos en `package.json`:
 | `pnpm format`       | Aplica Prettier a `src/` y a los archivos de configuración gestionados. |
 | `pnpm format:check` | Comprueba el formato sin modificar archivos.                            |
 
+## Tema oscuro
+
+El botón **Modo oscuro/Modo claro**, en la esquina superior derecha, cambia el tema de toda la aplicación. La primera visita respeta la preferencia de color del sistema; después, la selección se guarda en el navegador.
+
 ## Estructura del proyecto
 
 ```text

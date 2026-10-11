@@ -49,7 +49,7 @@ export function ConfirmCodePage() {
               onChange={(event) =>
                 handleCodeChange(index, event.target.value)
               }
-              className="h-14 w-14 rounded-md border border-success bg-white text-center text-xl outline-none focus:ring-2 focus:ring-brand-400 sm:h-[68px] sm:w-[68px]"
+              className="h-14 w-14 rounded-md border border-success bg-surface text-center text-xl outline-none focus:ring-2 focus:ring-brand-400 sm:h-[68px] sm:w-[68px]"
             />
           ))}
         </div>
