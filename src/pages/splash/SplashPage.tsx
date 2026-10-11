@@ -16,7 +16,7 @@ export function SplashPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white animate-fade-in motion-reduce:animate-none motion-reduce:transform-none">
-      <Logo className="h-28 w-28" />
+      <Logo className="h-60 w-auto" />
     </div>
   )
 }
