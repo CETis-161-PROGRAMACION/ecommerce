@@ -12,9 +12,6 @@ export const router = createBrowserRouter([
   { path: ROUTES.login, element: <LoginPage /> },
   { path: ROUTES.recovery, element: <RecoveryPage /> },
   { path: ROUTES.confirmCode, element: <ConfirmCodePage /> },
-<<<<<<< HEAD
   { path: ROUTES.privacy, element: <PrivacyPage /> },
-=======
   { path: ROUTES.home, element: <HomePage /> },
->>>>>>> faacf95 (fix: explicacion a Esteban)
 ])
