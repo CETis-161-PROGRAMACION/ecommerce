@@ -14,7 +14,7 @@ export function LoginPage() {
   return (
     <AuthLayout title="Iniciar sesión">
       <input type="text" placeholder="Número de teléfono" className="mb-4 w-full rounded border border-line p-2 text-sm leading-relaxed text-navy-900" />
-      <p className="rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900">
+      <p className="message">
         Pantalla en construcción. Aquí se mostrará el formulario de inicio de
         sesión.
       </p>
