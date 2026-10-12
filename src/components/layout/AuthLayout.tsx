@@ -6,7 +6,7 @@ interface AuthLayoutProps {
   children: ReactNode
 }
 
-export function AuthLayout({ title, children }: AuthLayoutProps) {
+export function AuthLayout ({title, children}: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col items-center px-6 py-10 motion-safe:animate-page-enter">
       <header className="mb-10 flex w-full px-24 max-w items-start gap-4">

@@ -1,4 +1,4 @@
-import { AuthLayout } from '@/components/layout/AuthLayout'
+import NavBar from "@/components/navbar/NavBar"
 
 // TODO: Implementar la pantalla de confirmación de código con dos estados
 // visuales:
@@ -10,10 +10,10 @@ import { AuthLayout } from '@/components/layout/AuthLayout'
 
 export function HomePage() {
     return (
-        <AuthLayout title="Confirmar código">
-        <p className="rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900">
-            Estamos desde Home y Esteba, tu te encargas de lo demás.
-        </p>
-        </AuthLayout>
+        <NavBar>
+            <p className="rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900">
+                Este mensaje solo es para mencionar que ya está el header.
+            </p>
+        </NavBar>
     )
 }
