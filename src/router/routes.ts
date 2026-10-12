@@ -5,6 +5,8 @@ export const ROUTES = {
   confirmCode: '/registro/confirmar-codigo',
   privacy: '/registro/privacidad',
   home: '/inicio',
+  menu: '/sucursal/menu',
+  
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
