@@ -7,7 +7,7 @@ export const ROUTES = {
   home: '/inicio',
   menu: '/sucursal/menu',
   infoPedido: '/info/pedido',
-  
+  sucursales: '/sucursales',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
