@@ -17,7 +17,7 @@ export default function NavBar ({children}: NavBarProps) {
                 <img src="/src/components/ui/icons/person.svg" alt="" height={38} width={38} className="ml-12" />
 
             </header>
-            <main className="w-full max-w-md">{children}</main>
+            <main className="w-full max-w-4xl">{children}</main>
         </div>
     )
 }
