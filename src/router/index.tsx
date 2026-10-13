@@ -9,14 +9,18 @@ import { HomePage } from '@/pages/home/HomePage'
 import { SucursalesPage } from '@/pages/sucursales/SucursalesPage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { MenuPage } from '@/pages/menu/MenuPage'
+import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
+import { RegisterPage } from '@/pages/register/RegisterPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
   { path: ROUTES.login, element: <LoginPage /> },
   { path: ROUTES.recovery, element: <RecoveryPage /> },
+  { path: ROUTES.register, element: <RegisterPage /> },
   { path: ROUTES.confirmCode, element: <ConfirmCodePage /> },
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
+  { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.sucursales, element: <SucursalesPage /> },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: '*', element: <NotFoundPage /> },
