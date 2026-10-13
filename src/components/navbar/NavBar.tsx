@@ -1,56 +1,65 @@
 
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import { SideBar } from '@/components/sidebar/SideBar'
 
 interface NavBarProps {
-  children: ReactNode
+    children: ReactNode
 }
 
 export default function NavBar({ children }: NavBarProps) {
-  return (
-    <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:px-6 sm:py-10 motion-safe:animate-page-enter">
-      <header className="mb-8 flex w-full max-w-7xl items-center gap-3 sm:mb-10 sm:gap-5">
-        <button
-          type="button"
-          aria-label="Abrir menú"
-          className="shrink-0"
-        >
-          <img
-            src="/src/components/ui/icons/menu.svg"
-            alt=""
-            width={32}
-            height={32}
-          />
-        </button>
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-        <img
-          src="/src/components/ui/icons/search.svg"
-          alt=""
-          width={28}
-          height={28}
-          className="shrink-0 sm:h-[38px] sm:w-[38px]"
-        />
+    return (
+        <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:px-6 sm:py-10 motion-safe:animate-page-enter">
+            <SideBar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+            />
 
-        <input
-          type="search"
-          name="search"
-          placeholder="Buscar..."
-          aria-label="Buscar"
-          className="min-w-0 flex-1 rounded border border-line p-2 text-sm leading-relaxed text-ink"
-        />
+            <header className="mb-8 flex w-full max-w-7xl items-center gap-3 sm:mb-10 sm:gap-5">
+                <button
+                    type="button"
+                    aria-label="Abrir menú"
+                    aria-expanded={isSidebarOpen}
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="shrink-0 cursor-pointer"
+                >
+                    <img
+                        src="/src/components/ui/icons/menu.svg"
+                        alt=""
+                        width={32}
+                        height={32}
+                    />
+                </button>
 
-        <button
-          type="button"
-          aria-label="Perfil"
-          className="shrink-0"
-        >
-          <img
-            src="/src/components/ui/icons/person.svg"
-            alt=""
-            width={32}
-            height={32}
-          />
-        </button>
-      </header>
+                <img
+                src="/src/components/ui/icons/search.svg"
+                alt=""
+                width={28}
+                height={28}
+                className="shrink-0 sm:h-10 sm:w-10"
+                />
+
+                <input
+                type="search"
+                name="search"
+                placeholder="Buscar..."
+                aria-label="Buscar"
+                className="min-w-0 flex-1 rounded border border-line p-2 text-sm leading-relaxed text-ink"
+                />
+
+                <button
+                type="button"
+                aria-label="Perfil"
+                className="shrink-0 mr-8"
+                >
+                <img
+                    src="/src/components/ui/icons/person.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                />
+                </button>
 
 
             </header>
@@ -58,9 +67,3 @@ export default function NavBar({ children }: NavBarProps) {
         </div>
     )
 }
-
-      <main className="w-full max-w-6xl">{children}</main>
-    </div>
-  )
-}
-

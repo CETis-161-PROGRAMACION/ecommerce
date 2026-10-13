@@ -16,8 +16,8 @@ const sucursales = [
   {
     nombre: 'Santori',
     direccion: 'Manuel Acuña 1A, Barrio Alto, 45300 Tala, Jalisco.',
-    mapa: 'https://maps.google.com/maps?q=Manuel+Acu%C3%B1a+1A%2C+Barrio+Alto%2C+Tala%2C+Jalisco&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=Manuel+Acu%C3%B1a+1A%2C+Barrio+Alto%2C+Tala%2C+Jalisco',
+    mapa: 'https://maps.google.com/maps?q=20.655763,-103.702891&z=17&output=embed',
+    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.655763-103.702891',
   },
   {
     nombre: 'Café Tostado',

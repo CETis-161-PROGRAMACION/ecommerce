@@ -12,6 +12,7 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.privacy]: 'Aviso de privacidad',
   [ROUTES.home]: 'Home',
   [ROUTES.menu]: 'Menú',
+  [ROUTES.infoPedido]: 'Información del pedido',
   [ROUTES.sucursales]: 'Sucursales',
 }
 
