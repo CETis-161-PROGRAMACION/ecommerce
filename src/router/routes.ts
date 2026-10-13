@@ -2,6 +2,7 @@ export const ROUTES = {
   splash: '/',
   login: '/iniciar-sesion',
   recovery: '/recuperar-datos',
+  register: '/registro',
   confirmCode: '/registro/confirmar-codigo',
 
   privacy: '/registro/privacidad',

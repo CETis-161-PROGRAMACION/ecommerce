@@ -7,6 +7,7 @@ import { SplashPage } from '@/pages/splash/SplashPage'
 import { ROUTES } from '@/router/routes'
 import { HomePage } from '@/pages/home/HomePage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
+import { RegisterPage } from '@/pages/register/RegisterPage'
 
 export const router = createBrowserRouter([
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -16,4 +17,5 @@ export const router = createBrowserRouter([
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
+  { path: ROUTES.register, element: <RegisterPage /> },
 ])
