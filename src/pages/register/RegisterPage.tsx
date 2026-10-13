@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthLayout } from '@/components/layout/AuthLayout'
+import { Button } from '@/components/ui/Button'
 import { ROUTES } from '@/router/routes'
 import { registerUser } from '@/services/auth'
 
@@ -23,13 +25,15 @@ const datosIniciales: DatosRegistro = {
   confirmarContrasena: '',
 }
 
-const EDAD_MINIMA = 13 // ajústala según lo que defina el equipo
+const EDAD_MINIMA = 13
 
 /** Devuelve un mensaje de error, o "" si la fecha es válida. */
 function validarFecha(dia: string, mes: string, anio: string): string {
   const d = Number(dia)
   const m = Number(mes)
   const a = Number(anio)
+
+  if (!d || !m || !a) return 'Completa tu fecha de nacimiento.'
 
   const fecha = new Date(a, m - 1, d)
   const existe =
@@ -58,7 +62,6 @@ export function RegisterPage() {
   const navigate = useNavigate()
   const [datos, setDatos] = useState<DatosRegistro>(datosIniciales)
   const [error, setError] = useState('')
-  const [mostrarContrasena, setMostrarContrasena] = useState(false)
   const [enviando, setEnviando] = useState(false)
 
   function actualizar(campo: keyof DatosRegistro, valor: string) {
@@ -68,6 +71,11 @@ export function RegisterPage() {
 
   async function manejarRegistro(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
+
+    if (!datos.nombre.trim()) {
+      setError('Por favor, ingresa tu nombre completo.')
+      return
+    }
 
     const errorFecha = validarFecha(datos.dia, datos.mes, datos.anio)
     if (errorFecha) {
@@ -106,183 +114,182 @@ export function RegisterPage() {
     }
   }
 
-  const campoBase =
-    'w-full rounded-lg border border-gray-300 bg-transparent px-4 py-3 ' +
-    'text-gray-800 outline-none transition focus:border-blue-600 ' +
-    'focus:ring-2 focus:ring-blue-100'
+  const inputClass =
+    'h-14 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink ' +
+    'placeholder:text-ink-muted/70 outline-none transition-colors ' +
+    'focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
 
   return (
-    <main className="min-h-screen bg-gray-50 px-5 py-8 text-gray-800">
-      <section className="mx-auto max-w-5xl rounded-2xl bg-white p-6 shadow-sm sm:p-10">
-        <header className="mb-10 flex flex-wrap items-center gap-5">
-          {/* Sustituye esta imagen por el logo real del proyecto */}
-          <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-slate-700 text-center text-sm font-bold">
-            WEB
-            <br />
-            161
-          </div>
-
+    <AuthLayout title="Registro" mainClassName="w-full">
+      <form onSubmit={manejarRegistro} noValidate className="w-full">
+        <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-2 lg:gap-x-20">
+          {/* Nombre completo */}
           <div>
-            <h1 className="text-3xl font-extrabold tracking-wide text-blue-900">
-              REGISTRO
-            </h1>
-            <p className="mt-2 text-sm font-semibold">WEB E-COMMERCE</p>
+            <label
+              htmlFor="nombre"
+              className="mb-2 block text-base font-bold text-ink"
+            >
+              Nombre completo:
+            </label>
+            <input
+              id="nombre"
+              type="text"
+              autoComplete="name"
+              className={inputClass}
+              value={datos.nombre}
+              onChange={(e) => actualizar('nombre', e.target.value)}
+              required
+            />
           </div>
-        </header>
 
-        <form onSubmit={manejarRegistro} noValidate>
-          <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-2">
-            <div>
-              <label htmlFor="nombre" className="mb-2 block font-bold">
-                Nombre completo:
-              </label>
+          {/* Fecha de nacimiento */}
+          <fieldset>
+            <legend className="mb-2 block text-base font-bold text-ink">
+              Fecha de nacimiento:
+            </legend>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
               <input
-                id="nombre"
-                className={campoBase}
+                id="dia"
                 type="text"
-                autoComplete="name"
-                placeholder="Escribe tu nombre completo"
-                value={datos.nombre}
-                onChange={(e) => actualizar('nombre', e.target.value)}
-                required
-              />
-            </div>
-
-            <fieldset>
-              <legend className="mb-2 font-bold">Fecha de nacimiento:</legend>
-              <div className="grid grid-cols-3 gap-3">
-                <input
-                  className={campoBase}
-                  aria-label="Día de nacimiento"
-                  placeholder="día"
-                  type="number"
-                  min="1"
-                  max="31"
-                  value={datos.dia}
-                  onChange={(e) => actualizar('dia', e.target.value)}
-                  required
-                />
-                <input
-                  className={campoBase}
-                  aria-label="Mes de nacimiento"
-                  placeholder="mes"
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={datos.mes}
-                  onChange={(e) => actualizar('mes', e.target.value)}
-                  required
-                />
-                <input
-                  className={campoBase}
-                  aria-label="Año de nacimiento"
-                  placeholder="año"
-                  type="number"
-                  min="1900"
-                  max={new Date().getFullYear()}
-                  value={datos.anio}
-                  onChange={(e) => actualizar('anio', e.target.value)}
-                  required
-                />
-              </div>
-            </fieldset>
-
-            <div>
-              <label htmlFor="telefono" className="mb-2 block font-bold">
-                Número de teléfono:
-              </label>
-              <div className="flex gap-3">
-                <span className="flex items-center rounded-lg border border-gray-300 px-3">
-                  +52
-                </span>
-                <input
-                  id="telefono"
-                  className={campoBase}
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel-national"
-                  maxLength={10}
-                  placeholder="0000000000"
-                  value={datos.telefono}
-                  onChange={(e) =>
-                    actualizar(
-                      'telefono',
-                      e.target.value.replace(/\D/g, '').slice(0, 10),
-                    )
-                  }
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="contrasena" className="mb-2 block font-bold">
-                Contraseña:
-              </label>
-              <input
-                id="contrasena"
-                className={campoBase}
-                type={mostrarContrasena ? 'text' : 'password'}
-                autoComplete="new-password"
-                placeholder="Mínimo 8 caracteres"
-                value={datos.contrasena}
-                onChange={(e) => actualizar('contrasena', e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="md:col-span-2 md:mx-auto md:w-3/4">
-              <label
-                htmlFor="confirmarContrasena"
-                className="mb-2 block font-bold"
-              >
-                Confirmar contraseña:
-              </label>
-              <input
-                id="confirmarContrasena"
-                className={campoBase}
-                type={mostrarContrasena ? 'text' : 'password'}
-                autoComplete="new-password"
-                placeholder="Repite tu contraseña"
-                value={datos.confirmarContrasena}
+                inputMode="numeric"
+                maxLength={2}
+                placeholder="día"
+                aria-label="Día de nacimiento"
+                className={`${inputClass} text-center`}
+                value={datos.dia}
                 onChange={(e) =>
-                  actualizar('confirmarContrasena', e.target.value)
+                  actualizar('dia', e.target.value.replace(/\D/g, '').slice(0, 2))
                 }
                 required
               />
+              <input
+                id="mes"
+                type="text"
+                inputMode="numeric"
+                maxLength={2}
+                placeholder="mes"
+                aria-label="Mes de nacimiento"
+                className={`${inputClass} text-center`}
+                value={datos.mes}
+                onChange={(e) =>
+                  actualizar('mes', e.target.value.replace(/\D/g, '').slice(0, 2))
+                }
+                required
+              />
+              <input
+                id="anio"
+                type="text"
+                inputMode="numeric"
+                maxLength={4}
+                placeholder="año"
+                aria-label="Año de nacimiento"
+                className={`${inputClass} text-center`}
+                value={datos.anio}
+                onChange={(e) =>
+                  actualizar(
+                    'anio',
+                    e.target.value.replace(/\D/g, '').slice(0, 4),
+                  )
+                }
+                required
+              />
+            </div>
+          </fieldset>
 
-              <label className="mt-3 flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={mostrarContrasena}
-                  onChange={(e) => setMostrarContrasena(e.target.checked)}
-                />
-                Mostrar contraseñas
-              </label>
+          {/* Número de Teléfono */}
+          <div>
+            <label
+              htmlFor="telefono"
+              className="mb-2 block text-base font-bold text-ink"
+            >
+              Número de Teléfono:
+            </label>
+            <div className="flex gap-3">
+              <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
+                +52
+              </div>
+              <input
+                id="telefono"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel-national"
+                maxLength={10}
+                placeholder="0000000000"
+                className={`${inputClass} min-w-0 flex-1`}
+                value={datos.telefono}
+                onChange={(e) =>
+                  actualizar(
+                    'telefono',
+                    e.target.value.replace(/\D/g, '').slice(0, 10),
+                  )
+                }
+                required
+              />
             </div>
           </div>
 
-          {error && (
-            <p
-              role="alert"
-              className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-800"
+          {/* Contraseña */}
+          <div>
+            <label
+              htmlFor="contrasena"
+              className="mb-2 block text-base font-bold text-ink"
             >
-              {error}
-            </p>
-          )}
-
-          <div className="mt-8 flex justify-center">
-            <button
-              type="submit"
-              disabled={enviando}
-              className="w-full rounded-full bg-blue-900 px-8 py-3 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-2/3"
-            >
-              {enviando ? 'Creando cuenta…' : 'Crear cuenta'}
-            </button>
+              Contraseña:
+            </label>
+            <input
+              id="contrasena"
+              type="password"
+              autoComplete="new-password"
+              placeholder="*****"
+              className={inputClass}
+              value={datos.contrasena}
+              onChange={(e) => actualizar('contrasena', e.target.value)}
+              required
+            />
           </div>
-        </form>
-      </section>
-    </main>
+        </div>
+
+        {/* Confirmar Contraseña (centrado abajo de las 2 columnas) */}
+        <div className="mt-7 flex flex-col items-center">
+          <label
+            htmlFor="confirmarContrasena"
+            className="mb-2 block text-center text-base font-bold text-ink"
+          >
+            Confirmar Contraseña:
+          </label>
+          <input
+            id="confirmarContrasena"
+            type="password"
+            autoComplete="new-password"
+            placeholder="*****"
+            className={`${inputClass} max-w-[420px]`}
+            value={datos.confirmarContrasena}
+            onChange={(e) => actualizar('confirmarContrasena', e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Mensaje de error si falla la validación */}
+        {error && (
+          <p
+            role="alert"
+            className="mt-5 text-center text-sm font-semibold text-red-600"
+          >
+            {error}
+          </p>
+        )}
+
+        {/* Botón de acción centrado */}
+        <div className="mt-8 flex justify-center sm:mt-10">
+          <Button
+            type="submit"
+            disabled={enviando}
+            className="w-full max-w-[280px] bg-brand-100 py-3.5 text-base font-medium text-ink hover:bg-brand-200"
+          >
+            {enviando ? 'Creando cuenta…' : 'Iniciar sesión'}
+          </Button>
+        </div>
+      </form>
+    </AuthLayout>
   )
 }
-

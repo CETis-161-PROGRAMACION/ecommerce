@@ -9,6 +9,7 @@ import {
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
 import { resendCode, verifyCode } from '@/services/auth'
+import { AuthLayout } from '@/components/layout/AuthLayout'
 
 const LONGITUD = 6
 const COOLDOWN_SEGUNDOS = 30
@@ -128,8 +129,7 @@ export function ConfirmCodePage() {
   const ultimos = telefono.slice(-4)
 
   return (
-    <main className="min-h-screen bg-gray-50 px-5 py-8 text-gray-800">
-      <section className="mx-auto max-w-md rounded-2xl bg-white p-6 shadow-sm sm:p-10">
+    <AuthLayout title='Confirmar Código'>
         <h1 className="text-2xl font-extrabold text-blue-900">
           Confirma tu número
         </h1>
@@ -211,7 +211,6 @@ export function ConfirmCodePage() {
         <p className="mt-6 text-center text-xs text-gray-500">
           Modo demo: el código válido es 123456.
         </p>
-      </section>
-    </main>
+      </AuthLayout>
   )
 }
