@@ -11,6 +11,8 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.confirmCode]: 'Confirmar código',
   [ROUTES.privacy]: 'Aviso de privacidad',
   [ROUTES.home]: 'Home',
+  [ROUTES.menu]: 'Menú',
+  [ROUTES.sucursales]: 'Sucursales',
 }
 
 const SUGGESTABLE_ROUTES = Object.values(ROUTES).filter(

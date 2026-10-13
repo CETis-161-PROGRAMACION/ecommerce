@@ -6,6 +6,7 @@ import { PrivacyPage } from '@/pages/privacy/PrivacyPage'
 import { SplashPage } from '@/pages/splash/SplashPage'
 import { ROUTES } from '@/router/routes'
 import { HomePage } from '@/pages/home/HomePage'
+import { SucursalesPage } from '@/pages/sucursales/SucursalesPage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { MenuPage } from '@/pages/menu/MenuPage'
 
@@ -16,6 +17,7 @@ const routes = [
   { path: ROUTES.confirmCode, element: <ConfirmCodePage /> },
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
+  { path: ROUTES.sucursales, element: <SucursalesPage /> },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
