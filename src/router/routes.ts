@@ -6,7 +6,7 @@ export const ROUTES = {
   privacy: '/registro/privacidad',
   home: '/inicio',
   menu: '/sucursal/menu',
-  
+  sucursales: '/sucursales',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
