@@ -52,7 +52,15 @@ export default function NavBar({ children }: NavBarProps) {
         </button>
       </header>
 
+
+            </header>
+            <main className="w-full max-w-4xl">{children}</main>
+        </div>
+    )
+}
+
       <main className="w-full max-w-6xl">{children}</main>
     </div>
   )
 }
+

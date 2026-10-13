@@ -6,6 +6,7 @@ export const ROUTES = {
   privacy: '/registro/privacidad',
   home: '/inicio',
   menu: '/sucursal/menu',
+  infoPedido: '/info/pedido',
   sucursales: '/sucursales',
 } as const
 
