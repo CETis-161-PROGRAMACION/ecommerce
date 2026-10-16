@@ -11,6 +11,7 @@ import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { MenuPage } from '@/pages/menu/MenuPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
 import { RegisterPage } from '@/pages/register/RegisterPage'
+import { AddressPage } from '@/pages/address/AddressPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -23,6 +24,7 @@ const routes = [
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.sucursales, element: <SucursalesPage /> },
   { path: ROUTES.menu, element: <MenuPage /> },
+  { path: ROUTES.clienteDireccion, element: <AddressPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 

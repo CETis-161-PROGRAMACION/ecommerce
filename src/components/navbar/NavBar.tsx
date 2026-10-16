@@ -4,9 +4,10 @@ import { SideBar } from '@/components/sidebar/SideBar'
 
 interface NavBarProps {
     children: ReactNode
+    mainClassName?: string
 }
 
-export default function NavBar({ children }: NavBarProps) {
+export default function NavBar({ children, mainClassName }: NavBarProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     return (
@@ -34,7 +35,7 @@ export default function NavBar({ children }: NavBarProps) {
 
                 <img
                 src="/src/components/ui/icons/search.svg"
-                alt=""
+                alt="Icono de Buscar"
                 width={28}
                 height={28}
                 className="shrink-0 sm:h-10 sm:w-10"
@@ -45,7 +46,7 @@ export default function NavBar({ children }: NavBarProps) {
                 name="search"
                 placeholder="Buscar..."
                 aria-label="Buscar"
-                className="min-w-0 flex-1 rounded border border-line p-2 text-sm leading-relaxed text-ink"
+                className="min-w-0 flex-1 rounded border border-line p-2 text-sm h-12 leading-relaxed text-ink"
                 />
 
                 <button
@@ -63,7 +64,9 @@ export default function NavBar({ children }: NavBarProps) {
 
 
             </header>
-            <main className="w-full max-w-4xl">{children}</main>
+            <main className={`w-full ${mainClassName ?? 'max-w-7xl'}`}>
+                {children}
+            </main>
         </div>
     )
 }
