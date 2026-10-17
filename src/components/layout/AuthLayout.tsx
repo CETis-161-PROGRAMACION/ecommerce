@@ -1,26 +1,44 @@
 import type { ReactNode } from 'react'
 import { Logo } from '@/components/ui/Logo'
+import { ROUTES } from '@/router/routes'
 
 interface AuthLayoutProps {
   title: string
   children: ReactNode
+  mainClassName?: string
 }
 
-export function AuthLayout({ title, children }: AuthLayoutProps) {
+/* 
+  ? <Componente />
+
+  ? <Componente>
+    *Contenido
+  ?</Componente>
+*/
+
+export function AuthLayout({ title, children, mainClassName }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 py-10">
-      <header className="mb-10 flex w-full px-24 max-w items-start gap-4">
-        <Logo className="h-52 w-auto shrink-0" />
-        <div className="min-w-0">
-          <h1 className="text-4xl mt-10 font-bold uppercase tracking-wide text-blue-400 ">
-            {title}
-          </h1>
-          <p className="text-md mt-3 ml-14 font-semibold uppercase tracking-widest text-ink-muted">
-            Web E-commerce
-          </p>
-        </div>
-      </header>
-      <main className="w-full max-w-md">{children}</main>
+    <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 sm:px-8 sm:py-12 motion-safe:animate-page-enter">
+      <div className="w-full max-w-5xl">
+        {title ? (
+          <header className="mb-8 flex items-center gap-5 sm:mb-10 sm:gap-6">
+            <a href={ROUTES.home}>
+              <Logo className="h-24 w-24 shrink-0 sm:h-28 sm:w-28" />
+            </a>
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold uppercase tracking-wide text-brand-400 sm:text-4xl">
+                {title}
+              </h1>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-ink-muted sm:text-sm">
+                Web E-commerce
+              </p>
+            </div>
+          </header>
+        ) : null}
+        <main className={`w-full ${mainClassName ?? 'mx-auto max-w-md'}`}>
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

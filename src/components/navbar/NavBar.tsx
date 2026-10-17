@@ -1,0 +1,72 @@
+
+import { useState, type ReactNode } from 'react'
+import { SideBar } from '@/components/sidebar/SideBar'
+
+interface NavBarProps {
+    children: ReactNode
+    mainClassName?: string
+}
+
+export default function NavBar({ children, mainClassName }: NavBarProps) {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+    return (
+        <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:px-6 sm:py-10 motion-safe:animate-page-enter">
+            <SideBar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+            />
+
+            <header className="mb-8 flex w-full max-w-7xl items-center gap-3 sm:mb-10 sm:gap-5">
+                <button
+                    type="button"
+                    aria-label="Abrir menú"
+                    aria-expanded={isSidebarOpen}
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="shrink-0 cursor-pointer"
+                >
+                    <img
+                        src="/src/components/ui/icons/menu.svg"
+                        alt=""
+                        width={32}
+                        height={32}
+                    />
+                </button>
+
+                <img
+                src="/src/components/ui/icons/search.svg"
+                alt="Icono de Buscar"
+                width={28}
+                height={28}
+                className="shrink-0 sm:h-10 sm:w-10"
+                />
+
+                <input
+                type="search"
+                name="search"
+                placeholder="Buscar..."
+                aria-label="Buscar"
+                className="min-w-0 flex-1 rounded border border-line p-2 text-sm h-12 leading-relaxed text-ink"
+                />
+
+                <button
+                type="button"
+                aria-label="Perfil"
+                className="shrink-0 mr-8"
+                >
+                <img
+                    src="/src/components/ui/icons/person.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                />
+                </button>
+
+
+            </header>
+            <main className={`w-full ${mainClassName ?? 'max-w-7xl'}`}>
+                {children}
+            </main>
+        </div>
+    )
+}
