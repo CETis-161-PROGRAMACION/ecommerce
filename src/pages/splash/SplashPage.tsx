@@ -16,13 +16,13 @@ export function SplashPage() {
     const exitTimer = window.setTimeout(
       () => {
         if (prefersReducedMotion) {
-          navigate(ROUTES.login, { replace: true })
+          navigate(ROUTES.deliveryAccess, { replace: true })
           return
         }
 
         setIsExiting(true)
         navigationTimer = window.setTimeout(
-          () => navigate(ROUTES.login, { replace: true }),
+          () => navigate(ROUTES.deliveryAccess, { replace: true }),
           400,
         )
       },

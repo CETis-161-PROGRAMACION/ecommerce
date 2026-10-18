@@ -12,6 +12,9 @@ import { MenuPage } from '@/pages/menu/MenuPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
 import { RegisterPage } from '@/pages/register/RegisterPage'
 import { AddressPage } from '@/pages/address/AddressPage'
+import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
+import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
+import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -25,6 +28,9 @@ const routes = [
   { path: ROUTES.sucursales, element: <SucursalesPage /> },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
+  { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
+  { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
+  { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 
