@@ -14,6 +14,7 @@ export const ROUTES = {
   infoPedido: '/info/pedido',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
+  userDestiny: '/pedido/direccion-destinatario',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]

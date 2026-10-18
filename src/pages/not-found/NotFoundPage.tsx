@@ -17,6 +17,7 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.infoPedido]: 'Información del pedido',
   [ROUTES.sucursales]: 'Sucursales',
   [ROUTES.clienteDireccion]: 'Ingresar dirección',
+  [ROUTES.userDestiny]: 'Dirección del destinatario',
   [ROUTES.deliveryAccess]: 'Acceso repartidor',
   [ROUTES.deliveryLogin]: 'Iniciar sesión repartidor',
   [ROUTES.deliveryRegister]: 'Registro repartidor',

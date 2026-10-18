@@ -52,7 +52,7 @@ function InputLarge({title}: ComponenteInputProps) {
     return (
         <div className="my-4 mr-24">
             <p className="text-lg">{title}</p>
-            <input type="text" className="h-12 w-full border border-blue-400" />
+            <input type="text" className="h-12 w-full border border-blue-400 rounded-lg" />
         </div>
     )
 }
@@ -60,8 +60,8 @@ function InputLarge({title}: ComponenteInputProps) {
 function InpulShort({title}: ComponenteInputProps) {
     return (
         <div className="my-4 mr-10">
-            <p className="text-lg">{title}</p>
-            <input type="text" className="h-12 w-full border border-blue-400" />
+            <p className="text-lg font-bold">{title}</p>
+            <input type="text" className="h-12 w-full border border-blue-400 rounded-lg" />
         </div>
     )
 }

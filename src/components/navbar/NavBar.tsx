@@ -46,7 +46,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                 name="search"
                 placeholder="Buscar..."
                 aria-label="Buscar"
-                className="min-w-0 flex-1 rounded border border-line p-2 text-sm h-12 leading-relaxed text-ink"
+                className="min-w-0 flex-1 rounded border border-line p-2 text-sm h-10 leading-relaxed text-ink"
                 />
 
                 <button
