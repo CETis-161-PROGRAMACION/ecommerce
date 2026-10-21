@@ -1,5 +1,5 @@
 import { AuthLayout } from '@/components/layout/AuthLayout'
-import { ROUTES } from "@/router/routes"
+import { ROUTES } from '@/router/routes'
 
 // TODO: Implementar la pantalla de inicio de sesión. Elementos previstos por
 // la referencia:
@@ -13,52 +13,108 @@ import { ROUTES } from "@/router/routes"
 
 export function LoginPage() {
   return (
-    <AuthLayout title="Iniciar sesión">
-      <div className="flex flex-col gap-4">
-  
-      <div className="flex flex-col ">
-        <div className="flex ">
-        <p className="w-1/2 mr-3 mb-3 font-bold text-xl"> Número de teléfono: </p>
-        <p className="w-1/2 ml-3 mb-3 font-bold text-xl"> Contraseña: </p>
-        </div>
-        <section className='flex flex-row justify-between gap-12'>
-          
-        <div className="flex w-full max-w-md">
-          <select className="mb-6 mr-3 w-12 col-start-1 rounded border row-start-1  border-line bg-surface p-2 text-sm leading-relaxed text-ink appearance-none ">
-            <option value="+52"> +52 </option>
-            <option value="+1"> +1 </option>
-            <option value="+57"> +57 </option>
-          </select>
-
-            <input type="tel" placeholder="" className="mb-6 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden" />
-        </div>
-
-            <input type="password" placeholder="•••••••••" className="mb-6 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden" /> 
-          </section>
-      </div>
-        
-            <div className="flex justify-center">
-            <a   href={ROUTES.home} type="button" className="mb-4 w-50 rounded-full bg-blue-200 p-2 text-sm font-semibold text-black focus:outline-none focus:outline-2 focus:ring-offset-1 hover:bg-blue-300 text-center"> Iniciar sesion </a>
+    <AuthLayout title="Iniciar sesión" mainClassName="w-full">
+      <form onSubmit={(e) => e.preventDefault()} noValidate className="w-full">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10 lg:gap-16">
+          {/* Número de teléfono */}
+          <div>
+            <label
+              htmlFor="telefono"
+              className="mb-3 block text-xl font-bold text-ink sm:text-2xl"
+            >
+              Número de telefono:
+            </label>
+            <div className="flex gap-3">
+              <select
+                id="codigoPais"
+                aria-label="Código de país"
+                className="h-12 w-16 shrink-0 appearance-none rounded-lg border border-line bg-surface px-2 text-center text-base font-normal text-ink-muted outline-none transition-colors focus:border-brand-400 focus:ring-2 focus:ring-brand-100 sm:w-20"
+              >
+                <option value="+52">+52</option>
+                <option value="+1">+1</option>
+                <option value="+57">+57</option>
+              </select>
+              <input
+                id="telefono"
+                type="tel"
+                autoComplete="tel-national"
+                placeholder="0000000000"
+                className="h-12 w-full rounded-lg border border-line bg-surface px-4 text-base text-ink placeholder:text-ink-muted/60 outline-none transition-colors focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+              />
             </div>
-            
-            <a className="m-2 text-center text-lg font-semibold"> O continuar con </a>
+          </div>
 
-        <div className="flex justify-center">
-            <button className="mb-4 mr-3 w-22 rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink">Google</button>  
-            <button className="mb-4 ml-3 w-22 rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink ">Facebook</button>
+          {/* Contraseña */}
+          <div>
+            <label
+              htmlFor="contrasena"
+              className="mb-3 block text-xl font-bold text-ink sm:text-2xl"
+            >
+              Contraseña
+            </label>
+            <input
+              id="contrasena"
+              type="password"
+              autoComplete="current-password"
+              placeholder="........"
+              className="h-12 w-full rounded-lg border border-line bg-surface px-4 text-base text-ink placeholder:text-ink-muted/60 outline-none transition-colors focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+            />
+          </div>
         </div>
-        
-            <a href={ROUTES.recovery} className="mb-4 text-center text-blue-600 text-xs">
-              ¿Olvidaste tu contraseña?
-            </a>
 
-        <div className="text-center text-xs">
-          <a> ¿No tienes cuenta? 
-          <a href={ROUTES.confirmCode} className="m-3 underline">
-              Regístrate
-            </a></a>
+        {/* Botón Iniciar sesión */}
+        <div className="mt-10 flex justify-center sm:mt-12">
+          <a
+            href={ROUTES.home}
+            role="button"
+            className="w-full max-w-[280px] rounded-full bg-brand-100 py-3 text-center text-base font-medium text-black transition-colors hover:bg-brand-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+          >
+            Iniciar sesión
+          </a>
+        </div>`
+
+        {/* o continuar con */}
+        <p className="mt-6 text-center text-sm font-normal text-ink-muted">
+          o continuar con
+        </p>
+
+        {/* Botones sociales */}
+        <div className="mt-5 flex justify-center gap-6">
+          <button
+            type="button"
+            className="h-11 w-28 rounded-lg border border-line bg-surface text-center text-base font-normal text-ink transition-colors hover:bg-brand-100/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400 sm:w-32"
+          >
+            Google
+          </button>
+          <button
+            type="button"
+            className="h-11 w-28 rounded-lg border border-line bg-surface text-center text-base font-normal text-ink transition-colors hover:bg-brand-100/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400 sm:w-32"
+          >
+            Facebook
+          </button>
         </div>
-      </div>
+
+        {/* Enlace recuperar contraseña */}
+        <div className="mt-6 text-center">
+          <a
+            href={ROUTES.recovery}
+            className="text-sm font-medium text-brand-400 transition-colors hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        {/* Enlace registro */}
+        <p className="mt-4 text-center text-sm text-ink">
+          ¿No tienes una cuenta?{' '}
+          <a
+            href={ROUTES.register}
+            className="underline underline-offset-2 hover:opacity-80"
+          >
+            Regístrate
+          </a>
+        </p>
+      </form>
     </AuthLayout>
   )
 }

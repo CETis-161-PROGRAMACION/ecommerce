@@ -32,8 +32,8 @@ export function PrivacyPage() {
               Política de privacidad
             </h2>
             <p>
-              Aquí se mostrará el contenido oficial de la política de
-              privacidad de Web E-commerce.
+              Aquí se mostrará el contenido oficial de la política de privacidad
+              de Web E-commerce.
             </p>
             <p className="mt-3">
               El documento definitivo debe ser proporcionado por el equipo

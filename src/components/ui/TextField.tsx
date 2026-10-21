@@ -1,5 +1,6 @@
 import { useId } from 'react'
 import type { InputHTMLAttributes } from 'react'
+import { inputClass, inputErrorClass, labelClass, fieldErrorClass } from '@/components/ui/fieldStyles'
 
 type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string
@@ -19,20 +20,18 @@ export function TextField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={inputId} className="text-sm font-semibold text-ink">
+      <label htmlFor={inputId} className={labelClass}>
         {label}
       </label>
       <input
         id={inputId}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={`w-full rounded-xl border bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 ${
-          error ? 'border-red-500' : 'border-line'
-        } ${className ?? ''}`}
+        className={`${inputClass} ${error ? inputErrorClass : ''} ${className ?? ''}`}
         {...inputProps}
       />
       {error ? (
-        <p id={errorId} className="text-sm text-red-600">
+        <p id={errorId} className={fieldErrorClass}>
           {error}
         </p>
       ) : null}

@@ -5,25 +5,29 @@ const sucursales = [
     nombre: 'Doña Mary',
     direccion: 'Donato Guerra 220, San Javier, 45300 Tala, Jalisco.',
     mapa: 'https://maps.google.com/maps?q=20.6566723,-103.7017308&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.6566723,-103.7017308',
+    indicaciones:
+      'https://www.google.com/maps/dir/?api=1&destination=20.6566723,-103.7017308',
   },
   {
     nombre: 'Kundera',
     direccion: 'Donato Guerra 63A, 45300 Tala, Jalisco.',
     mapa: 'https://maps.google.com/maps?q=20.6518783,-103.7016811&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.6518783,-103.7016811',
+    indicaciones:
+      'https://www.google.com/maps/dir/?api=1&destination=20.6518783,-103.7016811',
   },
   {
     nombre: 'Santori',
     direccion: 'Manuel Acuña 1A, Barrio Alto, 45300 Tala, Jalisco.',
     mapa: 'https://maps.google.com/maps?q=20.655763,-103.702891&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.655763-103.702891',
+    indicaciones:
+      'https://www.google.com/maps/dir/?api=1&destination=20.655763-103.702891',
   },
   {
     nombre: 'Café Tostado',
     direccion: 'Donato Guerra 244-A, 45300 Tala, Jalisco.',
     mapa: 'https://maps.google.com/maps?q=Caf%C3%A9+Tostado%2C+Donato+Guerra+244-A%2C+Tala%2C+Jalisco&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=Caf%C3%A9+Tostado%2C+Donato+Guerra+244-A%2C+Tala%2C+Jalisco',
+    indicaciones:
+      'https://www.google.com/maps/dir/?api=1&destination=Caf%C3%A9+Tostado%2C+Donato+Guerra+244-A%2C+Tala%2C+Jalisco',
   },
 ]
 
@@ -32,9 +36,7 @@ export function SucursalesPage() {
     <NavBar>
       <section className="mx-auto w-full max-w-6xl space-y-6">
         <header className="space-y-2">
-          <h1 className="text-2xl font-bold text-ink">
-            Sucursales
-          </h1>
+          <h1 className="text-2xl font-bold text-ink">Sucursales</h1>
           <p className="text-sm text-ink/70">
             Encuentra nuestros establecimientos en Tala, Jalisco.
           </p>
@@ -50,15 +52,11 @@ export function SucursalesPage() {
                 <h2 className="text-xl font-bold text-ink">
                   {sucursal.nombre}
                 </h2>
-                <p className="text-sm text-ink/70">
-                  {sucursal.direccion}
-                </p>
+                <p className="text-sm text-ink/70">{sucursal.direccion}</p>
               </div>
 
               <div className="px-4">
-                <p className="mb-2 text-sm font-semibold text-ink">
-                  Ubicación
-                </p>
+                <p className="mb-2 text-sm font-semibold text-ink">Ubicación</p>
                 <iframe
                   title={`Mapa de ${sucursal.nombre}`}
                   src={sucursal.mapa}

@@ -1,6 +1,5 @@
 # Web E-commerce
 
-
 Proyecto del **CETis 161**. Base frontend de la aplicación web de comercio electrónico, desarrollada para que los estudiantes de programación construyan las pantallas de manera colaborativa.
 
 ## Información del proyecto
@@ -11,17 +10,15 @@ Proyecto del **CETis 161**. Base frontend de la aplicación web de comercio elec
 - **Objetivo general:** ofrecer una base frontend limpia, consistente, accesible y verificable sobre la cual cada estudiante pueda desarrollar una pantalla de forma independiente.
 - **Alcance de la fase actual:** base frontend con sistema de diseño, componentes reutilizables, enrutador inicial, pantalla splash y placeholders de autenticación.
 - **Funcionalidades todavía no implementadas:** backend, autenticación real, envío de SMS, persistencia de datos, integraciones con proveedores externos, pagos, catálogo, geolocalización, reseñas y registro de usuarios.
-=======
-Esta plantilla ofrece una configuración mínima para que React funcione en Vite con HMR y algunas reglas de ESLint.
+  \=======
+  Esta plantilla ofrece una configuración mínima para que React funcione en Vite con HMR y algunas reglas de ESLint.
 
 Actualmente hay dos plugins oficiales disponibles:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) usa [Oxc](https://oxc.rs)
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) usa [SWC](https://swc.rs/)
 
-
 ## Tecnologías
-
 
 Versiones reales instaladas en el proyecto (verificado en `node_modules`):
 
@@ -46,13 +43,14 @@ Versiones reales instaladas en el proyecto (verificado en `node_modules`):
 
 Desde la raíz del repositorio:
 =======
+
 El React Compiler no está habilitado en esta plantilla por su impacto en el rendimiento del desarrollo y de la compilación. Para agregarlo, consulta [esta documentación](https://react.dev/learn/react-compiler/installation).
 
 ## Ampliar la configuración de ESLint
 
 Si desarrollas una aplicación para producción, se recomienda actualizar la configuración para habilitar las reglas de lint con información de tipos:
 
-```js
+````js
 export default defineConfig([
   globalIgnores(['dist']),
   {
@@ -82,14 +80,14 @@ export default defineConfig([
 
 ```bash
 pnpm install
-```
-
+````
 
 Usa siempre `pnpm`, nunca mezcles gestores de paquetes.
 =======
+
 También puedes instalar [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) y [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) para obtener reglas de lint específicas de React:
 
-```js
+````js
 // eslint.config.js
 import reactX from 'eslint-plugin-react-x'
 import reactDom from 'eslint-plugin-react-dom'
@@ -177,7 +175,7 @@ El botón **Modo oscuro/Modo claro**, en la esquina superior derecha, cambia el 
 ├── tsconfig.node.json
 ├── eslint.config.js
 └── .prettierrc
-```
+````
 
 Distinción de responsabilidades:
 

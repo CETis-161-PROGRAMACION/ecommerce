@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
@@ -30,7 +29,11 @@ export function DeliveryLoginPage() {
 
   return (
     <AuthLayout title="Acceso del repartidor">
-      <form onSubmit={manejarInicioSesion} noValidate className="w-full space-y-6">
+      <form
+        onSubmit={manejarInicioSesion}
+        noValidate
+        className="w-full space-y-6"
+      >
         <div>
           <label
             htmlFor="telefono-repartidor"
@@ -86,7 +89,10 @@ export function DeliveryLoginPage() {
         </div>
 
         {mensaje && (
-          <p role="status" className="text-center text-sm font-semibold text-ink">
+          <p
+            role="status"
+            className="text-center text-sm font-semibold text-ink"
+          >
             {mensaje}
           </p>
         )}

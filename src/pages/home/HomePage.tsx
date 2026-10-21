@@ -1,79 +1,70 @@
-import { useState } from "react";
+import { useState } from 'react'
+import NavBar from '@/components/navbar/NavBar'
+import { KunderaSubView } from './sub-views/KunderaSubView'
+import { CuatroCafeSubView } from './sub-views/CuatroCafeSubView'
+import { TuMesaSubView } from './sub-views/TuMesaSubView'
 
-import NavBar from "@/components/navbar/NavBar";
-import photo1 from "../../assets/images/logo.png";
-import photo2 from "../../assets/images/cft.png";
-import photo3 from "../../assets/images/san.png";
-import photo4 from "../../assets/images/dnm.png";
-import photo5 from "../../assets/images/kundera_logo.png";
-const productos = [
-  { id: 1, nombre: "Producto 1", foto: photo1 },
-  { id: 2, nombre: "Producto 2", foto: photo2 },
-  { id: 3, nombre: "Producto 3", foto: photo3 },
-  { id: 4, nombre: "Producto 4", foto: photo4 },
-  { id: 5, nombre: "Producto 5", foto: photo5 },
-];
+type StoreId = 'kundera' | 'cuatro-cafe' | 'tu-mesa'
 
 export function HomePage() {
-  const [actual, setActual] = useState(0);
+  const [activeStore, setActiveStore] = useState<StoreId>('kundera')
 
-  const anterior = () => {
-    setActual((actual) =>
-      actual === 0 ? productos.length - 1 : actual - 1
-    );
-  };
-
-  const siguiente = () => {
-    setActual((actual) =>
-      actual === productos.length - 1 ? 0 : actual + 1
-    );
-  };
+  const stores: { id: StoreId; name: string }[] = [
+    { id: 'kundera', name: 'KUNDERA' },
+    { id: 'cuatro-cafe', name: 'CUATRO CAFÉ' },
+    { id: 'tu-mesa', name: 'TU MESA' },
+  ]
 
   return (
     <NavBar>
-      <div className="p-8">
-        <h1 className="mb-6 text-3xl font-bold">
-          Mi carrusel de productos
-        </h1>
-
-        <div className="relative mx-auto max-w-3xl overflow-hidden rounded-xl">
-          <img
-            src={productos[actual].foto}
-            alt={productos[actual].nombre}
-            className="h-96 w-full object-cover"
-          />
-
-          <button
-            onClick={anterior}
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 px-4 py-2 text-white"
-          >
-            ←
-          </button>
-
-          <button
-            onClick={siguiente}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 px-4 py-2 text-white"
-          >
-            →
-          </button>
-
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-            {productos.map((producto, index) => (
-              <button
-                key={producto.id}
-                onClick={() => setActual(index)}
-                className={`h-3 w-3 rounded-full ${
-                  actual === index ? "bg-white" : "bg-white/50"
-                }`}
-              />
-            ))}
+      <div className="w-full space-y-6 pb-12">
+        {/* Banner principal (matching mockup dark rounded banner) */}
+        <div
+          role="region"
+          aria-label="Banner promocional"
+          className="relative h-44 w-full overflow-hidden rounded-3xl bg-banner-dark shadow-md sm:h-56 flex items-center justify-center p-6 text-center"
+        >
+          <div className="space-y-2">
+            <span className="inline-block rounded-full bg-white/10 px-4 py-1 text-xs font-semibold tracking-wider text-brand-100 uppercase backdrop-blur-xs">
+              Promociones del día
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Descubre los mejores sabores locales
+            </h2>
+            <p className="text-sm text-gray-300">
+              Café de especialidad, postres artesanales y comidas recién preparadas.
+            </p>
           </div>
         </div>
 
-        <h2 className="mt-4 text-center text-xl font-semibold">
-          {productos[actual].nombre}
-        </h2>
+        {/* Store Selector Pills (KUNDERA, CUATRO CAFÉ, TU MESA) */}
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-2">
+          {stores.map((store) => {
+            const isActive = activeStore === store.id
+            return (
+              <button
+                key={store.id}
+                type="button"
+                onClick={() => setActiveStore(store.id)}
+                className={`cursor-pointer rounded-full px-8 py-3 text-base sm:text-lg font-black tracking-wide uppercase transition-all duration-200 shadow-xs focus-visible:outline-2 focus-visible:outline-brand-400 ${
+                  isActive
+                    ? 'border-2 border-brand-400 bg-brand-100/50 text-navy-900 shadow-sm scale-105'
+                    : 'border border-line bg-surface text-ink hover:border-brand-400 hover:text-navy-900'
+                }`}
+              >
+                {store.name}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Dynamic Composable Sub-view */}
+        <section aria-label={`Catálogo de productos de ${stores.find((s) => s.id === activeStore)?.name}`}>
+          {activeStore === 'kundera' && <KunderaSubView />}
+          {activeStore === 'cuatro-cafe' && <CuatroCafeSubView />}
+          {activeStore === 'tu-mesa' && <TuMesaSubView />}
+        </section>
       </div>
     </NavBar>
-  );
+  )
 }

@@ -48,8 +48,7 @@ function validarFecha(dia: string, mes: string, anio: string): string {
 
   let edad = hoy.getFullYear() - a
   const yaCumplio =
-    hoy.getMonth() > m - 1 ||
-    (hoy.getMonth() === m - 1 && hoy.getDate() >= d)
+    hoy.getMonth() > m - 1 || (hoy.getMonth() === m - 1 && hoy.getDate() >= d)
   if (!yaCumplio) edad -= 1
 
   if (edad < EDAD_MINIMA) {
@@ -115,7 +114,7 @@ export function RegisterPage() {
   }
 
   const inputClass =
-    'h-14 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink ' +
+    'h-12 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink ' +
     'placeholder:text-ink-muted/70 outline-none transition-colors ' +
     'focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
 
@@ -158,7 +157,10 @@ export function RegisterPage() {
                 className={`${inputClass} text-center`}
                 value={datos.dia}
                 onChange={(e) =>
-                  actualizar('dia', e.target.value.replace(/\D/g, '').slice(0, 2))
+                  actualizar(
+                    'dia',
+                    e.target.value.replace(/\D/g, '').slice(0, 2),
+                  )
                 }
                 required
               />
@@ -172,7 +174,10 @@ export function RegisterPage() {
                 className={`${inputClass} text-center`}
                 value={datos.mes}
                 onChange={(e) =>
-                  actualizar('mes', e.target.value.replace(/\D/g, '').slice(0, 2))
+                  actualizar(
+                    'mes',
+                    e.target.value.replace(/\D/g, '').slice(0, 2),
+                  )
                 }
                 required
               />

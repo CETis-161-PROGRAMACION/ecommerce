@@ -9,12 +9,16 @@ export const ROUTES = {
   deliveryAccess: '/repartidor',
   deliveryLogin: '/repartidor/iniciar-sesion',
   deliveryRegister: '/repartidor/registro',
+  deliveryOrders: '/repartidor/pedidos',
+  deliveryOrderDetail: '/repartidor/pedido/activo',
   productDetail: '/producto/principito',
   menu: '/sucursal/menu',
-  infoPedido: '/info/pedido',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
   userDestiny: '/pedido/direccion-destinatario',
+  orderInfo: '/pedido/informacion',
+  orderTracking: '/pedido/seguimiento',
+  profile: '/perfil',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
