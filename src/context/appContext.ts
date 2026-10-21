@@ -6,6 +6,7 @@ import type {
   ProductSelection,
   Recipient,
   SessionUser,
+  UserRole,
 } from '@/types'
 import type { DatosRegistro } from '@/services/demoAuth'
 
@@ -22,6 +23,7 @@ export interface AppContextValue {
   login: (
     telefono: string,
     contrasena: string,
+    rolEsperado?: UserRole,
   ) => { ok: boolean; error?: string; usuario?: SessionUser }
   register: (datos: DatosRegistro) => { ok: boolean; error?: string }
   logout: () => void
@@ -30,8 +32,9 @@ export interface AppContextValue {
   saveSelection: (selection: ProductSelection) => void
   saveMetodoPago: (metodo: PaymentMethod) => void
   createOrder: (metodoEntrega: string) => Order | null
-  acceptOrder: (orderId: string) => void
-  deliverOrder: (orderId: string) => void
+  acceptOrder: (orderId: string) => { ok: boolean; error?: string }
+  deliverOrder: (orderId: string) => { ok: boolean; error?: string }
+  confirmReceipt: (orderId: string) => { ok: boolean; error?: string }
   resetDemo: () => void
 }
 

@@ -13,6 +13,7 @@ export function DeliveryLoginPage() {
   const [telefono, setTelefono] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [cuentaCliente, setCuentaCliente] = useState(false)
 
   function manejarInicioSesion(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
@@ -27,18 +28,17 @@ export function DeliveryLoginPage() {
       return
     }
 
-    const resultado = login(telefono, contrasena)
+    // La puerta de repartidor solo acepta cuentas de repartidor: si la
+    // cuenta es de cliente se rechaza **sin** dejar sesión iniciada.
+    const resultado = login(telefono, contrasena, 'repartidor')
 
     if (!resultado.ok) {
       setMensaje(resultado.error ?? 'No pudimos iniciar sesión.')
+      setCuentaCliente(resultado.usuario?.rol === 'cliente')
       return
     }
 
-    if (resultado.usuario?.rol !== 'repartidor') {
-      setMensaje('Esa cuenta no es de repartidor. Usa el acceso de cliente.')
-      return
-    }
-
+    setCuentaCliente(false)
     navigate(ROUTES.deliveryOrders)
   }
 
@@ -101,6 +101,17 @@ export function DeliveryLoginPage() {
           <p role="alert" className="notice notice-danger">
             {mensaje}
           </p>
+        ) : null}
+
+        {cuentaCliente ? (
+          <div className="text-center">
+            <Link
+              to={ROUTES.login}
+              className="text-sm font-semibold text-brand-400 underline underline-offset-4 transition-colors hover:text-navy-900"
+            >
+              Entrar por el acceso de cliente
+            </Link>
+          </div>
         ) : null}
 
         <div className="flex justify-center pt-2">

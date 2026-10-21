@@ -57,11 +57,12 @@ export function OrderTrackingPage() {
     selection,
     address,
     recipient,
-    deliverOrder,
+    confirmReceipt,
   } = useApp()
 
   const [mensaje, setMensaje] = useState('')
   const [enviados, setEnviados] = useState<string[]>([])
+  const [errorEntrega, setErrorEntrega] = useState('')
 
   const pedido = orders.find((item) => item.id === ultimoPedidoId)
   const producto = selection
@@ -234,14 +235,30 @@ export function OrderTrackingPage() {
                   </Button>
                 </div>
               ) : (
-                <Button
-                  type="button"
-                  size="lg"
-                  fullWidth
-                  onClick={() => deliverOrder(pedido.id)}
-                >
-                  Marcar como recibido
-                </Button>
+                <div className="space-y-3">
+                  {errorEntrega ? (
+                    <p role="alert" className="notice notice-danger">
+                      {errorEntrega}
+                    </p>
+                  ) : null}
+
+                  <Button
+                    type="button"
+                    size="lg"
+                    fullWidth
+                    onClick={() => {
+                      const resultado = confirmReceipt(pedido.id)
+
+                      if (!resultado.ok) {
+                        setErrorEntrega(
+                          resultado.error ?? 'No pudimos confirmar el pedido.',
+                        )
+                      }
+                    }}
+                  >
+                    Marcar como recibido
+                  </Button>
+                </div>
               )}
             </div>
           </section>

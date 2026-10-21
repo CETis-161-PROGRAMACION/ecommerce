@@ -18,6 +18,7 @@ export function LoginPage() {
   const [telefono, setTelefono] = useState(telefonoInicial)
   const [contrasena, setContrasena] = useState('')
   const [error, setError] = useState('')
+  const [cuentaRepartidor, setCuentaRepartidor] = useState(false)
 
   function manejarEnvio(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
@@ -32,15 +33,18 @@ export function LoginPage() {
       return
     }
 
-    const resultado = login(telefono, contrasena)
+    // La puerta de cliente solo acepta cuentas de cliente.
+    const resultado = login(telefono, contrasena, 'cliente')
 
     if (!resultado.ok) {
       setError(
         resultado.error ?? 'No pudimos iniciar sesión. Inténtalo de nuevo.',
       )
+      setCuentaRepartidor(resultado.usuario?.rol === 'repartidor')
       return
     }
 
+    setCuentaRepartidor(false)
     navigate(ROUTES.home)
   }
 
@@ -48,6 +52,7 @@ export function LoginPage() {
     setTelefono(DEMO_CREDENTIALS.telefono)
     setContrasena(DEMO_CREDENTIALS.contrasena)
     setError('')
+    setCuentaRepartidor(false)
   }
 
   return (
@@ -108,6 +113,17 @@ export function LoginPage() {
           <p role="alert" className="notice notice-danger mt-6">
             {error}
           </p>
+        ) : null}
+
+        {cuentaRepartidor ? (
+          <div className="mt-4 text-center">
+            <Link
+              to={ROUTES.deliveryLogin}
+              className="text-sm font-semibold text-brand-400 underline underline-offset-4 transition-colors hover:text-navy-900"
+            >
+              Entrar por el acceso de repartidor
+            </Link>
+          </div>
         ) : null}
 
         {/* Botón Iniciar sesión */}

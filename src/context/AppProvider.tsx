@@ -21,7 +21,9 @@ import type {
   ProductSelection,
   Recipient,
   SessionUser,
+  UserRole,
 } from '@/types'
+import { ERROR_ACCION, ERROR_ROL } from '@/utils/roles'
 
 const STORAGE_KEY = 'web-ecommerce-demo:v1'
 
@@ -80,17 +82,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [state])
 
-  const login = useCallback((telefono: string, contrasena: string) => {
-    const resultado = loginDemo(telefono, contrasena)
-    if (resultado.ok && resultado.usuario) {
-      setState((prev) => ({ ...prev, session: resultado.usuario ?? null }))
-    }
-    return {
-      ok: resultado.ok,
-      error: resultado.error,
-      usuario: resultado.usuario,
-    }
-  }, [])
+  /**
+   * Inicia sesión en la demostración.
+   *
+   * Si se indica `rolEsperado`, la cuenta debe pertenecer a ese rol: cuando
+   * no coincide se devuelve el error **y no se crea la sesión**, para que
+   * entrar por la puerta equivocada no deje al usuario conectado.
+   */
+  const login = useCallback(
+    (telefono: string, contrasena: string, rolEsperado?: UserRole) => {
+      const resultado = loginDemo(telefono, contrasena)
+      const usuario = resultado.usuario
+
+      if (!resultado.ok || !usuario) {
+        return { ok: false, error: resultado.error, usuario }
+      }
+
+      if (rolEsperado && usuario.rol !== rolEsperado) {
+        return { ok: false, error: ERROR_ROL[rolEsperado], usuario }
+      }
+
+      setState((prev) => ({ ...prev, session: usuario }))
+      return { ok: true, usuario }
+    },
+    [],
+  )
 
   const register = useCallback((datos: DatosRegistro) => {
     const resultado = registerDemo(datos)
@@ -120,8 +136,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, metodoPago: metodo }))
   }, [])
 
+  /**
+   * Crea un pedido. Solo una cuenta de cliente puede comprar: cualquier otro
+   * rol (o la ausencia de sesión) devuelve `null` y no registra el pedido.
+   */
   const createOrder = useCallback(
     (metodoEntrega: string): Order | null => {
+      if (state.session?.rol !== 'cliente') return null
+
       const product = state.selection
         ? findProduct(state.selection.productId)
         : undefined
@@ -152,26 +174,78 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }))
       return order
     },
-    [state.address, state.recipient, state.selection],
+    [state.address, state.recipient, state.selection, state.session],
   )
 
-  const acceptOrder = useCallback((orderId: string) => {
-    setState((prev) => ({
-      ...prev,
-      orders: prev.orders.map((order) =>
-        order.id === orderId ? { ...order, estado: 'asignado' } : order,
-      ),
-    }))
-  }, [])
+  /**
+   * Acepta (toma) un pedido. Solo un repartidor puede hacerlo: si la sesión
+   * no es de repartidor el pedido conserva su estado y se devuelve el error.
+   */
+  const acceptOrder = useCallback(
+    (orderId: string): { ok: boolean; error?: string } => {
+      if (state.session?.rol !== 'repartidor') {
+        return { ok: false, error: ERROR_ACCION.repartidor }
+      }
 
-  const deliverOrder = useCallback((orderId: string) => {
-    setState((prev) => ({
-      ...prev,
-      orders: prev.orders.map((order) =>
-        order.id === orderId ? { ...order, estado: 'entregado' } : order,
-      ),
-    }))
-  }, [])
+      setState((prev) => ({
+        ...prev,
+        orders: prev.orders.map((order) =>
+          order.id === orderId ? { ...order, estado: 'asignado' } : order,
+        ),
+      }))
+
+      return { ok: true }
+    },
+    [state.session],
+  )
+
+  /** Marca un pedido como entregado. Solo un repartidor puede hacerlo. */
+  const deliverOrder = useCallback(
+    (orderId: string): { ok: boolean; error?: string } => {
+      if (state.session?.rol !== 'repartidor') {
+        return { ok: false, error: ERROR_ACCION.repartidor }
+      }
+
+      setState((prev) => ({
+        ...prev,
+        orders: prev.orders.map((order) =>
+          order.id === orderId ? { ...order, estado: 'entregado' } : order,
+        ),
+      }))
+
+      return { ok: true }
+    },
+    [state.session],
+  )
+
+  /**
+   * El cliente confirma que recibió su pedido. Solo aplica al pedido que él
+   * mismo acaba de crear en esta sesión, nunca al de otra cuenta.
+   */
+  const confirmReceipt = useCallback(
+    (orderId: string): { ok: boolean; error?: string } => {
+      if (state.session?.rol !== 'cliente') {
+        return { ok: false, error: ERROR_ACCION.cliente }
+      }
+
+      if (state.ultimoPedidoId !== orderId) {
+        return {
+          ok: false,
+          error: 'Solo puedes confirmar la recepción de tu propio pedido.',
+        }
+      }
+
+      setState((prev) => ({
+        ...prev,
+        orders: prev.orders.map((order) =>
+          order.id === orderId ? { ...order, estado: 'entregado' } : order,
+        ),
+      }))
+
+      return { ok: true }
+    },
+    [state.session, state.ultimoPedidoId],
+  )
 
   const resetDemo = useCallback(() => {
     setState(initialState)
@@ -192,6 +266,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       createOrder,
       acceptOrder,
       deliverOrder,
+      confirmReceipt,
       resetDemo,
     }),
     [
@@ -206,6 +281,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       createOrder,
       acceptOrder,
       deliverOrder,
+      confirmReceipt,
       resetDemo,
     ],
   )

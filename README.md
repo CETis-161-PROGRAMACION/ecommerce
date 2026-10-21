@@ -104,6 +104,7 @@ El botón **Modo oscuro/Modo claro**, en la esquina superior derecha, cambia el 
 │   ├── components/
 │   │   ├── catalog/StoreCatalog.tsx # Catálogo por sucursal (filtros + tarjetas)
 │   │   ├── layout/AuthLayout.tsx    # Marco de las pantallas de acceso
+│   │   ├── layout/RoleGate.tsx      # Guarda de acceso por rol
 │   │   ├── navbar/NavBar.tsx        # Barra superior: búsqueda, perfil, menú
 │   │   ├── order/OrderSummary.tsx   # Resumen de pedido y dirección
 │   │   ├── sidebar/SideBar.tsx      # Menú lateral de navegación
@@ -127,7 +128,7 @@ El botón **Modo oscuro/Modo claro**, en la esquina superior derecha, cambia el 
 │   │   └── supabase.ts              # Cliente opcional para el backend futuro
 │   ├── test/                        # Pruebas de rutas y flujos
 │   ├── types/index.ts               # Tipos compartidos
-│   ├── utils/                       # Utilidades (teléfono, dinero, rutas)
+│   ├── utils/                       # Utilidades (teléfono, dinero, rutas, roles)
 │   ├── App.tsx                      # Raíz: tema + RouterProvider
 │   ├── index.css                    # Tailwind CSS v4 + tokens de diseño
 │   └── main.tsx                     # Punto de entrada de React
@@ -144,7 +145,7 @@ Distinción de responsabilidades:
 
 - **Páginas** (`src/pages/`): pantallas reales, una por directorio.
 - **Componentes reutilizables** (`src/components/ui/`): elementos visuales compartidos (`Button`, `Card`, `PillFilter`, `StatusBadge`, `EmptyState`, iconos).
-- **Layouts** (`src/components/layout/`): estructuras de presentación compartidas.
+- **Layouts** (`src/components/layout/`): estructuras de presentación compartidas, incluida la guarda de permisos `RoleGate`.
 - **Catálogo y pedidos** (`src/components/catalog/`, `src/components/order/`): piezas compartidas por varias pantallas para que el formato sea idéntico.
 - **Contexto** (`src/context/`): estado global de la demostración (sesión, dirección, destinatario, selección de producto, pedidos y método de pago).
 - **Datos** (`src/data/`): catálogos y usuarios de demostración, editables sin tocar las pantallas.
@@ -156,34 +157,52 @@ Distinción de responsabilidades:
 
 ## Sistema de rutas
 
-| Ruta                             | Componente                | Qué hace                                                   |
-| -------------------------------- | ------------------------- | ---------------------------------------------------------- |
-| `/`                              | `SplashPage`              | Portada; redirige a `/repartidor` a los ~2.1 s             |
-| `/iniciar-sesion`                | `LoginPage`               | Acceso del cliente con credenciales de demostración        |
-| `/recuperar-datos`               | `RecoveryPage`            | Recordatorio de la cuenta de prueba                        |
-| `/registro`                      | `RegisterPage`            | Alta de cuenta nueva                                       |
-| `/registro/privacidad`           | `PrivacyPage`             | Términos y política de privacidad                          |
-| `/registro/confirmar-codigo`     | `ConfirmCodePage`         | Captura del código de 6 dígitos                            |
-| `/inicio`                        | `HomePage`                | Catálogo por sucursal, con filtro por categoría y búsqueda |
-| `/producto/:id`                  | `ProductDetailPage`       | Detalle del producto y sus opciones                        |
-| `/pedido/direccion-cliente`      | `AddressPage`             | Dirección de entrega                                       |
-| `/pedido/direccion-destinatario` | `UserDestiny`             | Quién recibe el pedido                                     |
-| `/pedido/informacion`            | `OrderInfoPage`           | Resumen, método de pago y confirmación del pedido          |
-| `/pedido/seguimiento`            | `OrderTrackingPage`       | Avance del pedido y contacto con el repartidor             |
-| `/perfil`                        | `ProfilePage`             | Datos de la sesión, método de pago y cierre de sesión      |
-| `/sucursales`                    | `SucursalesPage`          | Las 6 sucursales con mapa y indicaciones                   |
-| `/sucursal/menu`                 | `MenuPage`                | Ficha de la sucursal (`?sucursal=<id>`)                    |
-| `/repartidor`                    | `DeliveryAccessPage`      | Entrada: elegir modo cliente o repartidor                  |
-| `/repartidor/iniciar-sesion`     | `DeliveryLoginPage`       | Acceso del repartidor (valida el rol)                      |
-| `/repartidor/registro`           | `DeliveryRegisterPage`    | Alta de repartidor                                         |
-| `/repartidor/pedidos`            | `DeliveryOrdersPage`      | Pedidos disponibles, con filtro por sucursal               |
-| `/repartidor/pedido/activo`      | `DeliveryOrderDetailPage` | Detalle del pedido, reporte de incidencia y entrega        |
-| `*`                              | `NotFoundPage`            | Ruta inexistente, con sugerencias de destinos cercanos     |
+| Ruta                             | Componente                | Acceso          | Qué hace                                                   |
+| -------------------------------- | ------------------------- | --------------- | ---------------------------------------------------------- |
+| `/`                              | `SplashPage`              | Público         | Portada; redirige a `/repartidor` a los ~2.1 s             |
+| `/iniciar-sesion`                | `LoginPage`               | Público         | Acceso del cliente con credenciales de demostración        |
+| `/recuperar-datos`               | `RecoveryPage`            | Público         | Recordatorio de la cuenta de prueba                        |
+| `/registro`                      | `RegisterPage`            | Público         | Alta de cuenta nueva                                       |
+| `/registro/privacidad`           | `PrivacyPage`             | Público         | Términos y política de privacidad                          |
+| `/registro/confirmar-codigo`     | `ConfirmCodePage`         | Público         | Captura del código de 6 dígitos                            |
+| `/inicio`                        | `HomePage`                | Público         | Catálogo por sucursal, con filtro por categoría y búsqueda |
+| `/producto/:id`                  | `ProductDetailPage`       | Público         | Detalle del producto y sus opciones                        |
+| `/pedido/direccion-cliente`      | `AddressPage`             | Solo cliente    | Dirección de entrega                                       |
+| `/pedido/direccion-destinatario` | `UserDestiny`             | Solo cliente    | Quién recibe el pedido                                     |
+| `/pedido/informacion`            | `OrderInfoPage`           | Solo cliente    | Resumen, método de pago y confirmación del pedido          |
+| `/pedido/seguimiento`            | `OrderTrackingPage`       | Solo cliente    | Avance del pedido y contacto con el repartidor             |
+| `/perfil`                        | `ProfilePage`             | Con sesión      | Datos de la sesión, método de pago y cierre de sesión      |
+| `/sucursales`                    | `SucursalesPage`          | Público         | Las 6 sucursales con mapa y indicaciones                   |
+| `/sucursal/menu`                 | `MenuPage`                | Público         | Ficha de la sucursal (`?sucursal=<id>`)                    |
+| `/repartidor`                    | `DeliveryAccessPage`      | Público         | Entrada: elegir modo cliente o repartidor                  |
+| `/repartidor/iniciar-sesion`     | `DeliveryLoginPage`       | Público         | Acceso del repartidor (valida el rol)                      |
+| `/repartidor/registro`           | `DeliveryRegisterPage`    | Público         | Alta de repartidor                                         |
+| `/repartidor/pedidos`            | `DeliveryOrdersPage`      | Solo repartidor | Pedidos disponibles, con filtro por sucursal               |
+| `/repartidor/pedido/activo`      | `DeliveryOrderDetailPage` | Solo repartidor | Detalle del pedido, reporte de incidencia y entrega        |
+| `*`                              | `NotFoundPage`            | Público         | Ruta inexistente, con sugerencias de destinos cercanos     |
 
 - Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.
 - El splash usa `useNavigate` con `replace` y limpia su temporizador al desmontar. Respeta `prefers-reduced-motion`.
-- No hay rutas privadas ni control de permisos: el rol se valida dentro de la acción (por ejemplo, el acceso de repartidor rechaza cuentas de cliente).
+- Las secciones restringidas se envuelven con `<RoleGate rol="…">` (`src/components/layout/RoleGate.tsx`). Si la sesión no cumple, se muestra un panel de acceso restringido con el motivo y la puerta correcta, nunca una pantalla en blanco.
+
+## Permisos por rol
+
+La aplicación separa **cliente** y **repartidor**, y la comprobación vive en dos capas:
+
+1. **En la acción** (`src/context/AppProvider.tsx`): `login` acepta un rol esperado y **no crea sesión** si la cuenta es de otro rol; `acceptOrder` y `deliverOrder` solo funcionan con sesión de repartidor; `createOrder` solo funciona con sesión de cliente; `confirmReceipt` solo confirma el pedido que el propio cliente acaba de crear.
+2. **En la pantalla** (`RoleGate`): cada sección restringida muestra un panel de acceso restringido con el motivo y un botón a la puerta correcta. El menú lateral oculta las secciones del otro rol.
+
+| Acción                                     | Cliente | Repartidor |
+| ------------------------------------------ | :-----: | :--------: |
+| Ver el catálogo y las sucursales           |   Sí    |     Sí     |
+| Personalizar y comprar un producto         |   Sí    |     No     |
+| Ver el estado de sus propios pedidos       |   Sí    |     No     |
+| Tomar ("aceptar") un pedido disponible     |   No    |     Sí     |
+| Marcar un pedido como entregado            |   No    |     Sí     |
+| Confirmar la recepción de su propio pedido |   Sí    |     No     |
+
+Las rutas y los mensajes de cada rol están centralizados en `src/utils/roles.ts`. El detalle para el usuario está en el [MANUAL.md](MANUAL.md#11-permisos-por-rol).
 
 ## Flujos de la aplicación
 
@@ -204,7 +223,7 @@ El formulario valida nombre, fecha de nacimiento (mínimo 13 años), teléfono d
        → /pedido/informacion → /pedido/seguimiento
 ```
 
-El resumen muestra el producto, las opciones elegidas, el destinatario y el total (producto + servicio). El botón **Realizar pedido** crea el pedido y abre el seguimiento. Desde el seguimiento se puede marcar el pedido como recibido.
+El resumen muestra el producto, las opciones elegidas, el destinatario y el total (producto + servicio). El botón **Realizar pedido** crea el pedido y abre el seguimiento. Desde el seguimiento se puede marcar el pedido como recibido. El flujo exige una sesión de cliente: con una sesión de repartidor las pantallas muestran el panel de acceso restringido.
 
 ### 3. Repartidor
 
@@ -261,6 +280,21 @@ Estructura común de las pantallas de acceso: logotipo enlazado al inicio, títu
 - `StoreCatalog` es el catálogo por sucursal: filtros por categoría, tarjetas de producto y estado vacío. Es el mismo componente para las tres sucursales del inicio.
 - `OrderSummary` es el resumen de pedido (producto, opciones, destinatario, total) y el bloque de dirección. Lo comparten las pantallas de información y de seguimiento para que el formato sea idéntico.
 
+### `RoleGate`
+
+Guarda de acceso por rol (`src/components/layout/RoleGate.tsx`). Envuelve una sección y decide qué se muestra:
+
+```tsx
+<RoleGate rol="cliente">
+  <OrderInfoPage />
+</RoleGate>
+```
+
+- `rol="cliente"` o `rol="repartidor"`: solo ese rol entra.
+- Sin `rol`: basta con tener una sesión iniciada.
+
+Si la sesión no cumple, renderiza el panel de acceso restringido (motivo, rol actual y botón a la puerta correcta) en lugar de la pantalla.
+
 ## Sistema de diseño
 
 - Los tokens se definen en `src/index.css` con Tailwind CSS v4 (`@import "tailwindcss"` y el bloque `@theme`).
@@ -276,6 +310,7 @@ Estructura común de las pantallas de acceso: logotipo enlazado al inicio, títu
 - Las **21 pantallas** están implementadas, conectadas entre sí y verificadas: no queda ningún control sin destino.
 - Los botones de Google y Facebook del inicio de sesión están deshabilitados de forma explícita, con una nota visible de que el acceso con redes sociales no está disponible.
 - La pantalla de política de privacidad marca el contenido como pendiente del documento oficial.
+- Los permisos por rol están implementados en dos capas (acción y pantalla): el cliente no puede tomar pedidos y el repartidor no puede comprar.
 - **No existe backend, autenticación real ni envío de SMS**: la demostración es local al navegador y está señalada como tal en pantalla.
 
 ## Pruebas
@@ -285,7 +320,8 @@ Estructura común de las pantallas de acceso: logotipo enlazado al inicio, títu
 1. Que toda ruta declarada en `ROUTES` tenga componente en el enrutador, sin duplicados y con comodín `*`.
 2. Que las 21 rutas rendericen la pantalla correcta (títulos y elementos clave).
 3. Los tres flujos completos: registro, compra y repartidor.
-4. La búsqueda del catálogo, el menú lateral con sección activa y la pantalla de ruta inexistente.
+4. Los permisos por rol: un cliente no entra al panel del repartidor, un repartidor no entra al flujo de pedido, la puerta equivocada no deja sesión y la capa de estado rechaza la acción aunque se salte la pantalla.
+5. La búsqueda del catálogo, el menú lateral con sección activa y la pantalla de ruta inexistente.
 
 ```bash
 pnpm test

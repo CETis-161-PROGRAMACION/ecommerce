@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import { SideBar } from '@/components/sidebar/SideBar'
 import { MotorcycleIcon } from '@/components/ui/MotorcycleIcon'
+import { useApp } from '@/context/useApp'
 import { ROUTES } from '@/router/routes'
 import menuIcon from '@/components/ui/icons/menu.svg'
 import personIcon from '@/components/ui/icons/person.svg'
@@ -24,7 +25,14 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
   const [lastQuery, setLastQuery] = useState(searchParams.get('q') ?? '')
   const location = useLocation()
   const navigate = useNavigate()
+  const { esRepartidor } = useApp()
   const isDeliveryMode = location.pathname.startsWith(ROUTES.deliveryAccess)
+
+  // Un repartidor entra directo a sus pedidos; el resto llega a la pantalla
+  // que permite elegir con qué tipo de cuenta continuar.
+  const destinoModoRepartidor = esRepartidor
+    ? ROUTES.deliveryOrders
+    : ROUTES.deliveryAccess
 
   // Si la URL cambia (búsqueda desde otra pantalla), el campo se sincroniza.
   const currentQuery = searchParams.get('q') ?? ''
@@ -59,7 +67,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
 
         {/* Icono Repartidor en Moto (con indicador de modo activo) */}
         <Link
-          to={isDeliveryMode ? ROUTES.home : ROUTES.deliveryOrders}
+          to={isDeliveryMode ? ROUTES.home : destinoModoRepartidor}
           aria-label={
             isDeliveryMode ? 'Ir al modo cliente' : 'Ir al modo repartidor'
           }

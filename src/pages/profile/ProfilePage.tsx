@@ -6,8 +6,7 @@ import { CheckIcon } from '@/components/ui/CheckIcon'
 import { MastercardIcon } from '@/components/ui/MastercardIcon'
 import { UserIcon } from '@/components/ui/UserIcon'
 import { useApp } from '@/context/useApp'
-import { DEMO_CREDENTIALS } from '@/data/users'
-import { ROUTES } from '@/router/routes'
+import { LOGIN_POR_ROL } from '@/utils/roles'
 import type { PaymentMethod } from '@/types'
 
 const metodos: { id: PaymentMethod; etiqueta: string; conIcono: boolean }[] = [
@@ -20,12 +19,12 @@ export function ProfilePage() {
   const navigate = useNavigate()
   const { session, metodoPago, saveMetodoPago, logout } = useApp()
 
-  const nombre = session?.nombre ?? 'Michell Hernández'
-  const telefono = session?.telefono ?? DEMO_CREDENTIALS.telefono
+  const nombre = session?.nombre ?? 'Invitado'
+  const telefono = session?.telefono ?? ''
 
   function cerrarSesion() {
     logout()
-    navigate(ROUTES.login)
+    navigate(LOGIN_POR_ROL[session?.rol ?? 'cliente'])
   }
 
   return (

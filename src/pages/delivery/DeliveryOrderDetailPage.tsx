@@ -23,6 +23,7 @@ export function DeliveryOrderDetailPage() {
   const [isReportingError, setIsReportingError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [incidenciaGuardada, setIncidenciaGuardada] = useState(false)
+  const [errorEntrega, setErrorEntrega] = useState('')
 
   if (!pedido) {
     return (
@@ -54,7 +55,11 @@ export function DeliveryOrderDetailPage() {
   }
 
   function marcarEntregado() {
-    deliverOrder(pedido.id)
+    const resultado = deliverOrder(pedido.id)
+
+    if (!resultado.ok) {
+      setErrorEntrega(resultado.error ?? 'No pudimos marcar el pedido.')
+    }
   }
 
   return (
@@ -154,6 +159,12 @@ export function DeliveryOrderDetailPage() {
         ) : null}
 
         <div className="mx-auto mt-12 flex w-full max-w-xl flex-col items-center gap-4">
+          {errorEntrega ? (
+            <p role="alert" className="notice notice-danger w-full">
+              {errorEntrega}
+            </p>
+          ) : null}
+
           {entregado ? (
             <div className="notice notice-success w-full space-y-3 text-center">
               <p className="font-bold">¡Pedido marcado como entregado!</p>
