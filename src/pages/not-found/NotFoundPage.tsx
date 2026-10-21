@@ -27,8 +27,9 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.profile]: 'Perfil de usuario',
 }
 
+// Las rutas con parámetros (`:id`) no se sugieren: no son navegables tal cual.
 const SUGGESTABLE_ROUTES = Object.values(ROUTES).filter(
-  (route) => route !== ROUTES.splash,
+  (route) => route !== ROUTES.splash && !route.includes(':'),
 )
 
 export function NotFoundPage() {
