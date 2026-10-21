@@ -7,7 +7,7 @@
  *    final sin callejones sin salida.
  */
 
-import { isValidElement } from 'react'
+import { isValidElement, useState } from 'react'
 import {
   cleanup,
   render,
@@ -20,6 +20,8 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AppProvider } from '@/context/AppProvider'
+import { useApp } from '@/context/useApp'
+import { demoUsers } from '@/data/users'
 import { routes } from '@/router'
 import { ROUTES } from '@/router/routes'
 
@@ -57,6 +59,66 @@ function renderAtPath(
     </AppProvider>,
   )
   return memRouter
+}
+
+// ─── Helpers de sesión ────────────────────────────────────────────────────────
+const STORAGE_KEY = 'web-ecommerce-demo:v1'
+
+/**
+ * Deja una sesión iniciada en el almacenamiento de la demostración, igual que
+ * lo haría el inicio de sesión real de la aplicación.
+ */
+function sembrarSesion(
+  rol: 'cliente' | 'repartidor',
+  extra: Record<string, unknown> = {},
+) {
+  const usuario = demoUsers.find((item) => item.rol === rol)
+
+  if (!usuario) {
+    throw new Error(`No hay usuario de demostración con el rol ${rol}`)
+  }
+
+  window.localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      session: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        telefono: usuario.telefono,
+        rol: usuario.rol,
+      },
+      address: null,
+      recipient: null,
+      selection: null,
+      ultimoPedidoId: null,
+      metodoPago: 'credito',
+      orders: [],
+      ...extra,
+    }),
+  )
+}
+
+/** Datos de un pedido ya capturado, listos para crear la orden. */
+const DATOS_PEDIDO = {
+  address: {
+    codigoPostal: '45300',
+    calle: 'Donato Guerra',
+    numero: '63A',
+    colonia: 'Centro',
+    referencia: '',
+  },
+  recipient: { nombre: 'Daniela Ríos', telefono: '3334455667' },
+  selection: { productId: 'principito', opciones: {}, comentarios: '' },
+}
+
+/** Sesión guardada en el almacenamiento de la demostración. */
+function sesionGuardada(): { rol?: string; nombre?: string } | null {
+  const raw = window.localStorage.getItem(STORAGE_KEY)
+  if (!raw) return null
+  return (
+    (JSON.parse(raw) as { session?: { rol?: string; nombre?: string } })
+      .session ?? null
+  )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -185,6 +247,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.clienteDireccion → AddressPage`, () => {
+    sembrarSesion('cliente')
     renderAtPath(ROUTES.clienteDireccion)
     expect(
       screen.getByRole('heading', { name: /ingresar dirección/i }),
@@ -193,6 +256,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.userDestiny → UserDestiny`, () => {
+    sembrarSesion('cliente')
     renderAtPath(ROUTES.userDestiny)
     expect(
       screen.getByRole('heading', { name: /datos del destinatario/i }),
@@ -225,6 +289,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.deliveryOrders → DeliveryOrdersPage`, () => {
+    sembrarSesion('repartidor')
     renderAtPath(ROUTES.deliveryOrders)
     expect(
       screen.getByRole('heading', { name: /pedidos disponibles/i }),
@@ -232,6 +297,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.deliveryOrderDetail → DeliveryOrderDetailPage`, () => {
+    sembrarSesion('repartidor')
     renderAtPath(ROUTES.deliveryOrderDetail)
     expect(
       screen.getByRole('heading', { name: /principito/i }),
@@ -239,6 +305,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.orderInfo → OrderInfoPage`, () => {
+    sembrarSesion('cliente')
     renderAtPath(ROUTES.orderInfo)
     expect(
       screen.getByRole('heading', { name: /información de pedido/i }),
@@ -246,6 +313,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.orderTracking → OrderTrackingPage`, () => {
+    sembrarSesion('cliente')
     renderAtPath(ROUTES.orderTracking)
     expect(
       screen.getByRole('heading', { name: /estado del pedido/i }),
@@ -253,6 +321,7 @@ describe('Rutas → componente correcto', () => {
   })
 
   it(`ROUTES.profile → ProfilePage`, () => {
+    sembrarSesion('cliente')
     renderAtPath(ROUTES.profile)
     expect(
       screen.getByRole('heading', { name: /^perfil$/i }),
@@ -384,6 +453,7 @@ describe('Flujo de compra', () => {
   it('producto → dirección → destinatario → información → seguimiento', async () => {
     vi.useRealTimers()
     const user = userEvent.setup()
+    sembrarSesion('cliente')
     const memRouter = renderAtPath('/producto/principito')
 
     // 1. Producto
@@ -428,6 +498,7 @@ describe('Flujo de compra', () => {
   it('el resumen del pedido muestra el producto y el total', async () => {
     vi.useRealTimers()
     const user = userEvent.setup()
+    sembrarSesion('cliente')
     const memRouter = renderAtPath('/producto/principito')
 
     await user.click(screen.getByRole('button', { name: /^siguiente$/i }))
@@ -493,6 +564,7 @@ describe('Flujo del repartidor', () => {
   it('aceptar un pedido abre el detalle del pedido', async () => {
     vi.useRealTimers()
     const user = userEvent.setup()
+    sembrarSesion('repartidor')
     const memRouter = renderAtPath(ROUTES.deliveryOrders)
 
     const botones = await screen.findAllByRole('button', {
@@ -510,6 +582,7 @@ describe('Flujo del repartidor', () => {
   it('el filtro por sucursal reduce la lista de pedidos', async () => {
     vi.useRealTimers()
     const user = userEvent.setup()
+    sembrarSesion('repartidor')
     renderAtPath(ROUTES.deliveryOrders)
 
     const antes = await screen.findAllByRole('button', {
@@ -523,6 +596,239 @@ describe('Flujo del repartidor', () => {
     })
 
     expect(despues.length).toBeLessThan(antes.length)
+  })
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  4. Permisos por rol
+// ─────────────────────────────────────────────────────────────────────────────
+describe('Permisos por rol', () => {
+  it('un cliente no puede entrar al panel del repartidor', () => {
+    sembrarSesion('cliente')
+    renderAtPath(ROUTES.deliveryOrders)
+
+    expect(screen.getByText(/acceso restringido/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /solo para repartidores/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /aceptar pedido/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('sin sesión tampoco se puede entrar al panel del repartidor', () => {
+    renderAtPath(ROUTES.deliveryOrders)
+
+    expect(screen.getByText(/acceso restringido/i)).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /aceptar pedido/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('un repartidor no puede entrar al flujo de pedido del cliente', () => {
+    sembrarSesion('repartidor')
+    renderAtPath(ROUTES.orderInfo)
+
+    expect(screen.getByText(/acceso restringido/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /solo para clientes/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /realizar pedido/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('el perfil exige una sesión iniciada', () => {
+    renderAtPath(ROUTES.profile)
+
+    expect(screen.getByText(/acceso restringido/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', {
+        name: /inicia sesión para ver tu perfil/i,
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('la puerta de cliente rechaza una cuenta de repartidor y no deja sesión', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    const memRouter = renderAtPath(ROUTES.login)
+
+    await user.type(screen.getByLabelText(/número de teléfono/i), '3331122334')
+    await user.type(screen.getByLabelText(/^contraseña$/i), 'demo1234')
+    await user.click(screen.getByRole('button', { name: /iniciar sesión/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /es de repartidor/i,
+    )
+    expect(memRouter.state.location.pathname).toBe(ROUTES.login)
+    expect(sesionGuardada()).toBeNull()
+  })
+
+  it('la puerta de repartidor rechaza una cuenta de cliente y no deja sesión', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    const memRouter = renderAtPath(ROUTES.deliveryLogin)
+
+    await user.type(screen.getByLabelText(/número de teléfono/i), '3332260919')
+    await user.type(screen.getByLabelText(/^contraseña:/i), 'demo1234')
+    await user.click(screen.getByRole('button', { name: /iniciar sesión/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /no es de repartidor/i,
+    )
+    expect(memRouter.state.location.pathname).toBe(ROUTES.deliveryLogin)
+    expect(sesionGuardada()).toBeNull()
+  })
+
+  it('el menú lateral esconde las secciones del otro rol', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('cliente')
+    renderAtPath(ROUTES.home)
+
+    await user.click(screen.getByRole('button', { name: /abrir menú/i }))
+
+    const menu = await screen.findByRole('complementary', {
+      name: /menú principal de navegación/i,
+    })
+
+    expect(
+      within(menu).queryByRole('link', { name: /pedidos repartidor/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      within(menu).getByRole('link', { name: /estado de pedido/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('el repartidor no ve la sección de estado de pedido del cliente', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('repartidor')
+    renderAtPath(ROUTES.deliveryOrders)
+
+    await user.click(screen.getByRole('button', { name: /abrir menú/i }))
+
+    const menu = await screen.findByRole('complementary', {
+      name: /menú principal de navegación/i,
+    })
+
+    expect(
+      within(menu).queryByRole('link', { name: /estado de pedido/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      within(menu).getByRole('link', { name: /pedidos repartidor/i }),
+    ).toBeInTheDocument()
+  })
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  5. Capa de estado: las acciones respetan el rol aunque se salten la pantalla
+// ─────────────────────────────────────────────────────────────────────────────
+function HarnessPermisos() {
+  const { orders, createOrder, acceptOrder } = useApp()
+  const [resultado, setResultado] = useState('sin ejecutar')
+
+  function intentarCrear() {
+    const pedido = createOrder('A domicilio')
+    setResultado(pedido ? 'pedido creado' : 'pedido rechazado')
+  }
+
+  function intentarAceptar() {
+    const aceptacion = acceptOrder(orders[0]?.id ?? '')
+    setResultado(
+      aceptacion.ok
+        ? 'pedido aceptado'
+        : `pedido rechazado: ${aceptacion.error}`,
+    )
+  }
+
+  return (
+    <div>
+      <button type="button" onClick={intentarCrear}>
+        Crear pedido
+      </button>
+      <button type="button" onClick={intentarAceptar}>
+        Aceptar pedido
+      </button>
+      <p data-testid="resultado">{resultado}</p>
+      <p data-testid="total">{orders.length}</p>
+      <p data-testid="estado">{orders[0]?.estado}</p>
+    </div>
+  )
+}
+
+describe('Capa de estado (permisos)', () => {
+  it('un repartidor no puede crear un pedido aunque salte la pantalla', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('repartidor', DATOS_PEDIDO)
+
+    render(
+      <AppProvider>
+        <HarnessPermisos />
+      </AppProvider>,
+    )
+
+    await user.click(screen.getByRole('button', { name: /crear pedido/i }))
+
+    expect(screen.getByTestId('resultado')).toHaveTextContent(
+      'pedido rechazado',
+    )
+    expect(screen.getByTestId('total')).toHaveTextContent('4')
+  })
+
+  it('un cliente no puede aceptar un pedido aunque salte la pantalla', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('cliente')
+
+    render(
+      <AppProvider>
+        <HarnessPermisos />
+      </AppProvider>,
+    )
+
+    await user.click(screen.getByRole('button', { name: /aceptar pedido/i }))
+
+    expect(screen.getByTestId('resultado')).toHaveTextContent(
+      'pedido rechazado',
+    )
+    expect(screen.getByTestId('estado')).toHaveTextContent('disponible')
+  })
+
+  it('un repartidor sí puede aceptar un pedido', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('repartidor')
+
+    render(
+      <AppProvider>
+        <HarnessPermisos />
+      </AppProvider>,
+    )
+
+    await user.click(screen.getByRole('button', { name: /aceptar pedido/i }))
+
+    expect(screen.getByTestId('resultado')).toHaveTextContent('pedido aceptado')
+    expect(screen.getByTestId('estado')).toHaveTextContent('asignado')
+  })
+
+  it('un cliente sí puede crear un pedido', async () => {
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    sembrarSesion('cliente', DATOS_PEDIDO)
+
+    render(
+      <AppProvider>
+        <HarnessPermisos />
+      </AppProvider>,
+    )
+
+    await user.click(screen.getByRole('button', { name: /crear pedido/i }))
+
+    expect(screen.getByTestId('resultado')).toHaveTextContent('pedido creado')
+    expect(screen.getByTestId('total')).toHaveTextContent('5')
   })
 })
 

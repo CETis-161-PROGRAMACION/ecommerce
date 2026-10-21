@@ -32,6 +32,15 @@ Orientación para futuras sesiones de OpenCode en este repositorio. Mantiene las
 - Tipos de dominio compartidos en `src/types/index.ts`.
 - Rutas declaradas una sola vez en `src/router/routes.ts` (`ROUTES`); nunca escribas cadenas de ruta a mano en las páginas.
 
+## Permisos por rol
+
+- Los roles (`cliente`, `repartidor`) y sus rutas/mensajes viven en `src/utils/roles.ts`.
+- La comprobación se hace en **dos capas**:
+  1. **En la acción** (`src/context/AppProvider.tsx`): `login` recibe el rol esperado y no crea sesión si no coincide; `acceptOrder`/`deliverOrder` exigen repartidor; `createOrder` exige cliente; `confirmReceipt` solo confirma el pedido del propio cliente.
+  2. **En la pantalla**: las secciones restringidas se envuelven con `<RoleGate rol="…">` (`src/components/layout/RoleGate.tsx`), que muestra el panel de acceso restringido en lugar de la pantalla.
+- El bloqueo se muestra como panel con motivo y puerta correcta; nunca como redirección silenciosa ni como pantalla en blanco.
+- El menú lateral muestra a cada rol únicamente sus secciones.
+
 ## Modo demostración
 
 - La app funciona sin backend: los datos viven en `localStorage` (clave `web-ecommerce-demo:v1`) mediante `src/context/AppProvider.tsx`.
@@ -86,7 +95,7 @@ pnpm build
 Corregir los errores introducidos por los cambios.
 No desactivar reglas ni verificaciones para ocultar problemas.
 
-Las rutas se prueban en `src/test/router.test.tsx`: la suite cubre que toda ruta de `ROUTES` tenga componente, que las pantallas rendericen y que los flujos (registro, compra, repartidor) funcionen de punta a punta. Un flujo nuevo necesita sus pruebas.
+Las rutas se prueban en `src/test/router.test.tsx`: la suite cubre que toda ruta de `ROUTES` tenga componente, que las pantallas rendericen, que los flujos (registro, compra, repartidor) funcionen de punta a punta y que los permisos por rol se respeten. Un flujo nuevo necesita sus pruebas.
 
 ## Documentación
 

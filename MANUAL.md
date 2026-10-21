@@ -18,11 +18,12 @@ Este manual explica **cómo se usa la aplicación**. Para la información técni
 8. [Flujo 3 — Modo repartidor](#8-flujo-3--modo-repartidor)
 9. [Catálogo, sucursales y menús](#9-catálogo-sucursales-y-menús)
 10. [Perfil y método de pago](#10-perfil-y-método-de-pago)
-11. [Mapa de pantallas](#11-mapa-de-pantallas)
-12. [Reiniciar la demostración](#12-reiniciar-la-demostración)
-13. [Qué es real y qué es simulado](#13-qué-es-real-y-qué-es-simulado)
-14. [Preguntas frecuentes](#14-preguntas-frecuentes)
-15. [Checklist para la presentación](#15-checklist-para-la-presentación)
+11. [Permisos por rol](#11-permisos-por-rol)
+12. [Mapa de pantallas](#12-mapa-de-pantallas)
+13. [Reiniciar la demostración](#13-reiniciar-la-demostración)
+14. [Qué es real y qué es simulado](#14-qué-es-real-y-qué-es-simulado)
+15. [Preguntas frecuentes](#15-preguntas-frecuentes)
+16. [Checklist para la presentación](#16-checklist-para-la-presentación)
 
 ---
 
@@ -200,6 +201,8 @@ Desde el inicio de sesión, el enlace **¿Olvidaste tu contraseña?** lleva a es
        → /pedido/informacion → /pedido/seguimiento
 ```
 
+El catálogo es público: cualquiera puede ver los productos y sus precios. Para **comprar** hace falta una sesión de cliente iniciada; si no la hay, las pantallas del pedido muestran el panel de acceso restringido (ver [sección 11](#11-permisos-por-rol)).
+
 ### 7.1 Elegir producto — `/inicio`
 
 El inicio muestra un banner de promociones y tres píldoras de sucursal: **KUNDERA**, **CUATRO CAFÉ** y **TU MESA**. Al cambiar de píldora cambia el catálogo.
@@ -282,7 +285,7 @@ También puedes llegar desde el ícono de la motocicleta en la barra superior.
 
 Escribe el teléfono y la contraseña del repartidor (`3331122334` / `demo1234`). Las credenciales están impresas en la nota de "Modo demostración" al pie de la pantalla.
 
-> Si introduces el teléfono de un cliente, la aplicación lo rechaza con un aviso: esa cuenta no tiene rol de repartidor. Es una comprobación real dentro de la acción, no un aviso cosmético.
+> Si introduces el teléfono de un cliente, la aplicación lo rechaza con el aviso: _"Esa cuenta no es de repartidor. Entra por el acceso de cliente."_ Es una comprobación real dentro de la acción: la sesión **no** se inicia y no queda ninguna cuenta conectada.
 
 Si aún no tienes cuenta de repartidor, usa **Registrarse como repartidor** (`/repartidor/registro`), con el mismo formulario que el registro de cliente.
 
@@ -342,11 +345,60 @@ Muestra el logo de la sucursal, su nombre, la dirección, el horario y el estado
 - Tu avatar, tu nombre y tu teléfono.
 - La tarjeta **Método de pago**, con tres opciones seleccionables: **Tarjeta de crédito**, **Tarjeta de débito** y **Pago presencial**. La opción activa se marca con un ícono de palomita. La elección se guarda y se respeta al hacer el pedido.
 - El aviso: _"Modo demostración: no se guardan datos de tarjetas reales."_
-- El botón **Cerrar sesión**, que borra la sesión y vuelve al inicio de sesión.
+- El botón **Cerrar sesión**, que borra la sesión y vuelve al inicio de sesión del rol con el que estabas conectado.
 
 ---
 
-## 11. Mapa de pantallas
+## 11. Permisos por rol
+
+La aplicación distingue dos roles, **cliente** y **repartidor**. Cada uno entra por su propia puerta y solo puede usar las secciones que le corresponden:
+
+| Acción                                      | Cliente | Repartidor |
+| ------------------------------------------- | :-----: | :--------: |
+| Ver el catálogo, las sucursales y los menús |   Sí    |     Sí     |
+| Personalizar y comprar un producto          |   Sí    |     No     |
+| Ver el estado de sus propios pedidos        |   Sí    |     No     |
+| Tomar ("aceptar") un pedido disponible      |   No    |     Sí     |
+| Marcar un pedido como entregado             |   No    |     Sí     |
+| Confirmar la recepción de su propio pedido  |   Sí    |     No     |
+
+Estas restricciones **no son un aviso cosmético**: están comprobadas dentro de las acciones del estado. Aunque se intente ejecutar la acción desde la consola del navegador, el pedido no se acepta, no se entrega y no se crea.
+
+### 11.1 Entrar por la puerta equivocada
+
+Cada pantalla de acceso solo acepta cuentas de su propio rol:
+
+- En `/iniciar-sesion` se rechazan las cuentas de repartidor con el aviso _"Esa cuenta es de repartidor. Entra por el acceso de repartidor"_ y un enlace directo a la puerta correcta.
+- En `/repartidor/iniciar-sesion` se rechazan las cuentas de cliente con el aviso _"Esa cuenta no es de repartidor. Entra por el acceso de cliente"_.
+
+En ambos casos **no se inicia ninguna sesión**: la puerta equivocada no deja al usuario conectado.
+
+### 11.2 El panel de acceso restringido
+
+Si abres una sección que no te corresponde (por ejemplo, la lista de pedidos del repartidor con una sesión de cliente), la pantalla no desaparece ni se queda en blanco: se muestra el panel **"Acceso restringido"**, que explica el motivo, recuerda con qué cuenta estás conectado y ofrece dos salidas:
+
+- **Cerrar sesión y entrar como repartidor**: borra la sesión y abre la puerta del rol que corresponde a esa sección.
+- **Volver a mi inicio**: regresa al catálogo (cliente) o a la lista de pedidos (repartidor).
+
+Las secciones restringidas son:
+
+| Sección                          | Rol que la puede ver |
+| -------------------------------- | -------------------- |
+| `/pedido/direccion-cliente`      | Cliente              |
+| `/pedido/direccion-destinatario` | Cliente              |
+| `/pedido/informacion`            | Cliente              |
+| `/pedido/seguimiento`            | Cliente              |
+| `/repartidor/pedidos`            | Repartidor           |
+| `/repartidor/pedido/activo`      | Repartidor           |
+| `/perfil`                        | Cualquier rol        |
+
+### 11.3 El menú lateral se adapta al rol
+
+El menú lateral solo muestra las secciones que te tocan: el **cliente** ve _Estado de Pedido_ y el **repartidor** ve _Pedidos Repartidor_. El ícono de la motocicleta lleva al repartidor directamente a su lista de pedidos; si no eres repartidor, te lleva a la pantalla `/repartidor`, donde eliges con qué cuenta continuar.
+
+---
+
+## 12. Mapa de pantallas
 
 | Ruta                             | Pantalla               | Cómo llegar                                    |
 | -------------------------------- | ---------------------- | ---------------------------------------------- |
@@ -376,7 +428,7 @@ La pantalla de ruta inexistente ofrece sugerencias de destinos cercanos para que
 
 ---
 
-## 12. Reiniciar la demostración
+## 13. Reiniciar la demostración
 
 La demo guarda el estado en el navegador, en la clave `web-ecommerce-demo:v1` de `localStorage` (sesión, dirección, destinatario, selección de producto, pedidos y método de pago).
 
@@ -393,7 +445,7 @@ La preferencia de tema se guarda aparte, en la clave `theme`.
 
 ---
 
-## 13. Qué es real y qué es simulado
+## 14. Qué es real y qué es simulado
 
 Esta tabla es la que conviene tener clara antes de presentar:
 
@@ -403,6 +455,7 @@ Esta tabla es la que conviene tener clara antes de presentar:
 | Validación de formularios               | **Real.** Se valida en el navegador y los errores se muestran.   |
 | Catálogo, sucursales y precios          | **Datos de prueba** editables en `src/data/`.                    |
 | Sesión de cliente y repartidor          | **Simulada** en el navegador. Sin servidor de autenticación.     |
+| Permisos por rol                        | **Real.** Se validan en las acciones y al abrir cada sección.    |
 | Código de confirmación por SMS          | **Simulado.** El código se muestra en pantalla; no se envía SMS. |
 | Pagos                                   | **Simulados.** No se procesa ninguna transacción real.           |
 | Mapas y "cómo llegar"                   | **Real**: se usa Google Maps.                                    |
@@ -416,7 +469,7 @@ La aplicación lo dice en pantalla: hay avisos de "Modo demostración" en el ini
 
 ---
 
-## 14. Preguntas frecuentes
+## 15. Preguntas frecuentes
 
 **¿Necesito internet?**
 Solo para cargar la fuente Open Sans y los mapas de Google. El resto de la aplicación funciona sin conexión una vez cargada.
@@ -430,8 +483,17 @@ No. Todo vive en `localStorage` de tu navegador y desaparece al borrarlo.
 **Entré como repartidor con el teléfono de un cliente y no me deja.**
 Es correcto: el acceso de repartidor valida el rol de la cuenta. Usa `3331122334` / `demo1234`.
 
+**Entré como repartidor y quiero hacer un pedido.**
+No se puede, y es lo correcto: el repartidor no compra. Puede abrir el catálogo público (`/inicio`), pero las pantallas del pedido le muestran el panel de acceso restringido. Ver [sección 11](#11-permisos-por-rol).
+
+**Estoy conectado como cliente y no me deja abrir la lista de pedidos del repartidor.**
+También es correcto: esa sección es solo del repartidor. El panel te ofrece **Cerrar sesión y entrar como repartidor** para cambiar de cuenta.
+
+**Me equivoqué de puerta al iniciar sesión. ¿Quedé conectado?**
+No. Si introduces una cuenta del otro rol, la aplicación muestra el aviso correspondiente y **no inicia ninguna sesión**: tienes que entrar por la puerta correcta.
+
 **No aparece ningún pedido en la lista del repartidor.**
-Cada pedido se acepta una sola vez. Al marcarlo como entregado desaparece de la lista; recargar con una base limpia (ver sección 12) recupera los cuatro pedidos de prueba.
+Cada pedido se acepta una sola vez. Al marcarlo como entregado desaparece de la lista; recargar con una base limpia (ver sección 13) recupera los cuatro pedidos de prueba.
 
 **La búsqueda no encuentra nada.**
 La búsqueda filtra por nombre y categoría del producto, en todas las sucursales. Prueba con "café", "croissant" o "burger".
@@ -444,7 +506,7 @@ Verifica que la carpeta `src/assets/images/` esté completa y que ejecutaste `pn
 
 ---
 
-## 15. Checklist para la presentación
+## 16. Checklist para la presentación
 
 Antes de mostrar el proyecto, comprueba:
 
@@ -455,6 +517,7 @@ Antes de mostrar el proyecto, comprueba:
 - [ ] Acceso de cliente probado (`3332260919` / `demo1234`).
 - [ ] Acceso de repartidor probado (`3331122334` / `demo1234`).
 - [ ] Compra completa probada: producto → dirección → destinatario → información → seguimiento.
+- [ ] Permisos probados: con sesión de cliente la lista del repartidor está restringida; con sesión de repartidor el flujo de pedido está restringido.
 - [ ] Búsqueda y menú lateral probados.
 - [ ] Tema claro y oscuro probados.
 - [ ] Vista en móvil (390 px de ancho) revisada: no hay desbordes horizontales.
@@ -467,5 +530,6 @@ Antes de mostrar el proyecto, comprueba:
 4. **Compra**: producto → personalización → dirección → destinatario → método de pago → realizar pedido.
 5. **Seguimiento**: línea de tiempo, mensaje al repartidor, botón de llamada.
 6. **Repartidor**: lista de pedidos, filtro por sucursal, aceptar, ver mapa, reportar incidencia, marcar entregado.
-7. **Perfil**: método de pago y cierre de sesión.
-8. **Tema oscuro** y **vista en móvil**.
+7. **Permisos**: con la sesión de cliente abierta, entrar a _Pedidos Repartidor_ y mostrar el panel de acceso restringido.
+8. **Perfil**: método de pago y cierre de sesión.
+9. **Tema oscuro** y **vista en móvil**.

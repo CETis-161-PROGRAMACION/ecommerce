@@ -3,6 +3,8 @@ import { CloseIcon } from '@/components/ui/CloseIcon'
 import { UserIcon } from '@/components/ui/UserIcon'
 import { useApp } from '@/context/useApp'
 import { ROUTES } from '@/router/routes'
+import { LOGIN_POR_ROL } from '@/utils/roles'
+import type { UserRole } from '@/types'
 
 interface SideBarProps {
   isOpen: boolean
@@ -12,15 +14,25 @@ interface SideBarProps {
 interface SideBarLink {
   to: string
   label: string
+  /** Roles que ven este enlace. Si se omite, lo ven todos. */
+  roles?: UserRole[]
 }
 
 const enlaces: SideBarLink[] = [
   { to: ROUTES.home, label: 'Inicio' },
   { to: ROUTES.profile, label: 'Mi Perfil' },
-  { to: ROUTES.orderTracking, label: 'Estado de Pedido' },
+  {
+    to: ROUTES.orderTracking,
+    label: 'Estado de Pedido',
+    roles: ['cliente'],
+  },
   { to: ROUTES.sucursales, label: 'Sucursales' },
   { to: ROUTES.menu, label: 'Sucursal Kundera' },
-  { to: ROUTES.deliveryOrders, label: 'Pedidos Repartidor' },
+  {
+    to: ROUTES.deliveryOrders,
+    label: 'Pedidos Repartidor',
+    roles: ['repartidor'],
+  },
 ]
 
 export function SideBar({ isOpen, onClose }: SideBarProps) {
@@ -29,11 +41,16 @@ export function SideBar({ isOpen, onClose }: SideBarProps) {
   const { session, logout } = useApp()
 
   const nombreUsuario = session?.nombre ?? 'Invitado'
+  const rolActual: UserRole = session?.rol ?? 'cliente'
+
+  const enlacesVisibles = enlaces.filter(
+    (enlace) => !enlace.roles || enlace.roles.includes(rolActual),
+  )
 
   function cerrarSesion() {
     logout()
     onClose()
-    navigate(ROUTES.login)
+    navigate(LOGIN_POR_ROL[rolActual])
   }
 
   return (
@@ -87,7 +104,7 @@ export function SideBar({ isOpen, onClose }: SideBarProps) {
 
         <nav className="flex-1">
           <ul className="flex flex-col gap-2">
-            {enlaces.map((enlace) => {
+            {enlacesVisibles.map((enlace) => {
               const activo =
                 enlace.to === ROUTES.home
                   ? location.pathname === ROUTES.home

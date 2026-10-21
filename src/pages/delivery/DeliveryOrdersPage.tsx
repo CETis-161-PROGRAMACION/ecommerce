@@ -16,6 +16,7 @@ export function DeliveryOrdersPage() {
   const navigate = useNavigate()
   const { orders, session, acceptOrder } = useApp()
   const [selectedStore, setSelectedStore] = useState('all')
+  const [error, setError] = useState('')
 
   const stores = useMemo(
     () => Array.from(new Set(orders.map((order) => order.sucursal))),
@@ -27,10 +28,16 @@ export function DeliveryOrdersPage() {
       ? orders
       : orders.filter((order) => order.sucursal === selectedStore)
 
-  const nombreRepartidor = session?.nombre ?? 'Carlos Ramírez'
+  const nombreRepartidor = session?.nombre ?? 'Repartidor'
 
   function aceptar(orderId: string) {
-    acceptOrder(orderId)
+    const resultado = acceptOrder(orderId)
+
+    if (!resultado.ok) {
+      setError(resultado.error ?? 'No pudimos tomar el pedido.')
+      return
+    }
+
     navigate(ROUTES.deliveryOrderDetail, { state: { orderId } })
   }
 
@@ -40,6 +47,12 @@ export function DeliveryOrdersPage() {
         <h1 className="mb-6 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           Pedidos disponibles
         </h1>
+
+        {error ? (
+          <p role="alert" className="notice notice-danger mb-6">
+            {error}
+          </p>
+        ) : null}
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
           <aside

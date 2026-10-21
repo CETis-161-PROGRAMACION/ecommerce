@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
+import { RoleGate } from '@/components/layout/RoleGate'
 import { LoginPage } from '@/pages/login/LoginPage'
 import { RecoveryPage } from '@/pages/recovery/RecoveryPage'
 import { ConfirmCodePage } from '@/pages/register/ConfirmCodePage'
@@ -31,18 +32,67 @@ export const routes = [
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
-  { path: ROUTES.userDestiny, element: <UserDestiny /> },
+  {
+    path: ROUTES.userDestiny,
+    element: (
+      <RoleGate rol="cliente">
+        <UserDestiny />
+      </RoleGate>
+    ),
+  },
   { path: ROUTES.sucursales, element: <SucursalesPage /> },
   { path: ROUTES.menu, element: <MenuPage /> },
-  { path: ROUTES.clienteDireccion, element: <AddressPage /> },
+  {
+    path: ROUTES.clienteDireccion,
+    element: (
+      <RoleGate rol="cliente">
+        <AddressPage />
+      </RoleGate>
+    ),
+  },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
-  { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
-  { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
-  { path: ROUTES.orderInfo, element: <OrderInfoPage /> },
-  { path: ROUTES.orderTracking, element: <OrderTrackingPage /> },
-  { path: ROUTES.profile, element: <ProfilePage /> },
+  {
+    path: ROUTES.deliveryOrders,
+    element: (
+      <RoleGate rol="repartidor">
+        <DeliveryOrdersPage />
+      </RoleGate>
+    ),
+  },
+  {
+    path: ROUTES.deliveryOrderDetail,
+    element: (
+      <RoleGate rol="repartidor">
+        <DeliveryOrderDetailPage />
+      </RoleGate>
+    ),
+  },
+  {
+    path: ROUTES.orderInfo,
+    element: (
+      <RoleGate rol="cliente">
+        <OrderInfoPage />
+      </RoleGate>
+    ),
+  },
+  {
+    path: ROUTES.orderTracking,
+    element: (
+      <RoleGate rol="cliente">
+        <OrderTrackingPage />
+      </RoleGate>
+    ),
+  },
+  {
+    path: ROUTES.profile,
+    element: (
+      <RoleGate>
+        <ProfilePage />
+      </RoleGate>
+    ),
+  },
   { path: '*', element: <NotFoundPage /> },
 ]
 

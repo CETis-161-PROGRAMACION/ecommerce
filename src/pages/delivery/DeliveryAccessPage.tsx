@@ -31,7 +31,7 @@ export function DeliveryAccessPage() {
             type="button"
             variant="outline"
             onClick={() => navigate(ROUTES.login)}
-            className="w-full"
+            className="w-full bg-white"
           >
             Continuar como cliente
           </Button>
