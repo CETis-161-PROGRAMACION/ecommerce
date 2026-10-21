@@ -136,7 +136,9 @@ describe('Rutas → componente correcto', () => {
   it(`ROUTES.home → HomePage`, () => {
     renderAtPath(ROUTES.home)
     expect(
-      screen.getByRole('heading', { name: /mi carrusel de productos/i }),
+      screen.getByRole('heading', {
+        name: /descubre los mejores sabores locales/i,
+      }),
     ).toBeInTheDocument()
   })
 
@@ -156,7 +158,7 @@ describe('Rutas → componente correcto', () => {
 
   it(`ROUTES.menu → MenuPage`, () => {
     renderAtPath(ROUTES.menu)
-    expect(screen.getByText(/el área del menú/i)).toBeInTheDocument()
+    expect(screen.getByText(/¿cómo llegar\?/i)).toBeInTheDocument()
   })
 
   it(`ROUTES.clienteDireccion → AddressPage`, () => {
@@ -221,7 +223,7 @@ describe('Redirecciones y navegación', () => {
     })
   })
 
-  it('navega de DeliveryAccessPage a LoginPage al presionar "Saltar"', async () => {
+  it('navega de DeliveryAccessPage a LoginPage al presionar "Continuar como cliente"', async () => {
     vi.useRealTimers()
     const user = userEvent.setup()
     const memRouter = createMemoryRouter(routes, {
@@ -229,7 +231,9 @@ describe('Redirecciones y navegación', () => {
     })
     render(<RouterProvider router={memRouter} />)
 
-    const skipButton = await screen.findByRole('button', { name: /saltar/i })
+    const skipButton = await screen.findByRole('button', {
+      name: /continuar como cliente/i,
+    })
     await user.click(skipButton)
 
     await waitFor(() => {
