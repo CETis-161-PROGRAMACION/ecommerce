@@ -1,85 +1,114 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 import { MapSnippet } from '@/components/ui/MapSnippet'
+import { PhoneIcon } from '@/components/ui/PhoneIcon'
+import { StatusBadge } from '@/components/ui/StatusBadge'
+import { useApp } from '@/context/useApp'
+import { products } from '@/data/products'
 import { ROUTES } from '@/router/routes'
-import principitoImg from '@/assets/images/principito.png'
+import { formatMoney } from '@/utils/money'
 
 export function DeliveryOrderDetailPage() {
   const navigate = useNavigate()
-  const [isDelivered, setIsDelivered] = useState(false)
+  const location = useLocation()
+  const { orders, deliverOrder } = useApp()
+
+  const orderId = (location.state as { orderId?: string } | null)?.orderId
+  const pedido =
+    orders.find((item) => item.id === orderId) ?? orders[0] ?? undefined
+
   const [isReportingError, setIsReportingError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [incidenciaGuardada, setIncidenciaGuardada] = useState(false)
 
-  const handleMarkAsDelivered = () => {
-    setIsDelivered(true)
+  if (!pedido) {
+    return (
+      <NavBar>
+        <div className="mx-auto w-full max-w-5xl pb-16">
+          <h1 className="mb-6 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
+            Pedido en curso
+          </h1>
+          <p className="notice notice-info">
+            No hay ningún pedido asignado. Vuelve a la lista de pedidos para
+            tomar uno.
+          </p>
+        </div>
+      </NavBar>
+    )
   }
 
-  const handleReportError = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (errorMessage.trim()) {
-      setIsReportingError(false)
-      alert('Incidencia reportada a soporte.')
-      setErrorMessage('')
-    }
+  const producto = products.find((item) => item.nombre === pedido.producto)
+  const entregado = pedido.estado === 'entregado'
+
+  function handleReportError(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault()
+
+    if (!errorMessage.trim()) return
+
+    setIsReportingError(false)
+    setIncidenciaGuardada(true)
+    setErrorMessage('')
+  }
+
+  function marcarEntregado() {
+    deliverOrder(pedido.id)
   }
 
   return (
     <NavBar>
       <div className="mx-auto w-full max-w-5xl pb-16">
-        {/* Encabezado e información de entrega */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 items-start">
-          {/* Tarjeta de imagen del producto (Izquierda) */}
-          <div className="flex h-80 sm:h-96 w-full items-center justify-center rounded-3xl border border-warm-border bg-warm-card p-6 shadow-xs">
-            <img
-              src={principitoImg}
-              alt="Principito Kundera"
-              className="h-full w-auto object-contain drop-shadow-sm"
-            />
+        <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-2">
+          <div className="flex h-80 w-full items-center justify-center rounded-3xl border border-warm-border bg-warm-card p-6 shadow-xs sm:h-96">
+            {producto ? (
+              <img
+                src={producto.imagen}
+                alt={producto.nombre}
+                className="h-full w-auto object-contain drop-shadow-sm"
+              />
+            ) : (
+              <p className="text-base text-ink-muted">{pedido.producto}</p>
+            )}
           </div>
 
-          {/* Información del pedido, cliente y mapa (Derecha) */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl sm:text-4xl font-black text-ink">
-                Principito
+              <h1 className="text-3xl font-black text-ink sm:text-4xl">
+                {pedido.producto}
               </h1>
               <div className="flex items-center gap-3">
-                <span className="rounded-md bg-gray-100 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-ink-muted">
-                  KUNDERA
-                </span>
-                <span className="rounded-md bg-emerald-100 px-3 py-0.5 text-lg font-black text-emerald-800">
-                  $80.00
+                <StatusBadge tone="neutral">{pedido.sucursal}</StatusBadge>
+                <span className="rounded-full bg-brand-100 px-3 py-1 text-sm font-black text-navy-900">
+                  {formatMoney(pedido.precio)}
                 </span>
               </div>
             </div>
 
-            {/* Contacto con el cliente */}
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <Card padding="sm">
               <span className="text-base font-bold text-ink">
-                Marcar al cliente
+                Contactar al cliente
               </span>
               <a
-                href="tel:3332260919"
-                className="flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-sm font-extrabold text-navy-900 shadow-xs transition hover:bg-brand-200"
+                href={`tel:${pedido.telefono}`}
+                className="mt-3 flex items-center justify-between gap-2 rounded-full bg-brand-100 px-4 py-2 text-sm font-extrabold text-navy-900 shadow-xs transition-colors hover:bg-brand-200"
               >
-                <span>3332260919</span>
-                <span>📞</span>
+                <span>{pedido.telefono}</span>
+                <PhoneIcon size={18} />
               </a>
-            </div>
+            </Card>
 
-            {/* Ubicación del cliente con mapa */}
             <div className="space-y-2">
               <h2 className="text-base font-bold text-ink">
                 Ubicación del cliente
               </h2>
-              <MapSnippet label="Adoquinada #19" heightClass="h-52 sm:h-60" />
+              <MapSnippet label={pedido.direccion} heightClass="h-52 sm:h-60" />
             </div>
           </div>
         </div>
 
-        {/* Modal de Reporte de Error */}
-        {isReportingError && (
+        {isReportingError ? (
           <div
             role="dialog"
             aria-modal="true"
@@ -87,70 +116,76 @@ export function DeliveryOrderDetailPage() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs"
           >
             <div className="w-full max-w-md rounded-3xl border border-line bg-surface p-6 shadow-2xl">
-              <h3 id="report-modal-title" className="text-lg font-bold text-ink mb-3">
+              <h3
+                id="report-modal-title"
+                className="mb-3 text-lg font-bold text-ink"
+              >
                 Reportar una incidencia
               </h3>
               <form onSubmit={handleReportError} className="space-y-4">
+                <label
+                  htmlFor="mensaje-incidencia"
+                  className="text-sm font-semibold text-ink"
+                >
+                  Describe el problema (cliente no responde, dirección
+                  incorrecta, etc.)
+                </label>
                 <textarea
+                  id="mensaje-incidencia"
                   rows={3}
                   value={errorMessage}
-                  onChange={(e) => setErrorMessage(e.target.value)}
-                  placeholder="Describe el problema (cliente no responde, dirección incorrecta, etc.)..."
-                  className="w-full rounded-2xl border border-line p-3 text-sm text-ink focus-visible:outline-2 focus-visible:outline-brand-400"
+                  onChange={(evento) => setErrorMessage(evento.target.value)}
+                  className="w-full rounded-2xl border border-line bg-surface p-3 text-sm text-ink placeholder:text-ink-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
                   required
                 />
                 <div className="flex justify-end gap-3">
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => setIsReportingError(false)}
-                    className="rounded-full px-5 py-2 text-sm font-semibold text-ink-muted hover:text-ink cursor-pointer"
                   >
                     Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="rounded-full bg-brand-100 px-6 py-2 text-sm font-bold text-navy-900 hover:bg-brand-200 cursor-pointer"
-                  >
-                    Enviar reporte
-                  </button>
+                  </Button>
+                  <Button type="submit">Guardar reporte</Button>
                 </div>
               </form>
             </div>
           </div>
-        )}
+        ) : null}
 
-        {/* Botones inferiores de acción */}
-        <div className="mt-12 flex flex-col items-center gap-4 w-full max-w-xl mx-auto">
-          {isDelivered ? (
-            <div className="w-full rounded-2xl bg-emerald-50 border border-emerald-200 p-5 text-center space-y-3">
-              <p className="text-lg font-black text-emerald-800">
-                ¡Pedido marcado como entregado! 🎉
-              </p>
-              <button
+        <div className="mx-auto mt-12 flex w-full max-w-xl flex-col items-center gap-4">
+          {entregado ? (
+            <div className="notice notice-success w-full space-y-3 text-center">
+              <p className="font-bold">¡Pedido marcado como entregado!</p>
+              <Button
                 type="button"
                 onClick={() => navigate(ROUTES.deliveryOrders)}
-                className="rounded-full bg-brand-100 px-8 py-2.5 text-sm font-bold text-navy-900 hover:bg-brand-200 transition cursor-pointer"
+                className="mx-auto"
               >
                 Volver a la lista de pedidos
-              </button>
+              </Button>
             </div>
           ) : (
             <>
-              <button
+              {incidenciaGuardada ? (
+                <p role="status" className="notice notice-info w-full">
+                  Incidencia guardada en la demostración. No se envía a ningún
+                  servicio externo.
+                </p>
+              ) : null}
+
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => setIsReportingError(true)}
-                className="w-full cursor-pointer rounded-full bg-brand-100 py-3.5 text-center text-base font-bold text-navy-900 shadow-xs transition hover:bg-brand-200 active:scale-98"
+                fullWidth
               >
                 Reportar un error
-              </button>
+              </Button>
 
-              <button
-                type="button"
-                onClick={handleMarkAsDelivered}
-                className="w-full cursor-pointer rounded-full bg-brand-100 py-3.5 text-center text-base font-bold text-navy-900 shadow-xs transition hover:bg-brand-200 active:scale-98"
-              >
+              <Button type="button" onClick={marcarEntregado} fullWidth>
                 Marcar como entregado
-              </button>
+              </Button>
             </>
           )}
         </div>

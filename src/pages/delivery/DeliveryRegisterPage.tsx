@@ -1,6 +1,10 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { inputClass, labelClass } from '@/components/ui/fieldStyles'
+import { useApp } from '@/context/useApp'
+import { ROUTES } from '@/router/routes'
 
 interface DatosRepartidor {
   nombre: string
@@ -22,11 +26,10 @@ const datosIniciales: DatosRepartidor = {
   confirmarContrasena: '',
 }
 
-const inputClass =
-  'h-12 w-full rounded-lg border border-line bg-surface px-3 text-sm text-ink ' +
-  'placeholder:text-ink-muted outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
-
 export function DeliveryRegisterPage() {
+  const navigate = useNavigate()
+  const { register } = useApp()
+
   const [datos, setDatos] = useState<DatosRepartidor>(datosIniciales)
   const [mensaje, setMensaje] = useState('')
 
@@ -77,9 +80,20 @@ export function DeliveryRegisterPage() {
       return
     }
 
-    setMensaje(
-      'Los datos son válidos. El registro se habilitará cuando conectemos el servicio de autenticación.',
-    )
+    const resultado = register({
+      nombre: datos.nombre.trim(),
+      fechaNacimiento: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
+      telefono: datos.telefono,
+      contrasena: datos.contrasena,
+      rol: 'repartidor',
+    })
+
+    if (!resultado.ok) {
+      setMensaje(resultado.error ?? 'No pudimos crear la cuenta.')
+      return
+    }
+
+    navigate(ROUTES.deliveryOrders)
   }
 
   return (
@@ -87,11 +101,8 @@ export function DeliveryRegisterPage() {
       <form onSubmit={manejarRegistro} noValidate className="w-full">
         <div className="grid grid-cols-1 gap-x-10 gap-y-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="nombre-repartidor"
-              className="mb-2 block text-sm font-bold text-ink"
-            >
-              Nombre completo
+            <label htmlFor="nombre-repartidor" className={labelClass}>
+              Nombre completo:
             </label>
             <input
               id="nombre-repartidor"
@@ -105,17 +116,16 @@ export function DeliveryRegisterPage() {
           </div>
 
           <fieldset>
-            <legend className="mb-2 text-sm font-bold text-ink">
-              Fecha de nacimiento
-            </legend>
-            <div className="grid grid-cols-3 gap-2">
+            <legend className={labelClass}>Fecha de nacimiento:</legend>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
               <input
+                id="dia-repartidor"
                 type="text"
                 inputMode="numeric"
                 maxLength={2}
                 placeholder="día"
                 aria-label="Día de nacimiento"
-                className={inputClass}
+                className={`${inputClass} text-center`}
                 value={datos.dia}
                 onChange={(e) =>
                   actualizar(
@@ -126,12 +136,13 @@ export function DeliveryRegisterPage() {
                 required
               />
               <input
+                id="mes-repartidor"
                 type="text"
                 inputMode="numeric"
                 maxLength={2}
                 placeholder="mes"
                 aria-label="Mes de nacimiento"
-                className={inputClass}
+                className={`${inputClass} text-center`}
                 value={datos.mes}
                 onChange={(e) =>
                   actualizar(
@@ -142,12 +153,13 @@ export function DeliveryRegisterPage() {
                 required
               />
               <input
+                id="anio-repartidor"
                 type="text"
                 inputMode="numeric"
                 maxLength={4}
                 placeholder="año"
                 aria-label="Año de nacimiento"
-                className={inputClass}
+                className={`${inputClass} text-center`}
                 value={datos.anio}
                 onChange={(e) =>
                   actualizar(
@@ -163,12 +175,12 @@ export function DeliveryRegisterPage() {
           <div>
             <label
               htmlFor="telefono-repartidor-registro"
-              className="mb-2 block text-sm font-bold text-ink"
+              className={labelClass}
             >
-              Número de teléfono
+              Número de teléfono:
             </label>
-            <div className="flex gap-2">
-              <div className="flex h-12 shrink-0 items-center rounded-lg border border-line px-3 text-sm text-ink-muted">
+            <div className="flex gap-3">
+              <div className="flex h-12 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
                 +52
               </div>
               <input
@@ -194,14 +206,15 @@ export function DeliveryRegisterPage() {
           <div>
             <label
               htmlFor="contrasena-repartidor-registro"
-              className="mb-2 block text-sm font-bold text-ink"
+              className={labelClass}
             >
-              Contraseña
+              Contraseña:
             </label>
             <input
               id="contrasena-repartidor-registro"
               type="password"
               autoComplete="new-password"
+              placeholder="*****"
               className={inputClass}
               value={datos.contrasena}
               onChange={(e) => actualizar('contrasena', e.target.value)}
@@ -212,14 +225,15 @@ export function DeliveryRegisterPage() {
           <div className="md:col-span-2 md:mx-auto md:w-1/2">
             <label
               htmlFor="confirmar-contrasena-repartidor"
-              className="mb-2 block text-sm font-bold text-ink"
+              className={labelClass}
             >
-              Confirmar contraseña
+              Confirmar contraseña:
             </label>
             <input
               id="confirmar-contrasena-repartidor"
               type="password"
               autoComplete="new-password"
+              placeholder="*****"
               className={inputClass}
               value={datos.confirmarContrasena}
               onChange={(e) =>
@@ -230,21 +244,15 @@ export function DeliveryRegisterPage() {
           </div>
         </div>
 
-        {mensaje && (
-          <p
-            role="status"
-            className="mt-5 text-center text-sm font-semibold text-ink"
-          >
+        {mensaje ? (
+          <p role="alert" className="notice notice-danger mt-5 text-center">
             {mensaje}
           </p>
-        )}
+        ) : null}
 
         <div className="mt-8 flex justify-center">
-          <Button
-            type="submit"
-            className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200"
-          >
-            Siguiente
+          <Button type="submit" className="w-full max-w-[280px]">
+            Crear cuenta
           </Button>
         </div>
       </form>

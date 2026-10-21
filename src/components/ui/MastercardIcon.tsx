@@ -3,7 +3,10 @@ interface MastercardIconProps {
   size?: number
 }
 
-export function MastercardIcon({ className = '', size = 28 }: MastercardIconProps) {
+export function MastercardIcon({
+  className = '',
+  size = 28,
+}: MastercardIconProps) {
   const height = Math.round(size * 0.62)
   return (
     <svg

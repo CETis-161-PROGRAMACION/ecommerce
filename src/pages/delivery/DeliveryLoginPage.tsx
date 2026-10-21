@@ -1,10 +1,15 @@
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { inputClass, labelClass } from '@/components/ui/fieldStyles'
+import { useApp } from '@/context/useApp'
 import { ROUTES } from '@/router/routes'
 
 export function DeliveryLoginPage() {
+  const navigate = useNavigate()
+  const { login } = useApp()
+
   const [telefono, setTelefono] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
@@ -22,9 +27,19 @@ export function DeliveryLoginPage() {
       return
     }
 
-    setMensaje(
-      'El inicio de sesión del repartidor estará disponible cuando se conecte el servicio de autenticación.',
-    )
+    const resultado = login(telefono, contrasena)
+
+    if (!resultado.ok) {
+      setMensaje(resultado.error ?? 'No pudimos iniciar sesión.')
+      return
+    }
+
+    if (resultado.usuario?.rol !== 'repartidor') {
+      setMensaje('Esa cuenta no es de repartidor. Usa el acceso de cliente.')
+      return
+    }
+
+    navigate(ROUTES.deliveryOrders)
   }
 
   return (
@@ -35,15 +50,12 @@ export function DeliveryLoginPage() {
         className="w-full space-y-6"
       >
         <div>
-          <label
-            htmlFor="telefono-repartidor"
-            className="mb-2 block text-base font-bold text-ink"
-          >
+          <label htmlFor="telefono-repartidor" className={labelClass}>
             Número de teléfono:
           </label>
 
           <div className="flex gap-3">
-            <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
+            <div className="flex h-12 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
               +52
             </div>
 
@@ -59,17 +71,14 @@ export function DeliveryLoginPage() {
                 setTelefono(evento.target.value.replace(/\D/g, '').slice(0, 10))
                 setMensaje('')
               }}
-              className="h-14 min-w-0 flex-1 rounded-xl border border-line bg-surface px-4 text-base text-ink outline-none transition-colors placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+              className={`${inputClass} min-w-0 flex-1`}
               required
             />
           </div>
         </div>
 
         <div>
-          <label
-            htmlFor="contrasena-repartidor"
-            className="mb-2 block text-base font-bold text-ink"
-          >
+          <label htmlFor="contrasena-repartidor" className={labelClass}>
             Contraseña:
           </label>
 
@@ -83,19 +92,16 @@ export function DeliveryLoginPage() {
               setContrasena(evento.target.value)
               setMensaje('')
             }}
-            className="h-14 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink outline-none transition-colors placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+            className={inputClass}
             required
           />
         </div>
 
-        {mensaje && (
-          <p
-            role="status"
-            className="text-center text-sm font-semibold text-ink"
-          >
+        {mensaje ? (
+          <p role="alert" className="notice notice-danger">
             {mensaje}
           </p>
-        )}
+        ) : null}
 
         <div className="flex justify-center pt-2">
           <Button type="submit" className="w-full max-w-[280px]">
@@ -107,12 +113,20 @@ export function DeliveryLoginPage() {
           ¿Aún no tienes cuenta?{' '}
           <Link
             to={ROUTES.deliveryRegister}
-            className="font-semibold text-navy-900 underline underline-offset-2 hover:opacity-80"
+            className="font-semibold text-brand-400 underline underline-offset-4 transition-colors hover:text-navy-900"
           >
             Regístrate
           </Link>
         </p>
       </form>
+
+      <div className="notice notice-info mt-8">
+        <p className="font-bold">Modo demostración</p>
+        <p className="mt-1">
+          Cuenta de repartidor: <strong>3331122334</strong> · Contraseña{' '}
+          <strong>demo1234</strong>
+        </p>
+      </div>
     </AuthLayout>
   )
 }

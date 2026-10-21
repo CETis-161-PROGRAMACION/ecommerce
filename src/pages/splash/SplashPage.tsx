@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/Button'
 import { Logo } from '@/components/ui/Logo'
 import { ROUTES } from '@/router/routes'
 
 export function SplashPage() {
   const navigate = useNavigate()
   const [isExiting, setIsExiting] = useState(false)
+
+  function entrar() {
+    setIsExiting(true)
+    navigate(ROUTES.deliveryAccess, { replace: true })
+  }
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -39,11 +45,17 @@ export function SplashPage() {
 
   return (
     <div
-      className={`flex min-h-screen items-center justify-center bg-background ${
+      className={`flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-6 ${
         isExiting ? 'animate-splash-exit' : 'animate-fade-in'
       } motion-reduce:animate-none`}
     >
+      <h1 className="sr-only">Web E-commerce</h1>
+
       <Logo className="h-60 w-auto" />
+
+      <Button type="button" onClick={entrar} className="min-w-48">
+        Continuar
+      </Button>
     </div>
   )
 }

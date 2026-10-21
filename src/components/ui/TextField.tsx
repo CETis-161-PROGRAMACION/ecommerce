@@ -1,6 +1,11 @@
 import { useId } from 'react'
 import type { InputHTMLAttributes } from 'react'
-import { inputClass, inputErrorClass, labelClass, fieldErrorClass } from '@/components/ui/fieldStyles'
+import {
+  inputClass,
+  inputErrorClass,
+  labelClass,
+  fieldErrorClass,
+} from '@/components/ui/fieldStyles'
 
 type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string

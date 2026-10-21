@@ -3,7 +3,10 @@ interface MotorcycleIconProps {
   size?: number
 }
 
-export function MotorcycleIcon({ className = '', size = 26 }: MotorcycleIconProps) {
+export function MotorcycleIcon({
+  className = '',
+  size = 26,
+}: MotorcycleIconProps) {
   return (
     <svg
       width={size}
