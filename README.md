@@ -1,117 +1,70 @@
 # Web E-commerce
 
-Proyecto del **CETis 161**. Base frontend de la aplicación web de comercio electrónico, desarrollada para que los estudiantes de programación construyan las pantallas de manera colaborativa.
+Proyecto del **CETis 161**. Aplicación web de comercio electrónico que conecta los comercios locales de **Tala, Jalisco** con sus clientes: catálogo por sucursal, pedido a domicilio o para recoger, seguimiento de la entrega y acceso del repartidor.
+
+> **Estado actual: versión de demostración.** Todas las pantallas están implementadas, conectadas entre sí y funcionan con datos de prueba locales. No hay backend: la información vive en el navegador (`localStorage`) y se reinicia al borrar los datos del sitio.
+
+---
 
 ## Información del proyecto
 
 - **Nombre:** Web E-commerce.
 - **Contexto:** proyecto escolar del CETis 161.
-- **Descripción:** aplicación web que conecta comercios locales con sus clientes (pedidos a domicilio, en sucursal y reservaciones), según la documentación de propuesta del repositorio (`Vic/`).
-- **Objetivo general:** ofrecer una base frontend limpia, consistente, accesible y verificable sobre la cual cada estudiante pueda desarrollar una pantalla de forma independiente.
-- **Alcance de la fase actual:** base frontend con sistema de diseño, componentes reutilizables, enrutador inicial, pantalla splash y placeholders de autenticación.
-- **Funcionalidades todavía no implementadas:** backend, autenticación real, envío de SMS, persistencia de datos, integraciones con proveedores externos, pagos, catálogo, geolocalización, reseñas y registro de usuarios.
-  \=======
-  Esta plantilla ofrece una configuración mínima para que React funcione en Vite con HMR y algunas reglas de ESLint.
+- **Descripción:** aplicación web que conecta comercios locales con sus clientes (pedidos a domicilio, en sucursal y seguimiento de entrega), según la documentación de propuesta del repositorio (`Vic/`).
+- **Objetivo general:** una base frontend limpia, consistente, accesible y verificable, con el mismo formato visual en todas las pantallas y sin callejones sin salida: todos los botones y enlaces llevan a una pantalla real.
+- **Alcance de la fase actual:** las **21 pantallas** están implementadas y verificadas, con sistema de diseño, componentes reutilizables, enrutado completo, datos de demostración y tres flujos cerrados (registro, compra y repartidor).
+- **Funcionalidades que siguen fuera del alcance:** backend propio, autenticación real, envío de SMS, pasarela de pagos, integración con proveedores externos, reseñas y geolocalización por GPS.
 
-Actualmente hay dos plugins oficiales disponibles:
+## Modo demostración
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) usa [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) usa [SWC](https://swc.rs/)
+La aplicación funciona sin servidor. Los datos de prueba viven en el navegador, así que cualquier persona que abra la app ve la misma experiencia sin configurar nada.
+
+| Dato                      | Valor         |
+| ------------------------- | ------------- |
+| Teléfono del cliente      | `3332260919`  |
+| Contraseña del cliente    | `demo1234`    |
+| Teléfono del repartidor   | `3331122334`  |
+| Contraseña del repartidor | `demo1234`    |
+| Código de confirmación    | `123456`      |
+| Dominio de las sucursales | Tala, Jalisco |
+
+- Las credenciales aparecen en pantalla (inicio de sesión y acceso de repartidor) con un botón que rellena los campos automáticamente.
+- El código de confirmación se muestra en la pantalla de confirmación: **no se envía ningún SMS**.
+- El estado se guarda en `localStorage` bajo la clave `web-ecommerce-demo:v1`. Para reiniciar la demo, borra los datos del sitio en el navegador.
+- Cuando exista un backend real, se reemplazan los cuerpos de `src/services/demoAuth.ts` y los datos de `src/data/`; las pantallas no cambian.
 
 ## Tecnologías
 
-Versiones reales instaladas en el proyecto (verificado en `node_modules`):
+Versiones reales instaladas en el proyecto:
 
 | Tecnología                | Versión |
 | ------------------------- | ------- |
 | Vite                      | 8.3.2   |
-| React                     | 19.3.0  |
-| TypeScript                | 6.0.3   |
+| React                     | 19.2.8  |
+| TypeScript                | 6.0.2   |
 | Tailwind CSS              | 4.3.3   |
 | `@tailwindcss/vite`       | 4.3.3   |
 | React Router DOM          | 7.18.4  |
-| ESLint                    | 10.11.0 |
+| Vitest                    | 5.0.5   |
+| Testing Library           | 16.3.3  |
+| ESLint                    | 10.10.0 |
 | Prettier                  | 3.9.9   |
-| pnpm (gestor de paquetes) | 12.10.1 |
+| pnpm (gestor de paquetes) | 11.8.0  |
 
 ## Requisitos previos
 
-- **Node.js 24.21.0** (versión usada para instalar y verificar el proyecto).
-- **pnpm 12.10.1** como gestor de paquetes. El proyecto usa `pnpm-lock.yaml`; no usar `npm` ni `yarn` para no duplicar dependencias.
+- **Node.js 24** (versión usada para instalar y verificar el proyecto).
+- **pnpm 11** como gestor de paquetes. El proyecto usa `pnpm-lock.yaml`; no usar `npm` ni `yarn` para no duplicar dependencias.
 
 ## Instalación
 
 Desde la raíz del repositorio:
-=======
-
-El React Compiler no está habilitado en esta plantilla por su impacto en el rendimiento del desarrollo y de la compilación. Para agregarlo, consulta [esta documentación](https://react.dev/learn/react-compiler/installation).
-
-## Ampliar la configuración de ESLint
-
-Si desarrollas una aplicación para producción, se recomienda actualizar la configuración para habilitar las reglas de lint con información de tipos:
-
-````js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Otras configuraciones...
-
-      // Quita tseslint.configs.recommended y reemplázalo con este
-      tseslint.configs.recommendedTypeChecked,
-      // Como alternativa, usa este para reglas más estrictas
-      tseslint.configs.strictTypeChecked,
-      // Opcionalmente, agrega este para reglas de estilo
-      tseslint.configs.stylisticTypeChecked,
-
-      // Otras configuraciones...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // otras opciones...
-    },
-  },
-])
-
 
 ```bash
 pnpm install
-````
+```
 
 Usa siempre `pnpm`, nunca mezcles gestores de paquetes.
-=======
-
-También puedes instalar [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) y [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) para obtener reglas de lint específicas de React:
-
-````js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Otras configuraciones...
-      // Habilita las reglas de lint para React
-      reactX.configs['recommended-typescript'],
-      // Habilita las reglas de lint para React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // otras opciones...
-    },
-  },
-])
 
 ## Ejecución y verificaciones
 
@@ -122,10 +75,18 @@ Todos los scripts están definidos en `package.json`:
 | `pnpm dev`          | Servidor de desarrollo con recarga en caliente.                         |
 | `pnpm build`        | Comprueba tipos y compila para producción en `dist/`.                   |
 | `pnpm preview`      | Sirve la compilación de producción localmente.                          |
+| `pnpm test`         | Ejecuta la suite de pruebas (rutas y flujos).                           |
+| `pnpm test:watch`   | Ejecuta las pruebas en modo interactivo.                                |
 | `pnpm lint`         | Ejecuta ESLint sobre el proyecto.                                       |
 | `pnpm typecheck`    | Comprueba tipos con `tsc -b` sin generar archivos de salida.            |
 | `pnpm format`       | Aplica Prettier a `src/` y a los archivos de configuración gestionados. |
 | `pnpm format:check` | Comprueba el formato sin modificar archivos.                            |
+
+Antes de dar por terminada una tarea deben pasar las cuatro verificaciones:
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
+```
 
 ## Tema oscuro
 
@@ -136,73 +97,128 @@ El botón **Modo oscuro/Modo claro**, en la esquina superior derecha, cambia el 
 ```text
 .
 ├── public/
-│   └── favicon.svg                 # Icono de la pestaña
+│   └── favicon.svg                  # Icono de la pestaña
 ├── src/
 │   ├── assets/
-│   │   └── images/                 # Imágenes de la aplicación
-│   │       └── (logo.png)          # Logotipo original (pendiente de colocar)
+│   │   └── images/                  # Logotipo y fotografías de productos
 │   ├── components/
-│   │   ├── layout/
-│   │   │   └── AuthLayout.tsx      # Estructura de pantallas de autenticación
-│   │   └── ui/
-│   │       ├── Button.tsx          # Botón reutilizable
-│   │       ├── Logo.tsx            # Logotipo de la aplicación
-│   │       ├── PhoneField.tsx      # Campo de teléfono mexicano (+52)
-│   │       └── TextField.tsx       # Campo de texto con etiqueta y error
-│   ├── pages/
-│   │   ├── splash/SplashPage.tsx
-│   │   ├── login/LoginPage.tsx
-│   │   ├── recovery/RecoveryPage.tsx
-│   │   └── register/ConfirmCodePage.tsx
-│   ├── plantillas/
-│   │   ├── FormPageTemplate.tsx    # Plantilla copiable de formulario
-│   │   └── README.md               # Documentación de la plantilla
+│   │   ├── catalog/StoreCatalog.tsx # Catálogo por sucursal (filtros + tarjetas)
+│   │   ├── layout/AuthLayout.tsx    # Marco de las pantallas de acceso
+│   │   ├── navbar/NavBar.tsx        # Barra superior: búsqueda, perfil, menú
+│   │   ├── order/OrderSummary.tsx   # Resumen de pedido y dirección
+│   │   ├── sidebar/SideBar.tsx      # Menú lateral de navegación
+│   │   └── ui/                      # Componentes visuales reutilizables
+│   ├── context/                     # Estado global de la demostración
+│   │   ├── AppProvider.tsx          # Proveedor: sesión, dirección, pedidos
+│   │   ├── appContext.ts            # Definición del contexto y su tipo
+│   │   └── useApp.ts                # Hook de acceso al estado
+│   ├── data/                        # Datos de demostración
+│   │   ├── orders.ts                # Pedidos iniciales del repartidor
+│   │   ├── products.ts              # Catálogo de 7 productos
+│   │   ├── stores.ts                # 6 sucursales de Tala, Jalisco
+│   │   └── users.ts                 # Usuarios y credenciales de prueba
+│   ├── pages/                       # Una carpeta por pantalla
+│   ├── plantillas/                  # Plantilla copiable de formulario
 │   ├── router/
-│   │   ├── index.tsx               # Configuración del enrutador
-│   │   └── routes.ts               # Constantes de rutas
-│   ├── utils/
-│   │   └── phone.ts                # Validaciones de teléfono
-│   ├── App.tsx                     # Raíz: monta el RouterProvider
-│   ├── index.css                   # Tailwind CSS v4 + tokens de diseño
-│   └── main.tsx                    # Punto de entrada de React
-├── AGENTS.md                       # Convenciones para sesiones de OpenCode
+│   │   ├── index.tsx                # Configuración del enrutador
+│   │   └── routes.ts                # Constantes de rutas
+│   ├── services/
+│   │   ├── demoAuth.ts              # Autenticación de demostración
+│   │   └── supabase.ts              # Cliente opcional para el backend futuro
+│   ├── test/                        # Pruebas de rutas y flujos
+│   ├── types/index.ts               # Tipos compartidos
+│   ├── utils/                       # Utilidades (teléfono, dinero, rutas)
+│   ├── App.tsx                      # Raíz: tema + RouterProvider
+│   ├── index.css                    # Tailwind CSS v4 + tokens de diseño
+│   └── main.tsx                     # Punto de entrada de React
+├── AGENTS.md                        # Convenciones para sesiones de OpenCode
+├── CONTRIBUCIONES.md                # Flujo de Pull Requests
+├── MANUAL.md                        # Manual de uso de la aplicación
 ├── index.html
 ├── package.json
 ├── pnpm-lock.yaml
-├── vite.config.ts
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-├── eslint.config.js
-└── .prettierrc
-````
+└── vite.config.ts
+```
 
 Distinción de responsabilidades:
 
 - **Páginas** (`src/pages/`): pantallas reales, una por directorio.
-- **Componentes reutilizables** (`src/components/ui/`): elementos visuales compartidos.
+- **Componentes reutilizables** (`src/components/ui/`): elementos visuales compartidos (`Button`, `Card`, `PillFilter`, `StatusBadge`, `EmptyState`, iconos).
 - **Layouts** (`src/components/layout/`): estructuras de presentación compartidas.
+- **Catálogo y pedidos** (`src/components/catalog/`, `src/components/order/`): piezas compartidas por varias pantallas para que el formato sea idéntico.
+- **Contexto** (`src/context/`): estado global de la demostración (sesión, dirección, destinatario, selección de producto, pedidos y método de pago).
+- **Datos** (`src/data/`): catálogos y usuarios de demostración, editables sin tocar las pantallas.
 - **Plantillas copiables** (`src/plantillas/`): esqueletos de referencia para nuevas pantallas.
-- **Servicios** (`src/services/`): se creará para las futuras integraciones con APIs cuando existan.
-- **Tipos** (`src/types/`): se creará para los tipos compartidos cuando existan.
+- **Servicios** (`src/services/`): autenticación de demostración y cliente opcional de Supabase.
+- **Tipos** (`src/types/`): tipos compartidos de dominio.
 - **Utilidades** (`src/utils/`): funciones auxiliares independientes de las páginas.
 - **Enrutador** (`src/router/`): constante de rutas y configuración del enrutador.
 
-## Componentes compartidos
+## Sistema de rutas
 
-### `Logo`
+| Ruta                             | Componente                | Qué hace                                                   |
+| -------------------------------- | ------------------------- | ---------------------------------------------------------- |
+| `/`                              | `SplashPage`              | Portada; redirige a `/repartidor` a los ~2.1 s             |
+| `/iniciar-sesion`                | `LoginPage`               | Acceso del cliente con credenciales de demostración        |
+| `/recuperar-datos`               | `RecoveryPage`            | Recordatorio de la cuenta de prueba                        |
+| `/registro`                      | `RegisterPage`            | Alta de cuenta nueva                                       |
+| `/registro/privacidad`           | `PrivacyPage`             | Términos y política de privacidad                          |
+| `/registro/confirmar-codigo`     | `ConfirmCodePage`         | Captura del código de 6 dígitos                            |
+| `/inicio`                        | `HomePage`                | Catálogo por sucursal, con filtro por categoría y búsqueda |
+| `/producto/:id`                  | `ProductDetailPage`       | Detalle del producto y sus opciones                        |
+| `/pedido/direccion-cliente`      | `AddressPage`             | Dirección de entrega                                       |
+| `/pedido/direccion-destinatario` | `UserDestiny`             | Quién recibe el pedido                                     |
+| `/pedido/informacion`            | `OrderInfoPage`           | Resumen, método de pago y confirmación del pedido          |
+| `/pedido/seguimiento`            | `OrderTrackingPage`       | Avance del pedido y contacto con el repartidor             |
+| `/perfil`                        | `ProfilePage`             | Datos de la sesión, método de pago y cierre de sesión      |
+| `/sucursales`                    | `SucursalesPage`          | Las 6 sucursales con mapa y indicaciones                   |
+| `/sucursal/menu`                 | `MenuPage`                | Ficha de la sucursal (`?sucursal=<id>`)                    |
+| `/repartidor`                    | `DeliveryAccessPage`      | Entrada: elegir modo cliente o repartidor                  |
+| `/repartidor/iniciar-sesion`     | `DeliveryLoginPage`       | Acceso del repartidor (valida el rol)                      |
+| `/repartidor/registro`           | `DeliveryRegisterPage`    | Alta de repartidor                                         |
+| `/repartidor/pedidos`            | `DeliveryOrdersPage`      | Pedidos disponibles, con filtro por sucursal               |
+| `/repartidor/pedido/activo`      | `DeliveryOrderDetailPage` | Detalle del pedido, reporte de incidencia y entrega        |
+| `*`                              | `NotFoundPage`            | Ruta inexistente, con sugerencias de destinos cercanos     |
 
-Muestra el logotipo original. Acepta `className` para dimensiones.
+- Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
+- No dupliques cadenas de rutas: usa `ROUTES.xxx`.
+- El splash usa `useNavigate` con `replace` y limpia su temporizador al desmontar. Respeta `prefers-reduced-motion`.
+- No hay rutas privadas ni control de permisos: el rol se valida dentro de la acción (por ejemplo, el acceso de repartidor rechaza cuentas de cliente).
 
-```tsx
-import { Logo } from '@/components/ui/Logo'
+## Flujos de la aplicación
 
-;<Logo className="h-14 w-14" />
+Los tres flujos están cerrados y verificados con pruebas automáticas (`src/test/router.test.tsx`).
+
+### 1. Registro de cliente
+
+```text
+/registro → /registro/privacidad → /registro/confirmar-codigo → /iniciar-sesion → /inicio
 ```
+
+El formulario valida nombre, fecha de nacimiento (mínimo 13 años), teléfono de 10 dígitos y contraseña de 8 caracteres. La política exige aceptar términos y privacidad antes de continuar. El código de demostración es `123456`.
+
+### 2. Compra
+
+```text
+/inicio → /producto/:id → /pedido/direccion-cliente → /pedido/direccion-destinatario
+       → /pedido/informacion → /pedido/seguimiento
+```
+
+El resumen muestra el producto, las opciones elegidas, el destinatario y el total (producto + servicio). El botón **Realizar pedido** crea el pedido y abre el seguimiento. Desde el seguimiento se puede marcar el pedido como recibido.
+
+### 3. Repartidor
+
+```text
+/repartidor → /repartidor/iniciar-sesion → /repartidor/pedidos → /repartidor/pedido/activo
+```
+
+El repartidor ve la lista de pedidos, filtra por sucursal, acepta uno, contacta al cliente por teléfono, reporta una incidencia y marca el pedido como entregado.
+
+## Componentes compartidos
 
 ### `Button`
 
-Botón en forma de píldora, con foco visible y estado deshabilitado.
+Botón en forma de píldora con foco visible y estado deshabilitado. Variantes: `primary` (por defecto), `solid`, `outline`, `ghost` y `danger`. Tamaños: `sm`, `md` y `lg`.
 
 ```tsx
 import { Button } from '@/components/ui/Button'
@@ -212,69 +228,68 @@ import { Button } from '@/components/ui/Button'
 </Button>
 ```
 
-### `TextField`
+### `Card`
 
-Campo de texto con etiqueta asociada, error opcional y atributos estándar de input.
+Contenedor con superficie, borde y sombra opcional; acepta `padding` y `className`. `CardTitle` rotula la tarjeta.
 
-```tsx
-<TextField
-  label="Contraseña"
-  type="password"
-  value={password}
-  onChange={(event) => setPassword(event.target.value)}
-  error={errors.password}
-/>
-```
+### `PillFilter`
 
-### `PhoneField`
+Píldora de filtro con estado activo, usada por el catálogo y la lista de pedidos.
 
-Campo de teléfono mexicano (10 dígitos) con prefijo visual `+52`. Valor controlado desde el padre; limpia caracteres no numéricos.
+### `StatusBadge`
 
-```tsx
-<PhoneField
-  label="Número de teléfono"
-  value={phone}
-  onChange={setPhone}
-  error={errors.phone}
-/>
-```
+Etiqueta de estado (`neutral`, `success`, `warning`, `danger`, `info`).
+
+### `EmptyState`
+
+Estado vacío con título, descripción y acción opcional. Evita pantallas en blanco cuando no hay datos.
+
+### `fieldStyles`
+
+Clases compartidas de formulario (`inputClass`, `labelClass`, `fieldErrorClass`, `inputErrorClass`). Úsalas en todo campo nuevo para que los formularios se vean iguales.
 
 ### `AuthLayout`
 
-Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `WEB E-COMMERCE` y área de contenido.
+Estructura común de las pantallas de acceso: logotipo enlazado al inicio, título en mayúsculas, subtítulo `WEB E-COMMERCE` y área de contenido.
 
 ```tsx
 <AuthLayout title="Iniciar sesión">{/* contenido */}</AuthLayout>
 ```
 
+### `StoreCatalog` y `OrderSummary`
+
+- `StoreCatalog` es el catálogo por sucursal: filtros por categoría, tarjetas de producto y estado vacío. Es el mismo componente para las tres sucursales del inicio.
+- `OrderSummary` es el resumen de pedido (producto, opciones, destinatario, total) y el bloque de dirección. Lo comparten las pantallas de información y de seguimiento para que el formato sea idéntico.
+
 ## Sistema de diseño
 
 - Los tokens se definen en `src/index.css` con Tailwind CSS v4 (`@import "tailwindcss"` y el bloque `@theme`).
-- Colores de marca: `brand-400`, `brand-100`, `brand-200`, `navy-900`; texto `ink` e `ink-muted`; bordes `line`; éxito `success`. Uso como clases: `text-ink`, `bg-brand-400`, `border-line`, `text-success`.
+- Colores de marca: `brand-400`, `brand-100`, `brand-200`, `navy-900`; texto `ink` e `ink-muted`; bordes `line`; superficies `warm-card`, `warm-pill` y `warm-border`; banner `banner-dark`.
+- Estados semánticos con variante `-soft` y `-strong`: `success`, `warning`, `danger`, `info` y `neutral`. Se usan con las utilidades `notice-success`, `notice-warning`, `notice-danger`, `notice-info` y `notice-neutral`.
 - Open Sans (pesos 400, 600 y 700) se carga desde Google Fonts en `index.html`, con `system-ui` como fallback del sistema.
 - Tailwind CSS v4 se integra mediante el plugin `@tailwindcss/vite` registrado en `vite.config.ts`. No existe `tailwind.config.js`.
 - El alias `@` apunta a `src/` tanto en Vite (`vite.config.ts`) como en TypeScript (`tsconfig.app.json`).
-
-## Sistema de rutas
-
-| Ruta                         | Componente        | Estado                                                                |
-| ---------------------------- | ----------------- | --------------------------------------------------------------------- |
-| `/`                          | `SplashPage`      | Funcional, con redirección automática a `/iniciar-sesion` a los 2.5 s |
-| `/iniciar-sesion`            | `LoginPage`       | Placeholder                                                           |
-| `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |
-| `/registro/confirmar-codigo` | `ConfirmCodePage` | Placeholder                                                           |
-
-- Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
-- No dupliques cadenas de rutas: usa `ROUTES.xxx`.
-- El splash usa `useNavigate` con `replace` y limpia su temporizador al desmontar. Respeta `prefers-reduced-motion`.
-- No se usan rutas privadas ni control de permisos en esta fase.
+- **No repitas valores hexadecimales en las páginas**: usa siempre los tokens.
 
 ## Estado de las pantallas
 
-- `SplashPage` es **funcional** (redirección automática).
-- `LoginPage`, `RecoveryPage` y `ConfirmCodePage` son **placeholders documentados con `TODO`**.
-- Las **pantallas 4 y 5** están pendientes de especificación: su contenido, nombre y rutas no están definidos; no se inventan.
-- **No existe autenticación ni envío real de SMS** en esta fase.
+- Las **21 pantallas** están implementadas, conectadas entre sí y verificadas: no queda ningún control sin destino.
+- Los botones de Google y Facebook del inicio de sesión están deshabilitados de forma explícita, con una nota visible de que el acceso con redes sociales no está disponible.
+- La pantalla de política de privacidad marca el contenido como pendiente del documento oficial.
+- **No existe backend, autenticación real ni envío de SMS**: la demostración es local al navegador y está señalada como tal en pantalla.
+
+## Pruebas
+
+`src/test/router.test.tsx` cubre:
+
+1. Que toda ruta declarada en `ROUTES` tenga componente en el enrutador, sin duplicados y con comodín `*`.
+2. Que las 21 rutas rendericen la pantalla correcta (títulos y elementos clave).
+3. Los tres flujos completos: registro, compra y repartidor.
+4. La búsqueda del catálogo, el menú lateral con sección activa y la pantalla de ruta inexistente.
+
+```bash
+pnpm test
+```
 
 ## Procedimiento para crear una pantalla nueva
 
@@ -290,17 +305,14 @@ Ejemplo con una pantalla de formulario usando `src/plantillas/FormPageTemplate.t
 8. Muestra errores accesibles mediante la prop `error` de cada campo.
 9. Conecta un servicio únicamente cuando exista una implementación real (en `src/services/`): reemplaza el `TODO(servicio)`.
 10. Agrega la ruta en `src/router/routes.ts` y el componente en `src/router/index.tsx`.
-11. Ejecuta `pnpm lint`.
-12. Ejecuta `pnpm typecheck`.
-13. Compila con `pnpm build`.
-14. Revisa el resultado y crea un Pull Request hacia la rama acordada.
+11. Ejecuta `pnpm lint`, `pnpm typecheck`, `pnpm test` y `pnpm build`.
+12. Revisa el resultado y crea un Pull Request hacia la rama acordada.
 
 Las páginas copiadas **no deben importar** el archivo original de plantilla, ni registrarse desde `src/plantillas/`. Consulta `src/plantillas/README.md`.
 
 ## Logotipo
 
-- El logotipo original debe colocarse en `src/assets/images/logo.png`.
-- Mientras el archivo no exista, `Logo` no renderiza nada y **la pantalla splash no puede verificarse visualmente**. No se genera ni se inventa un logotipo sustituto.
+- El logotipo original está en `src/assets/images/logo.png`.
 - No reemplaces el recurso original por una imagen parecida ni recortes de maqueta.
 
 ## Convenciones de código
@@ -309,7 +321,7 @@ Las páginas copiadas **no deben importar** el archivo original de plantilla, ni
 - TypeScript estricto en los `tsconfig`.
 - Alias `@` para imports desde `src/`.
 - Componentes pequeños y reutilizables; cada página en su directorio.
-- Accesibilidad: etiquetas asociadas, errores accesibles (`aria-invalid`, `aria-describedby`), foco visible, contraste suficiente.
+- Accesibilidad: una sola etiqueta `<h1>` por pantalla, etiquetas asociadas a todos los campos, errores accesibles (`role="alert"`), foco visible y contraste suficiente.
 - Diseño adaptable (referencia mínima de 360 px) sin desbordamientos horizontales.
 - `TODO` para trabajo pendiente; elimínalos al completar la tarea.
 - Prohibido simular operaciones: no autenticación, SMS, persistencia ni respuestas de API falsas.
@@ -319,11 +331,11 @@ Las páginas copiadas **no deben importar** el archivo original de plantilla, ni
 
 El flujo del repositorio está definido en `CONTRIBUCIONES.md`. Resumen recomendado:
 
-1. Mantén actualizada la rama de integración (`dev`).
-2. Crea una rama de funcionalidad desde `dev`: `git checkout -b tipo/descripcion-corta --no-track origin/dev` (`feat/`, `fix/`, `docs/`, `i18n/`, `chore/`).
+1. Mantén actualizada la rama de integración (`develop`).
+2. Crea una rama de funcionalidad desde `develop`: `git checkout -b tipo/descripcion-corta --no-track origin/develop` (`feat/`, `fix/`, `docs/`, `i18n/`, `chore/`).
 3. Trabaja una tarea concreta (vinculada a un issue del repositorio).
-4. Ejecuta las verificaciones: `pnpm lint`, `pnpm typecheck`, `pnpm build`.
-5. Crea un Pull Request hacia `dev`, enlazando el issue.
+4. Ejecuta las verificaciones: `pnpm lint`, `pnpm typecheck`, `pnpm test` y `pnpm build`.
+5. Crea un Pull Request hacia `develop`, enlazando el issue.
 6. Espera la revisión de los docentes/compañeros y corrige los cambios solicitados.
 7. Integra el trabajo cuando esté aprobado.
 
@@ -333,7 +345,7 @@ El flujo del repositorio está definido en `CONTRIBUCIONES.md`. Resumen recomend
 - **Errores de alias `@`:** el alias está en `vite.config.ts` (Vite) y en `tsconfig.app.json` (`baseUrl` + `paths`). Verifica ambos.
 - **Problemas con Tailwind CSS v4:** el plugin `@tailwindcss/vite` debe estar en `vite.config.ts`. No uses configuración de Tailwind v3 (`tailwind.config.js`).
 - **Errores de TypeScript:** ejecuta `pnpm typecheck`. Usa `import type` para importar solo tipos (`verbatimModuleSyntax`).
-- **Errores de ESLint:** ejecuta `pnpm lint`. Separa componentes de módulos de utilidades (regla `react-refresh`).
-- **Falta del logotipo:** coloca el archivo original en `src/assets/images/logo.png`.
-- **Conflictos de Git:** ponte al día con la rama de integración antes de abrir el PR y revisa `git diff origin/dev...HEAD`.
-- **Problemas al ejecutar scripts:** confirma que el `package.json` define `dev`, `build`, `preview`, `lint`, `typecheck`, `format` y `format:check`, y usa `pnpm <script>`.
+- **Errores de ESLint:** ejecuta `pnpm lint`. Separa componentes de módulos de utilidades (regla `react-refresh`): el contexto vive en `src/context/appContext.ts`, no en el proveedor.
+- **La demo conserva datos viejos:** borra los datos del sitio en el navegador (o `localStorage` → clave `web-ecommerce-demo:v1`).
+- **Conflictos de Git:** ponte al día con la rama de integración antes de abrir el PR y revisa `git diff origin/develop...HEAD`.
+- **Problemas al ejecutar scripts:** confirma que el `package.json` define `dev`, `build`, `preview`, `test`, `lint`, `typecheck`, `format` y `format:check`, y usa `pnpm <script>`.
