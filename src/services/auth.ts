@@ -2,7 +2,7 @@
 // cuando exista. Las pantallas no deberían cambiar.
 
 const RETARDO_MS = 700
-const CODIGO_DEMO = '123456'
+const CODIGO_DEMO = "123456"
 
 function esperar(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms))

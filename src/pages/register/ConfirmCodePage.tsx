@@ -129,88 +129,88 @@ export function ConfirmCodePage() {
   const ultimos = telefono.slice(-4)
 
   return (
-    <AuthLayout title='Confirmar Código'>
-        <h1 className="text-2xl font-extrabold text-blue-900">
-          Confirma tu número
-        </h1>
-        <p className="mt-3 text-sm">
-          Enviamos un código de {LONGITUD} dígitos al número terminado en{' '}
-          <strong>{ultimos}</strong>.
-        </p>
+    <AuthLayout title="Confirmar Código">
+      <h1 className="text-2xl font-extrabold text-blue-900">
+        Confirma tu número
+      </h1>
+      <p className="mt-3 text-sm">
+        Enviamos un código de {LONGITUD} dígitos al número terminado en{' '}
+        <strong>{ultimos}</strong>.
+      </p>
 
-        <form onSubmit={manejarEnvio} className="mt-8">
-          <fieldset disabled={verificando || exito}>
-            <legend className="sr-only">Código de confirmación</legend>
-            <div className="flex justify-between gap-2">
-              {digitos.map((digito, i) => (
-                <input
-                  key={i}
-                  ref={(el) => {
-                    casillas.current[i] = el
-                  }}
-                  value={digito}
-                  onChange={(e) => cambiarDigito(i, e.target.value)}
-                  onKeyDown={(e) => manejarTecla(i, e)}
-                  onPaste={manejarPegado}
-                  onFocus={(e) => e.target.select()}
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete={i === 0 ? 'one-time-code' : 'off'}
-                  maxLength={1}
-                  autoFocus={i === 0}
-                  aria-label={`Dígito ${i + 1} de ${LONGITUD}`}
-                  aria-invalid={error ? true : undefined}
-                  className="h-14 w-12 rounded-lg border border-gray-300 text-center text-xl font-bold outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 aria-[invalid=true]:border-red-500"
-                />
-              ))}
-            </div>
-          </fieldset>
+      <form onSubmit={manejarEnvio} className="mt-8">
+        <fieldset disabled={verificando || exito}>
+          <legend className="sr-only">Código de confirmación</legend>
+          <div className="flex justify-between gap-2">
+            {digitos.map((digito, i) => (
+              <input
+                key={i}
+                ref={(el) => {
+                  casillas.current[i] = el
+                }}
+                value={digito}
+                onChange={(e) => cambiarDigito(i, e.target.value)}
+                onKeyDown={(e) => manejarTecla(i, e)}
+                onPaste={manejarPegado}
+                onFocus={(e) => e.target.select()}
+                type="text"
+                inputMode="numeric"
+                autoComplete={i === 0 ? 'one-time-code' : 'off'}
+                maxLength={1}
+                autoFocus={i === 0}
+                aria-label={`Dígito ${i + 1} de ${LONGITUD}`}
+                aria-invalid={error ? true : undefined}
+                className="h-14 w-12 rounded-lg border border-gray-300 text-center text-xl font-bold outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 aria-[invalid=true]:border-red-500"
+              />
+            ))}
+          </div>
+        </fieldset>
 
-          {error && (
-            <p
-              role="alert"
-              className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-800"
-            >
-              {error}
-            </p>
-          )}
-
-          {exito && (
-            <p
-              role="status"
-              className="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-800"
-            >
-              Número confirmado. Te llevamos al inicio de sesión…
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={verificando || exito}
-            className="mt-8 w-full rounded-full bg-blue-900 px-8 py-3 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+        {error && (
+          <p
+            role="alert"
+            className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-800"
           >
-            {verificando ? 'Verificando…' : 'Confirmar código'}
+            {error}
+          </p>
+        )}
+
+        {exito && (
+          <p
+            role="status"
+            className="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-800"
+          >
+            Número confirmado. Te llevamos al inicio de sesión…
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={verificando || exito}
+          className="mt-8 w-full rounded-full bg-blue-900 px-8 py-3 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {verificando ? 'Verificando…' : 'Confirmar código'}
+        </button>
+      </form>
+
+      <div className="mt-6 text-center text-sm">
+        {cooldown > 0 ? (
+          <p>Podrás reenviar el código en {cooldown} s</p>
+        ) : (
+          <button
+            type="button"
+            onClick={manejarReenvio}
+            disabled={reenviando || exito}
+            className="font-semibold text-blue-900 underline disabled:opacity-60"
+          >
+            {reenviando ? 'Reenviando…' : 'Reenviar código'}
           </button>
-        </form>
+        )}
+      </div>
 
-        <div className="mt-6 text-center text-sm">
-          {cooldown > 0 ? (
-            <p>Podrás reenviar el código en {cooldown} s</p>
-          ) : (
-            <button
-              type="button"
-              onClick={manejarReenvio}
-              disabled={reenviando || exito}
-              className="font-semibold text-blue-900 underline disabled:opacity-60"
-            >
-              {reenviando ? 'Reenviando…' : 'Reenviar código'}
-            </button>
-          )}
-        </div>
-
-        <p className="mt-6 text-center text-xs text-gray-500">
-          Modo demo: el código válido es 123456.
-        </p>
-      </AuthLayout>
+      <p className="mt-6 text-center text-xs text-gray-500">
+        Modo demo: el código válido es 123456.
+      </p>
+    </AuthLayout>
   )
 }

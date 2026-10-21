@@ -14,13 +14,17 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.home]: 'Home',
   [ROUTES.productDetail]: 'Detalle del producto',
   [ROUTES.menu]: 'Menú',
-  [ROUTES.infoPedido]: 'Información del pedido',
   [ROUTES.sucursales]: 'Sucursales',
   [ROUTES.clienteDireccion]: 'Ingresar dirección',
   [ROUTES.userDestiny]: 'Dirección del destinatario',
   [ROUTES.deliveryAccess]: 'Acceso repartidor',
   [ROUTES.deliveryLogin]: 'Iniciar sesión repartidor',
   [ROUTES.deliveryRegister]: 'Registro repartidor',
+  [ROUTES.deliveryOrders]: 'Pedidos disponibles repartidor',
+  [ROUTES.deliveryOrderDetail]: 'Pedido en curso repartidor',
+  [ROUTES.orderInfo]: 'Información de pedido',
+  [ROUTES.orderTracking]: 'Estado del pedido',
+  [ROUTES.profile]: 'Perfil de usuario',
 }
 
 const SUGGESTABLE_ROUTES = Object.values(ROUTES).filter(

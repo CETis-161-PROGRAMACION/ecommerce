@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .message {
-  @apply rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900
+  @apply rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900;
 }
 
 .caja {
@@ -16,13 +16,12 @@
 }
 
 .caja2 {
-  @apply 
-  bg-amber-500
+  @apply bg-amber-500
   text-black
   border border-white
   p-3
   mt-2
-  rounded-xl
+  rounded-xl;
 }
 
 @theme {
@@ -41,6 +40,12 @@
   --color-ink-muted: #8a8a8a;
   --color-line: #d9d9d9;
   --color-success: #4caf50;
+
+  /* Tonos cálidos y banner */
+  --color-warm-card: #f8f1e8;
+  --color-warm-pill: #f0e4d7;
+  --color-warm-border: #e3d3be;
+  --color-banner-dark: #2f3e35;
 
   --animate-fade-in: fade-in 0.7s ease-out both;
   --animate-splash-exit: splash-exit 0.4s ease-in both;

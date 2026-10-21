@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom'
 import { Logo } from '@/components/ui/Logo'
 import { ROUTES } from '@/router/routes'
@@ -14,7 +13,7 @@ export function DeliveryAccessPage() {
         <div className="flex w-full flex-col gap-4">
           <button
             type="button"
-            onClick={() => navigate('/repartidor/iniciar-sesion')}
+            onClick={() => navigate(ROUTES.deliveryLogin)}
             className="w-full rounded-full bg-brand-100 px-6 py-3 text-sm font-semibold text-navy-900 transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             Continuar como repartidor
@@ -22,10 +21,10 @@ export function DeliveryAccessPage() {
 
           <button
             type="button"
-            onClick={() => navigate(ROUTES.deliveryLogin)}
+            onClick={() => navigate(ROUTES.login)}
             className="w-full rounded-full bg-brand-100 px-6 py-3 text-sm font-semibold text-navy-900 transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
           >
-            Saltar
+            Continuar como cliente
           </button>
         </div>
       </section>

@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from 'react'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
@@ -88,7 +87,10 @@ export function DeliveryRegisterPage() {
       <form onSubmit={manejarRegistro} noValidate className="w-full">
         <div className="grid grid-cols-1 gap-x-10 gap-y-5 md:grid-cols-2">
           <div>
-            <label htmlFor="nombre-repartidor" className="mb-2 block text-sm font-bold text-ink">
+            <label
+              htmlFor="nombre-repartidor"
+              className="mb-2 block text-sm font-bold text-ink"
+            >
               Nombre completo
             </label>
             <input
@@ -116,7 +118,10 @@ export function DeliveryRegisterPage() {
                 className={inputClass}
                 value={datos.dia}
                 onChange={(e) =>
-                  actualizar('dia', e.target.value.replace(/\D/g, '').slice(0, 2))
+                  actualizar(
+                    'dia',
+                    e.target.value.replace(/\D/g, '').slice(0, 2),
+                  )
                 }
                 required
               />
@@ -129,7 +134,10 @@ export function DeliveryRegisterPage() {
                 className={inputClass}
                 value={datos.mes}
                 onChange={(e) =>
-                  actualizar('mes', e.target.value.replace(/\D/g, '').slice(0, 2))
+                  actualizar(
+                    'mes',
+                    e.target.value.replace(/\D/g, '').slice(0, 2),
+                  )
                 }
                 required
               />
@@ -142,7 +150,10 @@ export function DeliveryRegisterPage() {
                 className={inputClass}
                 value={datos.anio}
                 onChange={(e) =>
-                  actualizar('anio', e.target.value.replace(/\D/g, '').slice(0, 4))
+                  actualizar(
+                    'anio',
+                    e.target.value.replace(/\D/g, '').slice(0, 4),
+                  )
                 }
                 required
               />
@@ -150,7 +161,10 @@ export function DeliveryRegisterPage() {
           </fieldset>
 
           <div>
-            <label htmlFor="telefono-repartidor-registro" className="mb-2 block text-sm font-bold text-ink">
+            <label
+              htmlFor="telefono-repartidor-registro"
+              className="mb-2 block text-sm font-bold text-ink"
+            >
               Número de teléfono
             </label>
             <div className="flex gap-2">
@@ -167,7 +181,10 @@ export function DeliveryRegisterPage() {
                 className={`${inputClass} min-w-0 flex-1`}
                 value={datos.telefono}
                 onChange={(e) =>
-                  actualizar('telefono', e.target.value.replace(/\D/g, '').slice(0, 10))
+                  actualizar(
+                    'telefono',
+                    e.target.value.replace(/\D/g, '').slice(0, 10),
+                  )
                 }
                 required
               />
@@ -175,7 +192,10 @@ export function DeliveryRegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="contrasena-repartidor-registro" className="mb-2 block text-sm font-bold text-ink">
+            <label
+              htmlFor="contrasena-repartidor-registro"
+              className="mb-2 block text-sm font-bold text-ink"
+            >
               Contraseña
             </label>
             <input
@@ -190,7 +210,10 @@ export function DeliveryRegisterPage() {
           </div>
 
           <div className="md:col-span-2 md:mx-auto md:w-1/2">
-            <label htmlFor="confirmar-contrasena-repartidor" className="mb-2 block text-sm font-bold text-ink">
+            <label
+              htmlFor="confirmar-contrasena-repartidor"
+              className="mb-2 block text-sm font-bold text-ink"
+            >
               Confirmar contraseña
             </label>
             <input
@@ -199,20 +222,28 @@ export function DeliveryRegisterPage() {
               autoComplete="new-password"
               className={inputClass}
               value={datos.confirmarContrasena}
-              onChange={(e) => actualizar('confirmarContrasena', e.target.value)}
+              onChange={(e) =>
+                actualizar('confirmarContrasena', e.target.value)
+              }
               required
             />
           </div>
         </div>
 
         {mensaje && (
-          <p role="status" className="mt-5 text-center text-sm font-semibold text-ink">
+          <p
+            role="status"
+            className="mt-5 text-center text-sm font-semibold text-ink"
+          >
             {mensaje}
           </p>
         )}
 
         <div className="mt-8 flex justify-center">
-          <Button type="submit" className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200">
+          <Button
+            type="submit"
+            className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200"
+          >
             Siguiente
           </Button>
         </div>

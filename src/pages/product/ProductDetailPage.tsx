@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
+import { ROUTES } from '@/router/routes'
 import productImage from '@/assets/images/principito.png'
 
 interface SelectionGroupProps<T extends string> {
@@ -87,6 +89,7 @@ type DeliveryMethod = (typeof DELIVERY_METHODS)[number]
 type Sweetener = (typeof SWEETENERS)[number]
 
 export function ProductDetailPage() {
+  const navigate = useNavigate()
   const [size, setSize] = useState<Size | null>(null)
   const [milkType, setMilkType] = useState<MilkType | null>(null)
   const [extras, setExtras] = useState<Extra[]>([])
@@ -191,6 +194,7 @@ export function ProductDetailPage() {
 
         <Button
           type="button"
+          onClick={() => navigate(ROUTES.orderInfo)}
           className="w-full bg-brand-100! py-4 text-xl font-normal text-navy-900! hover:bg-brand-200! xl:absolute xl:left-[82px] xl:top-[865px] xl:h-[64px] xl:w-[1115px] xl:py-0"
         >
           Siguiente

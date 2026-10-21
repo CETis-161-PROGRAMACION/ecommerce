@@ -8,7 +8,11 @@ interface AuthLayoutProps {
   mainClassName?: string
 }
 
-export function AuthLayout({ title, children, mainClassName }: AuthLayoutProps) {
+export function AuthLayout({
+  title,
+  children,
+  mainClassName,
+}: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 sm:px-8 sm:py-12 motion-safe:animate-page-enter">
       <div className="w-full max-w-5xl">
