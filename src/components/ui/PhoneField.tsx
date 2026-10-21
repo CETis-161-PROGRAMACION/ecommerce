@@ -1,6 +1,11 @@
 import { useId } from 'react'
 import type { InputHTMLAttributes } from 'react'
 import { sanitizePhone } from '@/utils/phone'
+import {
+  fieldErrorClass,
+  inputErrorClass,
+  labelClass,
+} from '@/components/ui/fieldStyles'
 
 type PhoneFieldProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -27,12 +32,12 @@ export function PhoneField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={inputId} className="text-sm font-semibold text-ink">
+      <label htmlFor={inputId} className={labelClass}>
         {label}
       </label>
       <div
-        className={`flex items-stretch overflow-hidden rounded-xl border bg-surface focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-400 ${
-          error ? 'border-red-500' : 'border-line'
+        className={`flex items-stretch overflow-hidden rounded-xl border bg-surface transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-400 ${
+          error ? inputErrorClass : 'border-line'
         } ${className ?? ''}`}
       >
         <span className="select-none border-r border-line px-4 py-3 text-base text-ink-muted">
@@ -41,8 +46,9 @@ export function PhoneField({
         <input
           id={inputId}
           type="tel"
-          autoComplete="tel"
+          autoComplete="tel-national"
           inputMode="numeric"
+          maxLength={10}
           value={value}
           onChange={(event) => onChange(sanitizePhone(event.target.value))}
           aria-invalid={error ? true : undefined}
@@ -52,7 +58,7 @@ export function PhoneField({
         />
       </div>
       {error ? (
-        <p id={errorId} className="text-sm text-red-600">
+        <p id={errorId} className={fieldErrorClass}>
           {error}
         </p>
       ) : null}

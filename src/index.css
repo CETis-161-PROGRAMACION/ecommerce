@@ -2,27 +2,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-.message {
-  @apply rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900;
-}
-
-.caja {
-  background-color: #e19a49;
-  color: black;
-  border: white solid 1px;
-  padding: 12px;
-  margin-top: 8px;
-  border-radius: 16px;
-}
-
-.caja2 {
-  @apply bg-amber-500
-  text-black
-  border border-white
-  p-3
-  mt-2
-  rounded-xl;
-}
+/*
+ * Sistema de diseño de Web E-commerce.
+ *
+ * Reglas:
+ * - Todo color vive en un token de `@theme`. No se escriben hexadecimales
+ *   dentro de componentes ni en clases utilitarias de Tailwind.
+ * - Los tokens semánticos (`success`, `warning`, `danger`, `neutral`) traen un
+ *   par tono suave / tono fuerte para poder usarlo como fondo con texto.
+ * - Los overrides de `.dark` redefinen solo los tokens que cambian de valor.
+ */
 
 @theme {
   --font-sans: 'Open Sans', system-ui, sans-serif;
@@ -39,7 +28,27 @@
   --color-ink: #3d3d3d;
   --color-ink-muted: #8a8a8a;
   --color-line: #d9d9d9;
+
+  /* Semánticos: tono base, tono suave (fondo) y tono fuerte (texto) */
   --color-success: #4caf50;
+  --color-success-soft: #e6f4ea;
+  --color-success-strong: #1b5e20;
+
+  --color-warning: #d97706;
+  --color-warning-soft: #fdf3e3;
+  --color-warning-strong: #92400e;
+
+  --color-danger: #dc2626;
+  --color-danger-soft: #fdeaea;
+  --color-danger-strong: #991b1b;
+
+  --color-info: #2563eb;
+  --color-info-soft: #e8eefc;
+  --color-info-strong: #1e3a8a;
+
+  --color-neutral: #64748b;
+  --color-neutral-soft: #eef1f6;
+  --color-neutral-strong: #475569;
 
   /* Tonos cálidos y banner */
   --color-warm-card: #f8f1e8;
@@ -93,6 +102,52 @@
   --color-ink: #f1f1f5;
   --color-ink-muted: #b5b6c5;
   --color-line: #414354;
+
+  --color-success: #6ee7a0;
+  --color-success-soft: #17301f;
+  --color-success-strong: #9ff0b8;
+
+  --color-warning: #fbbf24;
+  --color-warning-soft: #33260f;
+  --color-warning-strong: #fcd34d;
+
+  --color-danger: #f87171;
+  --color-danger-soft: #34191b;
+  --color-danger-strong: #fca5a5;
+
+  --color-info: #93b4fd;
+  --color-info-soft: #1a2440;
+  --color-info-strong: #bfd3fe;
+
+  --color-neutral: #94a3b8;
+  --color-neutral-soft: #262a38;
+  --color-neutral-strong: #cbd5e1;
+
+  --color-warm-card: #2a2620;
+  --color-warm-pill: #332d24;
+  --color-warm-border: #453d31;
+  --color-banner-dark: #232b25;
+}
+
+/* Avisos reutilizables. Reemplazan las cajas sueltas que tenía cada pantalla. */
+@utility notice {
+  @apply rounded-xl border p-4 text-sm leading-relaxed;
+}
+
+@utility notice-info {
+  @apply notice border-brand-200 bg-brand-100 text-navy-900;
+}
+
+@utility notice-success {
+  @apply notice border-success/40 bg-success-soft text-success-strong;
+}
+
+@utility notice-warning {
+  @apply notice border-warning/40 bg-warning-soft text-warning-strong;
+}
+
+@utility notice-danger {
+  @apply notice border-danger/40 bg-danger-soft text-danger-strong;
 }
 
 @layer base {
@@ -104,5 +159,9 @@
 
   body {
     @apply bg-background font-sans text-ink antialiased;
+  }
+
+  :focus-visible {
+    outline-color: var(--color-brand-400);
   }
 }
