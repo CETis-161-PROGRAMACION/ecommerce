@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { RouterProvider } from 'react-router-dom'
+import { AppProvider } from '@/context/AppProvider'
 import { router } from '@/router'
 
 export default function App() {
@@ -16,7 +17,7 @@ export default function App() {
   }, [isDark])
 
   return (
-    <>
+    <AppProvider>
       <RouterProvider router={router} />
       <button
         type="button"
@@ -24,7 +25,7 @@ export default function App() {
         aria-pressed={isDark}
         title={`Cambiar a tema ${isDark ? 'claro' : 'oscuro'}`}
         onClick={() => setIsDark((currentTheme) => !currentTheme)}
-        className="fixed right-4 top-4 z-50 flex size-11 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+        className="fixed right-4 top-4 z-50 flex size-11 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
       >
         {isDark ? (
           <svg
@@ -55,6 +56,6 @@ export default function App() {
           </svg>
         )}
       </button>
-    </>
+    </AppProvider>
   )
 }
