@@ -1,20 +1,10 @@
-const logoModules = import.meta.glob('/src/assets/images/logo.png', {
-  eager: true,
-})
-
-const logoUrl = (
-  logoModules['/src/assets/images/logo.png'] as { default?: string } | undefined
-)?.default
+import logoUrl from '@/assets/images/logo.png'
 
 interface LogoProps {
   className?: string
 }
 
 export function Logo({ className }: LogoProps) {
-  if (!logoUrl) {
-    return null
-  }
-
   return (
     <img
       src={logoUrl}

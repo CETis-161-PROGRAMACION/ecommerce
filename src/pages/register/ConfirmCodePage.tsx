@@ -7,9 +7,10 @@ import {
   type KeyboardEvent,
 } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { ROUTES } from '@/router/routes'
-import { resendCode, verifyCode } from '@/services/auth'
 import { AuthLayout } from '@/components/layout/AuthLayout'
+import { Button } from '@/components/ui/Button'
+import { ROUTES } from '@/router/routes'
+import { CODIGO_DEMO, verifyDemoCode } from '@/services/demoAuth'
 
 const LONGITUD = 6
 const COOLDOWN_SEGUNDOS = 30
@@ -27,7 +28,7 @@ export function ConfirmCodePage() {
   const [cooldown, setCooldown] = useState(COOLDOWN_SEGUNDOS)
   const casillas = useRef<Array<HTMLInputElement | null>>([])
 
-  // Cuenta regresiva para poder reenviar el código
+  // Cuenta regresiva para poder volver a mostrar el código
   useEffect(() => {
     if (cooldown <= 0) return
     const id = setTimeout(() => setCooldown((c) => c - 1), 1000)
@@ -37,9 +38,12 @@ export function ConfirmCodePage() {
   // Al terminar con éxito, pasa al inicio de sesión
   useEffect(() => {
     if (!exito) return
-    const id = setTimeout(() => navigate(ROUTES.login), 1500)
+    const id = setTimeout(
+      () => navigate(ROUTES.login, { state: { telefono } }),
+      1200,
+    )
     return () => clearTimeout(id)
-  }, [exito, navigate])
+  }, [exito, navigate, telefono])
 
   // Sin pasar por el registro no hay nada que confirmar
   if (!telefono) {
@@ -85,7 +89,7 @@ export function ConfirmCodePage() {
     casillas.current[Math.min(pegado.length, LONGITUD - 1)]?.focus()
   }
 
-  async function manejarEnvio(e: FormEvent<HTMLFormElement>) {
+  function manejarEnvio(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const codigo = digitos.join('')
 
@@ -96,46 +100,37 @@ export function ConfirmCodePage() {
 
     setVerificando(true)
     try {
-      const { ok } = await verifyCode(telefono!, codigo)
-      if (ok) {
+      if (verifyDemoCode(telefono ?? '', codigo)) {
         setExito(true)
       } else {
         setError('El código es incorrecto. Revísalo e inténtalo de nuevo.')
         setDigitos(Array(LONGITUD).fill(''))
         casillas.current[0]?.focus()
       }
-    } catch {
-      setError('No pudimos verificar el código. Inténtalo de nuevo.')
     } finally {
       setVerificando(false)
     }
   }
 
-  async function manejarReenvio() {
+  function manejarReenvio() {
     setReenviando(true)
     setError('')
-    try {
-      await resendCode(telefono!)
-      setDigitos(Array(LONGITUD).fill(''))
-      casillas.current[0]?.focus()
-      setCooldown(COOLDOWN_SEGUNDOS)
-    } catch {
-      setError('No pudimos reenviar el código. Inténtalo más tarde.')
-    } finally {
-      setReenviando(false)
-    }
+    setDigitos(Array(LONGITUD).fill(''))
+    casillas.current[0]?.focus()
+    setCooldown(COOLDOWN_SEGUNDOS)
+    setReenviando(false)
   }
 
   const ultimos = telefono.slice(-4)
 
   return (
     <AuthLayout title="Confirmar Código">
-      <h1 className="text-2xl font-extrabold text-blue-900">
+      <h2 className="text-2xl font-extrabold text-navy-900">
         Confirma tu número
-      </h1>
-      <p className="mt-3 text-sm">
-        Enviamos un código de {LONGITUD} dígitos al número terminado en{' '}
-        <strong>{ultimos}</strong>.
+      </h2>
+      <p className="mt-3 text-sm text-ink">
+        Escribe el código de {LONGITUD} dígitos del número terminado en{' '}
+        <strong className="text-ink">{ultimos}</strong>.
       </p>
 
       <form onSubmit={manejarEnvio} className="mt-8">
@@ -160,56 +155,51 @@ export function ConfirmCodePage() {
                 autoFocus={i === 0}
                 aria-label={`Dígito ${i + 1} de ${LONGITUD}`}
                 aria-invalid={error ? true : undefined}
-                className="h-14 w-12 rounded-lg border border-gray-300 text-center text-xl font-bold outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 aria-[invalid=true]:border-red-500"
+                className="h-14 w-12 rounded-xl border border-line bg-surface text-center text-xl font-bold text-ink outline-none transition-colors focus:border-brand-400 focus:ring-2 focus:ring-brand-100 aria-[invalid=true]:border-danger"
               />
             ))}
           </div>
         </fieldset>
 
-        {error && (
-          <p
-            role="alert"
-            className="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-800"
-          >
+        {error ? (
+          <p role="alert" className="notice notice-danger mt-5">
             {error}
           </p>
-        )}
+        ) : null}
 
-        {exito && (
-          <p
-            role="status"
-            className="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-800"
-          >
+        {exito ? (
+          <p role="status" className="notice notice-success mt-5">
             Número confirmado. Te llevamos al inicio de sesión…
           </p>
-        )}
+        ) : null}
 
-        <button
+        <Button
           type="submit"
+          fullWidth
+          className="mt-8"
           disabled={verificando || exito}
-          className="mt-8 w-full rounded-full bg-blue-900 px-8 py-3 font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {verificando ? 'Verificando…' : 'Confirmar código'}
-        </button>
+        </Button>
       </form>
 
-      <div className="mt-6 text-center text-sm">
+      <div className="mt-6 text-center text-sm text-ink-muted">
         {cooldown > 0 ? (
-          <p>Podrás reenviar el código en {cooldown} s</p>
+          <p>Podrás volver a mostrar el código en {cooldown} s</p>
         ) : (
           <button
             type="button"
             onClick={manejarReenvio}
             disabled={reenviando || exito}
-            className="font-semibold text-blue-900 underline disabled:opacity-60"
+            className="font-semibold text-navy-900 underline underline-offset-4 disabled:opacity-60"
           >
-            {reenviando ? 'Reenviando…' : 'Reenviar código'}
+            {reenviando ? 'Mostrando…' : 'Mostrar el código otra vez'}
           </button>
         )}
       </div>
 
-      <p className="mt-6 text-center text-xs text-gray-500">
-        Modo demo: el código válido es 123456.
+      <p className="notice notice-info mt-6 text-center">
+        Modo demostración: el código válido es <strong>{CODIGO_DEMO}</strong>.
       </p>
     </AuthLayout>
   )

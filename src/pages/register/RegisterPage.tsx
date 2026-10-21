@@ -2,8 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import {
+  fieldErrorClass,
+  inputClass,
+  labelClass,
+} from '@/components/ui/fieldStyles'
+import { useApp } from '@/context/useApp'
 import { ROUTES } from '@/router/routes'
-import { registerUser } from '@/services/auth'
 
 interface DatosRegistro {
   nombre: string
@@ -59,16 +64,16 @@ function validarFecha(dia: string, mes: string, anio: string): string {
 
 export function RegisterPage() {
   const navigate = useNavigate()
+  const { register } = useApp()
   const [datos, setDatos] = useState<DatosRegistro>(datosIniciales)
   const [error, setError] = useState('')
-  const [enviando, setEnviando] = useState(false)
 
   function actualizar(campo: keyof DatosRegistro, valor: string) {
     setDatos((anterior) => ({ ...anterior, [campo]: valor }))
     setError('')
   }
 
-  async function manejarRegistro(evento: FormEvent<HTMLFormElement>) {
+  function manejarRegistro(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
 
     if (!datos.nombre.trim()) {
@@ -97,26 +102,22 @@ export function RegisterPage() {
       return
     }
 
-    setEnviando(true)
-    try {
-      await registerUser({
-        nombre: datos.nombre.trim(),
-        fechaNacimiento: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
-        telefono: datos.telefono,
-        contrasena: datos.contrasena,
-      })
-      navigate(ROUTES.confirmCode, { state: { telefono: datos.telefono } })
-    } catch {
-      setError('No pudimos crear tu cuenta. Inténtalo de nuevo.')
-    } finally {
-      setEnviando(false)
-    }
-  }
+    const resultado = register({
+      nombre: datos.nombre.trim(),
+      fechaNacimiento: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
+      telefono: datos.telefono,
+      contrasena: datos.contrasena,
+    })
 
-  const inputClass =
-    'h-12 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink ' +
-    'placeholder:text-ink-muted/70 outline-none transition-colors ' +
-    'focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
+    if (!resultado.ok) {
+      setError(
+        resultado.error ?? 'No pudimos crear tu cuenta. Inténtalo de nuevo.',
+      )
+      return
+    }
+
+    navigate(ROUTES.privacy, { state: { telefono: datos.telefono } })
+  }
 
   return (
     <AuthLayout title="Registro" mainClassName="w-full">
@@ -124,10 +125,7 @@ export function RegisterPage() {
         <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-2 lg:gap-x-20">
           {/* Nombre completo */}
           <div>
-            <label
-              htmlFor="nombre"
-              className="mb-2 block text-base font-bold text-ink"
-            >
+            <label htmlFor="nombre" className={labelClass}>
               Nombre completo:
             </label>
             <input
@@ -143,9 +141,7 @@ export function RegisterPage() {
 
           {/* Fecha de nacimiento */}
           <fieldset>
-            <legend className="mb-2 block text-base font-bold text-ink">
-              Fecha de nacimiento:
-            </legend>
+            <legend className={labelClass}>Fecha de nacimiento:</legend>
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
               <input
                 id="dia"
@@ -203,14 +199,11 @@ export function RegisterPage() {
 
           {/* Número de Teléfono */}
           <div>
-            <label
-              htmlFor="telefono"
-              className="mb-2 block text-base font-bold text-ink"
-            >
+            <label htmlFor="telefono" className={labelClass}>
               Número de Teléfono:
             </label>
             <div className="flex gap-3">
-              <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
+              <div className="flex h-12 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
                 +52
               </div>
               <input
@@ -235,10 +228,7 @@ export function RegisterPage() {
 
           {/* Contraseña */}
           <div>
-            <label
-              htmlFor="contrasena"
-              className="mb-2 block text-base font-bold text-ink"
-            >
+            <label htmlFor="contrasena" className={labelClass}>
               Contraseña:
             </label>
             <input
@@ -256,10 +246,7 @@ export function RegisterPage() {
 
         {/* Confirmar Contraseña (centrado abajo de las 2 columnas) */}
         <div className="mt-7 flex flex-col items-center">
-          <label
-            htmlFor="confirmarContrasena"
-            className="mb-2 block text-center text-base font-bold text-ink"
-          >
+          <label htmlFor="confirmarContrasena" className={labelClass}>
             Confirmar Contraseña:
           </label>
           <input
@@ -275,23 +262,16 @@ export function RegisterPage() {
         </div>
 
         {/* Mensaje de error si falla la validación */}
-        {error && (
-          <p
-            role="alert"
-            className="mt-5 text-center text-sm font-semibold text-red-600"
-          >
+        {error ? (
+          <p role="alert" className={`mt-5 text-center ${fieldErrorClass}`}>
             {error}
           </p>
-        )}
+        ) : null}
 
         {/* Botón de acción centrado */}
         <div className="mt-8 flex justify-center sm:mt-10">
-          <Button
-            type="submit"
-            disabled={enviando}
-            className="w-full max-w-[280px] bg-brand-100 py-3.5 text-base font-medium text-ink hover:bg-brand-200"
-          >
-            {enviando ? 'Creando cuenta…' : 'Iniciar sesión'}
+          <Button type="submit" className="w-full max-w-[280px]">
+            Crear cuenta
           </Button>
         </div>
       </form>

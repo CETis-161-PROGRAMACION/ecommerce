@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { CloseIcon } from '@/components/ui/CloseIcon'
+import { UserIcon } from '@/components/ui/UserIcon'
+import { useApp } from '@/context/useApp'
 import { ROUTES } from '@/router/routes'
 
 interface SideBarProps {
@@ -6,7 +9,33 @@ interface SideBarProps {
   onClose: () => void
 }
 
+interface SideBarLink {
+  to: string
+  label: string
+}
+
+const enlaces: SideBarLink[] = [
+  { to: ROUTES.home, label: 'Inicio' },
+  { to: ROUTES.profile, label: 'Mi Perfil' },
+  { to: ROUTES.orderTracking, label: 'Estado de Pedido' },
+  { to: ROUTES.sucursales, label: 'Sucursales' },
+  { to: ROUTES.menu, label: 'Sucursal Kundera' },
+  { to: ROUTES.deliveryOrders, label: 'Pedidos Repartidor' },
+]
+
 export function SideBar({ isOpen, onClose }: SideBarProps) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { session, logout } = useApp()
+
+  const nombreUsuario = session?.nombre ?? 'Invitado'
+
+  function cerrarSesion() {
+    logout()
+    onClose()
+    navigate(ROUTES.login)
+  }
+
   return (
     <>
       {/* Fondo oscuro al abrir el sidebar */}
@@ -34,74 +63,62 @@ export function SideBar({ isOpen, onClose }: SideBarProps) {
             className="rounded p-1 text-ink-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-brand-400"
             aria-label="Cerrar menú"
           >
-            <span className="text-xl leading-none">✕</span>
+            <CloseIcon size={20} />
           </button>
+        </div>
+
+        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-line bg-background p-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-soft text-neutral-strong">
+            <UserIcon size={24} />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-ink">
+              {nombreUsuario}
+            </p>
+            <p className="text-xs text-ink-muted">
+              {session
+                ? session.rol === 'repartidor'
+                  ? 'Repartidor'
+                  : 'Cliente'
+                : 'Sesión no iniciada'}
+            </p>
+          </div>
         </div>
 
         <nav className="flex-1">
           <ul className="flex flex-col gap-2">
-            <li>
-              <Link
-                to={ROUTES.home}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTES.profile}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Mi Perfil
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTES.orderTracking}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Estado de Pedido
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTES.sucursales}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Sucursales
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTES.menu}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Sucursal Kundera
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTES.deliveryOrders}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
-              >
-                Pedidos Repartidor
-              </Link>
-            </li>
+            {enlaces.map((enlace) => {
+              const activo =
+                enlace.to === ROUTES.home
+                  ? location.pathname === ROUTES.home
+                  : location.pathname.startsWith(enlace.to.split('?')[0])
+
+              return (
+                <li key={enlace.to}>
+                  <Link
+                    to={enlace.to}
+                    onClick={onClose}
+                    aria-current={activo ? 'page' : undefined}
+                    className={`flex items-center rounded-lg px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-brand-400 ${
+                      activo
+                        ? 'bg-brand-100 text-navy-900'
+                        : 'text-ink hover:bg-brand-100/60 hover:text-navy-900'
+                    }`}
+                  >
+                    {enlace.label}
+                  </Link>
+                </li>
+              )
+            })}
+
             <li className="mt-4 border-t border-line/60 pt-4">
-              <Link
-                to={ROUTES.login}
-                onClick={onClose}
-                className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-red-500 hover:text-white focus-visible:outline-2 focus-visible:outline-brand-400"
+              <button
+                type="button"
+                onClick={cerrarSesion}
+                className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink transition-colors hover:bg-danger-soft hover:text-danger focus-visible:outline-2 focus-visible:outline-brand-400"
               >
                 Cerrar sesión
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>

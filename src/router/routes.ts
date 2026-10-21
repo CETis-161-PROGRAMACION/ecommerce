@@ -11,7 +11,7 @@ export const ROUTES = {
   deliveryRegister: '/repartidor/registro',
   deliveryOrders: '/repartidor/pedidos',
   deliveryOrderDetail: '/repartidor/pedido/activo',
-  productDetail: '/producto/principito',
+  productDetail: '/producto/:id',
   menu: '/sucursal/menu',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',

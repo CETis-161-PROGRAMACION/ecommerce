@@ -1,8 +1,16 @@
-import { useState, type ReactNode } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, type FormEvent, type ReactNode } from 'react'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { SideBar } from '@/components/sidebar/SideBar'
 import { MotorcycleIcon } from '@/components/ui/MotorcycleIcon'
 import { ROUTES } from '@/router/routes'
+import menuIcon from '@/components/ui/icons/menu.svg'
+import personIcon from '@/components/ui/icons/person.svg'
+import searchIcon from '@/components/ui/icons/search.svg'
 
 interface NavBarProps {
   children: ReactNode
@@ -11,8 +19,27 @@ interface NavBarProps {
 
 export default function NavBar({ children, mainClassName }: NavBarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [searchParams] = useSearchParams()
+  const [term, setTerm] = useState(searchParams.get('q') ?? '')
+  const [lastQuery, setLastQuery] = useState(searchParams.get('q') ?? '')
   const location = useLocation()
-  const isDeliveryMode = location.pathname.startsWith('/repartidor')
+  const navigate = useNavigate()
+  const isDeliveryMode = location.pathname.startsWith(ROUTES.deliveryAccess)
+
+  // Si la URL cambia (búsqueda desde otra pantalla), el campo se sincroniza.
+  const currentQuery = searchParams.get('q') ?? ''
+  if (currentQuery !== lastQuery) {
+    setLastQuery(currentQuery)
+    setTerm(currentQuery)
+  }
+
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const query = term.trim()
+    navigate(
+      query ? `${ROUTES.home}?q=${encodeURIComponent(query)}` : ROUTES.home,
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:px-6 sm:py-10 motion-safe:animate-page-enter">
@@ -25,22 +52,19 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
           aria-label="Abrir menú"
           aria-expanded={isSidebarOpen}
           onClick={() => setIsSidebarOpen(true)}
-          className="shrink-0 cursor-pointer p-1 text-ink transition hover:text-navy-900"
+          className="shrink-0 cursor-pointer p-1 text-ink transition hover:text-navy-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
         >
-          <img
-            src="/src/components/ui/icons/menu.svg"
-            alt=""
-            width={32}
-            height={32}
-          />
+          <img src={menuIcon} alt="" width={32} height={32} />
         </button>
 
         {/* Icono Repartidor en Moto (con indicador de modo activo) */}
         <Link
           to={isDeliveryMode ? ROUTES.home : ROUTES.deliveryOrders}
-          aria-label={isDeliveryMode ? 'Ir al modo cliente' : 'Ir al modo repartidor'}
+          aria-label={
+            isDeliveryMode ? 'Ir al modo cliente' : 'Ir al modo repartidor'
+          }
           title={isDeliveryMode ? 'Modo cliente' : 'Modo repartidor'}
-          className={`relative shrink-0 p-1.5 transition rounded-lg hover:bg-brand-100 ${
+          className={`relative shrink-0 rounded-lg p-1.5 transition hover:bg-brand-100 ${
             isDeliveryMode ? 'text-brand-400' : 'text-ink'
           }`}
         >
@@ -50,10 +74,14 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
           )}
         </Link>
 
-        {/* Barra de búsqueda */}
-        <div className="relative flex flex-1 items-center">
+        {/* Barra de búsqueda: filtra el catálogo del inicio */}
+        <form
+          role="search"
+          onSubmit={handleSearch}
+          className="relative flex flex-1 items-center"
+        >
           <img
-            src="/src/components/ui/icons/search.svg"
+            src={searchIcon}
             alt=""
             aria-hidden="true"
             width={24}
@@ -63,33 +91,13 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
           <input
             type="search"
             name="search"
-            placeholder="Buscar..."
-            aria-label="Buscar"
-            className="h-10 w-full min-w-0 rounded-full border border-line bg-surface pl-10 pr-4 text-sm text-ink focus-visible:outline-2 focus-visible:outline-brand-400"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder="Buscar productos..."
+            aria-label="Buscar productos"
+            className="h-10 w-full min-w-0 rounded-full border border-line bg-surface pl-10 pr-4 text-sm text-ink placeholder:text-ink-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-400"
           />
-        </div>
-
-        {/* Micrófono */}
-        <button
-          type="button"
-          aria-label="Búsqueda por voz"
-          className="shrink-0 rounded-full p-2 text-ink-muted transition hover:bg-gray-100 hover:text-ink cursor-pointer"
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-            />
-          </svg>
-        </button>
+        </form>
 
         {/* Perfil */}
         <Link
@@ -97,12 +105,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
           aria-label="Perfil"
           className="shrink-0 p-1 text-ink transition hover:text-navy-900"
         >
-          <img
-            src="/src/components/ui/icons/person.svg"
-            alt=""
-            width={32}
-            height={32}
-          />
+          <img src={personIcon} alt="" width={32} height={32} />
         </Link>
       </header>
 

@@ -1,69 +1,83 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
+import { StoreCatalog } from '@/components/catalog/StoreCatalog'
+import { PillFilter } from '@/components/ui/PillFilter'
 import { KunderaSubView } from './sub-views/KunderaSubView'
 import { CuatroCafeSubView } from './sub-views/CuatroCafeSubView'
 import { TuMesaSubView } from './sub-views/TuMesaSubView'
 
 type StoreId = 'kundera' | 'cuatro-cafe' | 'tu-mesa'
 
+const stores: { id: StoreId; name: string }[] = [
+  { id: 'kundera', name: 'KUNDERA' },
+  { id: 'cuatro-cafe', name: 'CUATRO CAFÉ' },
+  { id: 'tu-mesa', name: 'TU MESA' },
+]
+
 export function HomePage() {
+  const [searchParams] = useSearchParams()
+  const busqueda = searchParams.get('q') ?? ''
+  const sucursalParam = searchParams.get('sucursal')
   const [activeStore, setActiveStore] = useState<StoreId>('kundera')
 
-  const stores: { id: StoreId; name: string }[] = [
-    { id: 'kundera', name: 'KUNDERA' },
-    { id: 'cuatro-cafe', name: 'CUATRO CAFÉ' },
-    { id: 'tu-mesa', name: 'TU MESA' },
-  ]
+  const storeActiva =
+    stores.find((store) => store.id === sucursalParam)?.id ?? activeStore
+  const nombreSucursal = stores.find((store) => store.id === storeActiva)?.name
 
   return (
     <NavBar>
       <div className="w-full space-y-6 pb-12">
-        {/* Banner principal (matching mockup dark rounded banner) */}
         <div
           role="region"
           aria-label="Banner promocional"
-          className="relative h-44 w-full overflow-hidden rounded-3xl bg-banner-dark shadow-md sm:h-56 flex items-center justify-center p-6 text-center"
+          className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-3xl bg-banner-dark p-6 text-center shadow-md sm:h-56"
         >
           <div className="space-y-2">
-            <span className="inline-block rounded-full bg-white/10 px-4 py-1 text-xs font-semibold tracking-wider text-brand-100 uppercase backdrop-blur-xs">
+            <span className="inline-block rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-brand-100 backdrop-blur-xs">
               Promociones del día
             </span>
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               Descubre los mejores sabores locales
-            </h2>
-            <p className="text-sm text-gray-300">
-              Café de especialidad, postres artesanales y comidas recién preparadas.
+            </h1>
+            <p className="text-sm text-neutral-soft">
+              Café de especialidad, postres artesanales y comidas recién
+              preparadas.
             </p>
           </div>
         </div>
 
-        {/* Store Selector Pills (KUNDERA, CUATRO CAFÉ, TU MESA) */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-2">
-          {stores.map((store) => {
-            const isActive = activeStore === store.id
-            return (
-              <button
-                key={store.id}
-                type="button"
-                onClick={() => setActiveStore(store.id)}
-                className={`cursor-pointer rounded-full px-8 py-3 text-base sm:text-lg font-black tracking-wide uppercase transition-all duration-200 shadow-xs focus-visible:outline-2 focus-visible:outline-brand-400 ${
-                  isActive
-                    ? 'border-2 border-brand-400 bg-brand-100/50 text-navy-900 shadow-sm scale-105'
-                    : 'border border-line bg-surface text-ink hover:border-brand-400 hover:text-navy-900'
-                }`}
-              >
-                {store.name}
-              </button>
-            )
-          })}
-        </div>
+        {busqueda ? (
+          <section aria-label="Resultados de la búsqueda">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-black tracking-tight text-ink sm:text-2xl">
+                Resultados para “{busqueda}”
+              </h2>
+            </div>
 
-        {/* Dynamic Composable Sub-view */}
-        <section aria-label={`Catálogo de productos de ${stores.find((s) => s.id === activeStore)?.name}`}>
-          {activeStore === 'kundera' && <KunderaSubView />}
-          {activeStore === 'cuatro-cafe' && <CuatroCafeSubView />}
-          {activeStore === 'tu-mesa' && <TuMesaSubView />}
-        </section>
+            <StoreCatalog storeId="all" busqueda={busqueda} />
+          </section>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-2 sm:gap-6">
+              {stores.map((store) => (
+                <PillFilter
+                  key={store.id}
+                  active={storeActiva === store.id}
+                  onClick={() => setActiveStore(store.id)}
+                >
+                  {store.name}
+                </PillFilter>
+              ))}
+            </div>
+
+            <section aria-label={`Catálogo de productos de ${nombreSucursal}`}>
+              {storeActiva === 'kundera' && <KunderaSubView />}
+              {storeActiva === 'cuatro-cafe' && <CuatroCafeSubView />}
+              {storeActiva === 'tu-mesa' && <TuMesaSubView />}
+            </section>
+          </>
+        )}
       </div>
     </NavBar>
   )

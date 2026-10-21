@@ -10,7 +10,8 @@ export const inputClass =
   'placeholder:text-ink-muted/70 outline-none transition-colors ' +
   'focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
 
-export const inputErrorClass = 'border-danger focus:border-danger focus:ring-danger-soft'
+export const inputErrorClass =
+  'border-danger focus:border-danger focus:ring-danger-soft'
 
 export const labelClass = 'mb-2 block text-base font-bold text-ink'
 

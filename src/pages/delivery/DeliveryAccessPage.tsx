@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/Button'
 import { Logo } from '@/components/ui/Logo'
 import { ROUTES } from '@/router/routes'
 
@@ -8,24 +9,32 @@ export function DeliveryAccessPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 py-8 motion-safe:animate-page-enter">
       <section className="flex w-full max-w-md flex-col items-center">
-        <Logo className="mb-10 h-36 w-auto sm:mb-12 sm:h-44" />
+        <Logo className="mb-8 h-36 w-auto sm:h-44" />
 
-        <div className="flex w-full flex-col gap-4">
-          <button
+        <h1 className="text-2xl font-bold uppercase tracking-wide text-brand-400 sm:text-3xl">
+          Web E-commerce
+        </h1>
+        <p className="mt-2 text-center text-sm text-ink-muted">
+          Elige cómo quieres entrar a la demostración.
+        </p>
+
+        <div className="mt-8 flex w-full flex-col gap-4">
+          <Button
             type="button"
             onClick={() => navigate(ROUTES.deliveryLogin)}
-            className="w-full rounded-full bg-brand-100 px-6 py-3 text-sm font-semibold text-navy-900 transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="w-full"
           >
             Continuar como repartidor
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={() => navigate(ROUTES.login)}
-            className="w-full rounded-full bg-brand-100 px-6 py-3 text-sm font-semibold text-navy-900 transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="w-full"
           >
             Continuar como cliente
-          </button>
+          </Button>
         </div>
       </section>
     </main>
