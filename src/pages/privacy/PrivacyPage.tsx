@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { Logo } from '@/components/ui/Logo'
 
 export function PrivacyPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false)
@@ -9,11 +10,7 @@ export function PrivacyPage() {
   return (
     <AuthLayout title="">
       <header className="mb-8 flex items-center gap-6 sm:gap-8">
-        <img
-          src="/src/assets/images/logo_e-commerce.png"
-          alt="Logo Web E-commerce"
-          className="h-28 w-28 shrink-0 object-contain sm:h-32 sm:w-32"
-        />
+        <Logo className="h-28 w-28 shrink-0 sm:h-32 sm:w-32" />
 
         <div>
           <h1 className="text-xl font-bold uppercase text-brand-400 sm:text-3xl">
