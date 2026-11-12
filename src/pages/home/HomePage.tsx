@@ -6,11 +6,13 @@ import photo2 from "../../assets/images/cft.png";
 import photo3 from "../../assets/images/san.png";
 import photo4 from "../../assets/images/dnm.png";
 import photo5 from "../../assets/images/kundera_logo.png";
+
+//? --> Carrusel de productos (imagenes) <--
 const productos = [
   { id: 1, nombre: "Producto 1", foto: photo1 },
   { id: 2, nombre: "Producto 2", foto: photo2 },
   { id: 3, nombre: "Producto 3", foto: photo3 },
-  { id: 4, nombre: "Producto 4", foto: photo4 },
+  { id: 4, nombre: "Doña Mary", foto: photo4 },
   { id: 5, nombre: "Producto 5", foto: photo5 },
 ];
 
@@ -36,7 +38,7 @@ export function HomePage() {
           Mi carrusel de productos
         </h1>
 
-        <div className="relative mx-auto max-w-3xl overflow-hidden rounded-xl">
+        <div className="relative mx-auto max-4xl object-cover object-[50%_50%] overflow-hidden rounded-xl ">
           <img
             src={productos[actual].foto}
             alt={productos[actual].nombre}

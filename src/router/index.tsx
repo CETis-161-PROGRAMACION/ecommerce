@@ -27,7 +27,7 @@ const routes = [
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.userDestiny, element: <UserDestiny /> },
-  { path: ROUTES.sucursales, element: <SucursalesPage /> },
+  { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },

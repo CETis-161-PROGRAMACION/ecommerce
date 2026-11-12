@@ -22,7 +22,7 @@ export function SplashPage() {
 
         setIsExiting(true)
         navigationTimer = window.setTimeout(
-          () => navigate(ROUTES.deliveryAccess, { replace: true }),
+          () => navigate(ROUTES.login, { replace: true }),
           400,
         )
       },
