@@ -21,6 +21,9 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.deliveryAccess]: 'Acceso repartidor',
   [ROUTES.deliveryLogin]: 'Iniciar sesión repartidor',
   [ROUTES.deliveryRegister]: 'Registro repartidor',
+  [ROUTES.deliveryHome]: 'Panel del repartidor',
+  [ROUTES.deliveryOrders]: 'Pedidos disponibles',
+  [ROUTES.deliveryOrderDetail]: 'Detalle del pedido',
 }
 
 const SUGGESTABLE_ROUTES = Object.values(ROUTES).filter(

@@ -58,26 +58,32 @@ export function SideBar({ isOpen, onClose }: SideBarProps) {
                 </a>
                 </li>
                 <li>
-                <a
-                    href={ROUTES.menu}
-                    onClick={onClose}
-                    className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
+                <button
+                    type="button"
+                    disabled
+                    className="flex w-full cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-ink-muted opacity-70"
                 >
+                <span>
                     Ayuda
-                </a>
+                </span>
+                <span className="text-xs font-normal">Próximamente</span>
+                </button>
                 </li>
                 <li>
-                <a
-                    href={ROUTES.menu}
-                    onClick={onClose}
-                    className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
+                <button
+                    type="button"
+                    disabled
+                    className="flex w-full cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-ink-muted opacity-70"
                 >
+                <span>
                     Acerca de
-                </a>
+                </span>
+                <span className="text-xs font-normal">Próximamente</span>
+                </button>
                 </li>
                 <li>
                 <a
-                    href={ROUTES.menu}
+                    href={ROUTES.deliveryAccess}
                     onClick={onClose}
                     className="flex items-center rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400"
                 >

@@ -15,7 +15,10 @@ import { AddressPage } from '@/pages/address/AddressPage'
 import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
 import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
 import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
+import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
+import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -33,6 +36,9 @@ const routes = [
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
+  { path: ROUTES.deliveryHome, element: <DeliveryHomePage /> },
+  { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
+  { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 
