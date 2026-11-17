@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import productImage from '@/assets/images/principito.png'
+import { ROUTES } from '@/router/routes'
+import { useCart } from '@/services/cart/cart'
 
 interface SelectionGroupProps<T extends string> {
   title: string
@@ -86,6 +89,10 @@ type Extra = (typeof EXTRAS)[number]
 type DeliveryMethod = (typeof DELIVERY_METHODS)[number]
 type Sweetener = (typeof SWEETENERS)[number]
 
+const PRODUCT_NAME = 'Principito'
+const PRODUCT_BUSINESS = 'Kundera'
+const PRODUCT_PRICE = 80
+
 export function ProductDetailPage() {
   const [size, setSize] = useState<Size | null>(null)
   const [milkType, setMilkType] = useState<MilkType | null>(null)
@@ -95,6 +102,27 @@ export function ProductDetailPage() {
   )
   const [sweetener, setSweetener] = useState<Sweetener | null>(null)
   const [comments, setComments] = useState('')
+  const { addItem } = useCart()
+  const navigate = useNavigate()
+
+  function handleNext() {
+    const options = [
+      size && `Tamaño ${size}`,
+      milkType && `Leche ${milkType}`,
+      ...extras,
+      sweetener,
+      deliveryMethod,
+    ].filter((option): option is string => Boolean(option))
+
+    addItem({
+      business: PRODUCT_BUSINESS,
+      name: PRODUCT_NAME,
+      options,
+      price: PRODUCT_PRICE,
+      image: productImage,
+    })
+    navigate(ROUTES.infoPedido)
+  }
 
   function toggleSingle<T extends string>(
     setter: (updater: (current: T | null) => T | null) => void,
@@ -191,6 +219,7 @@ export function ProductDetailPage() {
 
         <Button
           type="button"
+          onClick={handleNext}
           className="w-full bg-brand-100! py-4 text-xl font-normal text-navy-900! hover:bg-brand-200! xl:absolute xl:left-[82px] xl:top-[865px] xl:h-[64px] xl:w-[1115px] xl:py-0"
         >
           Siguiente
