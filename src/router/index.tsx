@@ -17,6 +17,7 @@ import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
 import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
 import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+import { OrderInfoPage } from '@/pages/order-info/OrderInfoPage'
 
 import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
 
@@ -41,6 +42,7 @@ const routes = [
   { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
+  { path: ROUTES.infoPedido, element: <OrderInfoPage /> },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
