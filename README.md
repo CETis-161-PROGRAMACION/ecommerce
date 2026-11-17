@@ -186,6 +186,7 @@ Distinción de responsabilidades:
 - **Layouts** (`src/components/layout/`): estructuras de presentación compartidas.
 - **Plantillas copiables** (`src/plantillas/`): esqueletos de referencia para nuevas pantallas.
 - **Servicios** (`src/services/`): se creará para las futuras integraciones con APIs cuando existan.
+- **Carrito** (`src/services/cart/`): `CartProvider` envuelve la app y `useCart()` permite agregar, cambiar cantidad y eliminar productos. El estado vive en memoria: se pierde al recargar la página hasta que exista un backend.
 - **Tipos** (`src/types/`): se creará para los tipos compartidos cuando existan.
 - **Utilidades** (`src/utils/`): funciones auxiliares independientes de las páginas.
 - **Enrutador** (`src/router/`): constante de rutas y configuración del enrutador.
@@ -265,7 +266,7 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 | `/iniciar-sesion`            | `LoginPage`       | Placeholder                                                           |
 | `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |
 | `/registro/confirmar-codigo` | `ConfirmCodePage` | Placeholder                                                           |
-| `/info/pedido`               | `OrderInfoPage`   | Interfaz completa; datos del diseño y envío del pedido con `TODO`     |
+| `/info/pedido`               | `OrderInfoPage`   | Muestra el carrito agrupado por negocio; el envío del pedido aún no existe |
 
 - Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.
