@@ -261,11 +261,11 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 
 | Ruta                         | Componente        | Estado                                                                |
 | ---------------------------- | ----------------- | --------------------------------------------------------------------- |
+| `/repartidor/registro/vehiculo` | `DeliveryVehiclePage` | Paso 2 del registro de repartidor; la solicitud aún no se envía |
 | `/`                          | `SplashPage`      | Funcional, con redirección automática a `/iniciar-sesion` a los 2.5 s |
 | `/iniciar-sesion`            | `LoginPage`       | Placeholder                                                           |
 | `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |
 | `/registro/confirmar-codigo` | `ConfirmCodePage` | Placeholder                                                           |
-| `/repartidor/registro/vehiculo` | `DeliveryVehiclePage` | Paso 2 del registro de repartidor; la solicitud aún no se envía |
 
 - Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.
