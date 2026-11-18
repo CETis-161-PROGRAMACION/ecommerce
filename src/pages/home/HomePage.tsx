@@ -3,15 +3,18 @@ import { Link } from 'react-router-dom'
 import { Coffee, Croissant, Utensils, type LucideIcon } from 'lucide-react'
 import NavBar from '@/components/navbar/NavBar'
 import { ROUTES } from '@/router/routes'
-import cafeTostadoLogo from '@/assets/images/cft.png'
-import santoriLogo from '@/assets/images/san.png'
-import donaMaryLogo from '@/assets/images/dnm.png'
-import kunderaLogo from '@/assets/images/kundera_logo.png'
+import cuatroCafePromo from '@/assets/images/negocios/cuatro-cafe-08.webp'
+import cuatroCafeChilaquiles from '@/assets/images/negocios/cuatro-cafe-03.webp'
+import kunderaLocal from '@/assets/images/negocios/kundera-06.webp'
+import kunderaLatte from '@/assets/images/negocios/kundera-02.webp'
+import santoriPromo from '@/assets/images/negocios/santori-02.webp'
+import donaMaryPizza from '@/assets/images/negocios/dona-mary-07.webp'
 import principitoImage from '@/assets/images/principito.png'
 
 interface Slide {
   name: string
   image: string
+  alt: string
 }
 
 interface Category {
@@ -29,10 +32,36 @@ interface Product {
 }
 
 const SLIDES: readonly Slide[] = [
-  { name: 'Café Tostado', image: cafeTostadoLogo },
-  { name: 'Kundera', image: kunderaLogo },
-  { name: 'Santori', image: santoriLogo },
-  { name: 'Doña Mary', image: donaMaryLogo },
+  {
+    name: 'Cuatro Café',
+    image: cuatroCafePromo,
+    alt: 'Promoción de Cuatro Café: "Ni las sombras se resisten", capuchino con arte de luna y estrella',
+  },
+  {
+    name: 'Cuatro Café: desayunos',
+    image: cuatroCafeChilaquiles,
+    alt: 'Desayuno de Cuatro Café con chilaquiles, tocino y frijoles',
+  },
+  {
+    name: 'Kundera',
+    image: kunderaLocal,
+    alt: 'Interior de Kundera con el letrero "Libros + Café" y una mesa',
+  },
+  {
+    name: 'Kundera: café',
+    image: kunderaLatte,
+    alt: 'Café con arte latte junto a un libro abierto en Kundera',
+  },
+  {
+    name: 'Santori',
+    image: santoriPromo,
+    alt: 'Promoción de Santori: Caramel Macchiato',
+  },
+  {
+    name: 'Doña Mary',
+    image: donaMaryPizza,
+    alt: 'Pizza de Doña Mary con boneless y aderezo',
+  },
 ]
 
 const BUSINESSES = ['KUNDERA', 'CUATRO CAFÉ', 'TU MESA'] as const
@@ -91,12 +120,18 @@ export function HomePage() {
       >
         <div
           aria-live="polite"
-          className="flex h-48 items-center justify-center px-12 pt-6 pb-10 sm:h-72"
+          className="relative flex h-56 items-center justify-center overflow-hidden sm:h-80"
         >
           <img
             src={slide.image}
-            alt={slide.name}
-            className="max-h-full max-w-full object-contain"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-xl"
+          />
+          <img
+            src={slide.image}
+            alt={slide.alt}
+            className="relative h-full w-auto max-w-full object-contain py-3 shadow-lg"
           />
         </div>
 
@@ -104,7 +139,7 @@ export function HomePage() {
           type="button"
           onClick={showPrevious}
           aria-label="Anterior"
-          className={`absolute top-1/2 left-2 -translate-y-1/2 rounded-full p-2 text-ink hover:bg-brand-100 sm:left-4 ${focusRing}`}
+          className={`absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-surface/80 p-2 text-ink shadow hover:bg-brand-100 sm:left-4 ${focusRing}`}
         >
           <svg
             aria-hidden="true"
@@ -121,7 +156,7 @@ export function HomePage() {
           type="button"
           onClick={showNext}
           aria-label="Siguiente"
-          className={`absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-2 text-ink hover:bg-brand-100 sm:right-4 ${focusRing}`}
+          className={`absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-surface/80 p-2 text-ink shadow hover:bg-brand-100 sm:right-4 ${focusRing}`}
         >
           <svg
             aria-hidden="true"
@@ -135,7 +170,7 @@ export function HomePage() {
           </svg>
         </button>
 
-        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-surface/80 px-3 py-1.5">
           {SLIDES.map((item, index) => (
             <button
               key={item.name}
