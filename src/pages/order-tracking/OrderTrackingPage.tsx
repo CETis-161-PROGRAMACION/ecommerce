@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
 import { DeliveryProgress } from '@/components/order/DeliveryProgress'
 import { OrderSummary } from '@/components/order/OrderSummary'
 import { Button } from '@/components/ui/Button'
+import { ROUTES } from '@/router/routes'
 import { SAVED_ADDRESSES } from '@/services/order/orderDetails'
 import { buildMapUrl } from '@/utils/maps'
 
@@ -11,12 +13,15 @@ const IN_TRANSIT_PROGRESS = 40
 
 export function OrderTrackingPage() {
   const [message, setMessage] = useState('')
+  const navigate = useNavigate()
 
   function handleSendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
   }
 
-  function handleReceived() {}
+  function handleReceived() {
+    navigate(ROUTES.pedidoEntregado)
+  }
 
   return (
     <NavBar>

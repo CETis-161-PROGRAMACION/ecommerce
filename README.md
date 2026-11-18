@@ -269,6 +269,7 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 | `/info/pedido`               | `OrderInfoPage`   | Muestra el carrito agrupado por negocio; el envío del pedido aún no existe |
 | `/pedido/tipo-de-pago`       | `PaymentTypePage` | Elige el método de pago y regresa a la información del pedido          |
 | `/pedido/en-camino`          | `OrderTrackingPage` | Seguimiento del pedido; estado, contacto y llegada estimada pendientes de backend |
+| `/pedido/entregado`          | `OrderDeliveredPage` | Pedido entregado con calificación; la calificación aún no se guarda |
 
 - Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.

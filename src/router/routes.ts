@@ -18,6 +18,7 @@ export const ROUTES = {
   infoPedido: '/info/pedido',
   tipoPago: '/pedido/tipo-de-pago',
   pedidoEnCamino: '/pedido/en-camino',
+  pedidoEntregado: '/pedido/entregado',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
   userDestiny: '/pedido/direccion-destinatario',

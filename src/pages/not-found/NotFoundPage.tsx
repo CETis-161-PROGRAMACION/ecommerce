@@ -18,6 +18,7 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.infoPedido]: 'Información del pedido',
   [ROUTES.tipoPago]: 'Tipo de pago',
   [ROUTES.pedidoEnCamino]: 'Pedido en camino',
+  [ROUTES.pedidoEntregado]: 'Pedido entregado',
   [ROUTES.sucursales]: 'Sucursales',
   [ROUTES.clienteDireccion]: 'Ingresar dirección',
   [ROUTES.userDestiny]: 'Dirección del destinatario',
