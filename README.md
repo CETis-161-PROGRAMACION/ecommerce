@@ -267,6 +267,7 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 | `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |
 | `/registro/confirmar-codigo` | `ConfirmCodePage` | Placeholder                                                           |
 | `/info/pedido`               | `OrderInfoPage`   | Muestra el carrito agrupado por negocio; el envío del pedido aún no existe |
+| `/pedido/tipo-de-pago`       | `PaymentTypePage` | Elige el método de pago y regresa a la información del pedido          |
 
 - Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.

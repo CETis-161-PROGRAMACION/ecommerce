@@ -18,6 +18,7 @@ import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
 import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
 import { OrderInfoPage } from '@/pages/order-info/OrderInfoPage'
+import { PaymentTypePage } from '@/pages/payment-type/PaymentTypePage'
 
 import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
 
@@ -43,6 +44,7 @@ const routes = [
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
   { path: ROUTES.infoPedido, element: <OrderInfoPage /> },
+  { path: ROUTES.tipoPago, element: <PaymentTypePage /> },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
 import { Button } from '@/components/ui/Button'
 import { ROUTES } from '@/router/routes'
@@ -9,18 +9,18 @@ import {
   type BusinessOrder,
   type CartItem,
 } from '@/services/cart/cart'
+import {
+  PAYMENT_METHODS,
+  isPaymentMethod,
+  type PaymentMethod,
+  type PaymentMethodState,
+} from '@/services/payment/paymentMethods'
 
 const SERVICE_FEE = 25
 const RECIPIENT_NAME = 'Michell Hernandez'
 const SAVED_ADDRESSES = ['Adoquinada #19', 'Centro #17A'] as const
-const PAYMENT_METHODS = [
-  'Tarjeta de débito',
-  'Tarjeta de crédito',
-  'Pago presencial',
-] as const
 
 type SavedAddress = (typeof SAVED_ADDRESSES)[number]
-type PaymentMethod = (typeof PAYMENT_METHODS)[number]
 
 const currency = new Intl.NumberFormat('es-MX', {
   style: 'currency',
@@ -158,9 +158,12 @@ function BusinessOrderSection({ order }: BusinessOrderSectionProps) {
 
 export function OrderInfoPage() {
   const { items } = useCart()
+  const location = useLocation()
+  const requestedMethod = (location.state as PaymentMethodState | null)
+    ?.paymentMethod
   const [address, setAddress] = useState<SavedAddress>(SAVED_ADDRESSES[0])
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
-    PAYMENT_METHODS[0],
+    isPaymentMethod(requestedMethod) ? requestedMethod : PAYMENT_METHODS[0],
   )
   const [isPaymentListOpen, setIsPaymentListOpen] = useState(false)
 
@@ -389,15 +392,13 @@ export function OrderInfoPage() {
             <Link to={ROUTES.clienteDireccion} className={secondaryAction}>
               Utilizar una nueva ubicación
             </Link>
-            <button
-              type="button"
-              aria-expanded={isPaymentListOpen}
-              aria-controls="payment-method-options"
-              onClick={() => setIsPaymentListOpen(true)}
+            <Link
+              to={ROUTES.tipoPago}
+              state={{ paymentMethod } satisfies PaymentMethodState}
               className={secondaryAction}
             >
               Utilizar otro método de pago
-            </button>
+            </Link>
           </div>
 
           <Button

@@ -16,6 +16,7 @@ export const ROUTES = {
   productDetail: '/producto/principito',
   menu: '/sucursal/menu',
   infoPedido: '/info/pedido',
+  tipoPago: '/pedido/tipo-de-pago',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
   userDestiny: '/pedido/direccion-destinatario',
