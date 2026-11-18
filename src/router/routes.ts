@@ -7,23 +7,23 @@ export const ROUTES = {
   codeConfirm: '/confirmar-codigo',
   privacy: '/registro/privacidad',
   home: '/inicio',
+
   deliveryAccess: '/repartidor',
   deliveryLogin: '/repartidor/iniciar-sesion',
   deliveryRegister: '/repartidor/registro',
   deliveryHome: '/repartidor/inicio',
   deliveryOrders: '/repartidor/pedidos',
   deliveryOrderDetail: '/repartidor/pedidos/:pedidoId',
+
   productDetail: '/producto/principito',
   menu: '/sucursal/menu',
   infoPedido: '/info/pedido',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
-<<<<<<< HEAD
   userDestiny: '/pedido/direccion-destinatario',
+
   businessInfo: '/informacion-negocio',
-=======
-  infoTarjeta:'/informacion-tarjeta',
->>>>>>> feature/info-tarjeta
+  infoTarjeta: '/informacion-tarjeta',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]

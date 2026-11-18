@@ -18,7 +18,7 @@ import { deliveryOrdersDemo } from './deliveryOrders.data'
 const establecimientos = [
   'Todos',
   'KUNDERA',
-  'Santori',
+  'SANTORI',
   'CUATRO CAFÉ',
   'TU MESA',
 ]

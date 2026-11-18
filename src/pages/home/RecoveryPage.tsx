@@ -1,6 +1,4 @@
 import { AuthLayout } from '@/components/layout/AuthLayout'
-import { ROUTES } from "@/router/routes"
-
 
 // TODO: Implementar la pantalla de recuperación de datos. Elementos previstos
 // por la referencia:
