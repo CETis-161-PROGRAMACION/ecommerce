@@ -1,9 +1,10 @@
 export const ROUTES = {
   splash: '/',
   login: '/iniciar-sesion',
-  recovery: '/recuperar-datos',
+  recovery: '/recuperar-datos/confirm-recovery',
   register: '/registro',
   confirmCode: '/registro/confirmar-codigo',
+  codeConfirm: '/confirmar-codigo',
   privacy: '/registro/privacidad',
   home: '/inicio',
   deliveryAccess: '/repartidor',
@@ -17,8 +18,12 @@ export const ROUTES = {
   infoPedido: '/info/pedido',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
+<<<<<<< HEAD
   userDestiny: '/pedido/direccion-destinatario',
   businessInfo: '/informacion-negocio',
+=======
+  infoTarjeta:'/informacion-tarjeta',
+>>>>>>> feature/info-tarjeta
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
