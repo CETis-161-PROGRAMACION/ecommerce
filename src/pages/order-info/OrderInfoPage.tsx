@@ -15,26 +15,14 @@ import {
   type PaymentMethod,
   type PaymentMethodState,
 } from '@/services/payment/paymentMethods'
-
-const SERVICE_FEE = 25
-const RECIPIENT_NAME = 'Michell Hernandez'
-const SAVED_ADDRESSES = ['Adoquinada #19', 'Centro #17A'] as const
-
-type SavedAddress = (typeof SAVED_ADDRESSES)[number]
-
-const currency = new Intl.NumberFormat('es-MX', {
-  style: 'currency',
-  currency: 'MXN',
-})
-
-function formatPrice(amount: number) {
-  return currency.format(amount)
-}
-
-function buildMapUrl(address: string) {
-  const query = encodeURIComponent(`${address}, Tala, Jalisco`)
-  return `https://maps.google.com/maps?q=${query}&z=16&output=embed`
-}
+import {
+  RECIPIENT_NAME,
+  SAVED_ADDRESSES,
+  SERVICE_FEE,
+  type SavedAddress,
+} from '@/services/order/orderDetails'
+import { formatPrice } from '@/utils/currency'
+import { buildMapUrl } from '@/utils/maps'
 
 const focusRing =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400'
