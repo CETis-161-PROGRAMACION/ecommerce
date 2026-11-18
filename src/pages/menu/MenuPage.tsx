@@ -1,5 +1,4 @@
 import NavBar from "@/components/navbar/NavBar"
-import kunderaLogo from '@/assets/images/kundera_logo.png'
 
 
 export function MenuPage() {
@@ -7,7 +6,7 @@ export function MenuPage() {
         <NavBar>
             <div className="flex flex-row md:flex-row items-start justify-between w-full py-6">
                 <div className="flex items-start sticky top-10 self-start gap-6">
-                    <img src={kunderaLogo} alt="Logo de Kundera" className="w-36 h-36 rounded-full" />
+                    <img src="/src/assets/images/kundera_logo.png" alt="Logo de Kundera" className="w-36 h-36 rounded-full" />
 
                     <div className="flex flex-col items-center gap-2">
                         <span className="border border-line rounded-full px-6 py-1.5 text-base font-bold text-ink">
