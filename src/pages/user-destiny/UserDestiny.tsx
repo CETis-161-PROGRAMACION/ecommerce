@@ -1,7 +1,11 @@
 import { useId, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
 import { Button } from '@/components/ui/Button'
 import accountIcon from '@/components/ui/icons/account.svg'
+import { ROUTES } from '@/router/routes'
+import { useCheckout } from '@/services/order/checkout'
+import { useSession } from '@/services/session/session'
 
 interface RecipientForm {
   name: string
@@ -24,29 +28,32 @@ function validate(form: RecipientForm): RecipientErrors {
 
 export function UserDestiny() {
   const id = useId()
-  const [form, setForm] = useState<RecipientForm>({ name: '', phone: '' })
+  const navigate = useNavigate()
+  const { draft, update: updateCheckout } = useCheckout()
+  const { profile } = useSession()
+  const [form, setForm] = useState<RecipientForm>({
+    name: draft.recipientName ?? profile?.fullName ?? '',
+    phone: draft.recipientPhone ?? profile?.phone ?? '',
+  })
   const [errors, setErrors] = useState<RecipientErrors>({})
-  const [message, setMessage] = useState('')
 
   function update(field: keyof RecipientForm, value: string) {
     const nextValue =
       field === 'phone' ? value.replace(/\D/g, '').slice(0, 10) : value
     setForm((current) => ({ ...current, [field]: nextValue }))
     setErrors((current) => ({ ...current, [field]: undefined }))
-    setMessage('')
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const nextErrors = validate(form)
     setErrors(nextErrors)
-    if (Object.keys(nextErrors).length > 0) {
-      setMessage('')
-      return
-    }
-    setMessage(
-      'Los datos son válidos. El destinatario se guardará cuando conectemos el servicio de pedidos.',
-    )
+    if (Object.keys(nextErrors).length > 0) return
+    updateCheckout({
+      recipientName: form.name.trim(),
+      recipientPhone: form.phone,
+    })
+    navigate(ROUTES.infoPedido)
   }
 
   return (
@@ -55,8 +62,8 @@ export function UserDestiny() {
         <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">
           Web E-commerce
         </p>
-        <img src={accountIcon} alt="" className="my-4 size-32 sm:size-40" />
-        <h1 className="text-2xl font-bold text-ink">Ingresar Dirección</h1>
+        <img src={accountIcon} alt="" className="my-4 size-32 sm:size-40 dark:brightness-200" />
+        <h1 className="text-2xl font-bold text-ink">Datos del destinatario</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -80,7 +87,7 @@ export function UserDestiny() {
               className={inputClass}
             />
             {errors.name && (
-              <p id={`${id}-name-error`} className="mt-1 text-xs text-red-600">
+              <p id={`${id}-name-error`} className="mt-1 text-xs text-red-600 dark:text-red-400">
                 {errors.name}
               </p>
             )}
@@ -106,20 +113,11 @@ export function UserDestiny() {
               className={inputClass}
             />
             {errors.phone && (
-              <p id={`${id}-phone-error`} className="mt-1 text-xs text-red-600">
+              <p id={`${id}-phone-error`} className="mt-1 text-xs text-red-600 dark:text-red-400">
                 {errors.phone}
               </p>
             )}
           </div>
-
-          {message && (
-            <p
-              role="status"
-              className="text-center text-sm font-semibold text-ink"
-            >
-              {message}
-            </p>
-          )}
 
           <div className="flex justify-center">
             <Button

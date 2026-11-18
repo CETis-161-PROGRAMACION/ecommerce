@@ -1,99 +1,80 @@
-
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { TextField } from '@/components/ui/TextField'
 import { ROUTES } from '@/router/routes'
+import { signIn } from '@/services/auth'
 
 export function DeliveryLoginPage() {
-  const [telefono, setTelefono] = useState('')
-  const [contrasena, setContrasena] = useState('')
-  const [mensaje, setMensaje] = useState('')
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = (location.state as { from?: string } | null)?.from
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function manejarInicioSesion(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-
-    if (!/^[0-9]{10}$/.test(telefono)) {
-      setMensaje('Ingresa un teléfono de 10 dígitos.')
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!email.trim() || !password) {
+      setError('Ingresa tu correo y tu contraseña.')
       return
     }
 
-    if (!contrasena.trim()) {
-      setMensaje('Ingresa tu contraseña.')
-      return
+    setIsSubmitting(true)
+    setError('')
+    try {
+      await signIn(email.trim().toLowerCase(), password)
+      // Si la cuenta no es de repartidor, RequireDriver la regresa al acceso.
+      navigate(from ?? ROUTES.deliveryHome, { replace: true })
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : 'No pudimos iniciar sesión.',
+      )
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setMensaje(
-      'El inicio de sesión del repartidor estará disponible cuando se conecte el servicio de autenticación.',
-    )
   }
 
   return (
     <AuthLayout title="Acceso del repartidor">
-      <form onSubmit={manejarInicioSesion} noValidate className="w-full space-y-6">
-        <div>
-          <label
-            htmlFor="telefono-repartidor"
-            className="mb-2 block text-base font-bold text-ink"
-          >
-            Número de teléfono:
-          </label>
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        <TextField
+          label="Correo electrónico"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value)
+            setError('')
+          }}
+        />
+        <TextField
+          label="Contraseña"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(event) => {
+            setPassword(event.target.value)
+            setError('')
+          }}
+        />
 
-          <div className="flex gap-3">
-            <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-base font-medium text-ink-muted sm:w-24">
-              +52
-            </div>
-
-            <input
-              id="telefono-repartidor"
-              type="tel"
-              inputMode="numeric"
-              autoComplete="tel-national"
-              maxLength={10}
-              placeholder="0000000000"
-              value={telefono}
-              onChange={(evento) => {
-                setTelefono(evento.target.value.replace(/\D/g, '').slice(0, 10))
-                setMensaje('')
-              }}
-              className="h-14 min-w-0 flex-1 rounded-xl border border-line bg-surface px-4 text-base text-ink outline-none transition-colors placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-              required
-            />
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="contrasena-repartidor"
-            className="mb-2 block text-base font-bold text-ink"
-          >
-            Contraseña:
-          </label>
-
-          <input
-            id="contrasena-repartidor"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Ingresa tu contraseña"
-            value={contrasena}
-            onChange={(evento) => {
-              setContrasena(evento.target.value)
-              setMensaje('')
-            }}
-            className="h-14 w-full rounded-xl border border-line bg-surface px-4 text-base text-ink outline-none transition-colors placeholder:text-ink-muted/70 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-            required
-          />
-        </div>
-
-        {mensaje && (
-          <p role="status" className="text-center text-sm font-semibold text-ink">
-            {mensaje}
+        {error && (
+          <p role="alert" className="text-center text-sm font-semibold text-red-600 dark:text-red-400">
+            {error}
           </p>
         )}
 
-        <div className="flex justify-center pt-2">
-          <Button type="submit" className="w-full max-w-[280px]">
-            Iniciar sesión
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full max-w-[280px]"
+          >
+            {isSubmitting ? 'Entrando…' : 'Iniciar sesión'}
           </Button>
         </div>
 

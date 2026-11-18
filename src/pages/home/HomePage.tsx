@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Coffee, Croissant, Utensils, type LucideIcon } from 'lucide-react'
 import NavBar from '@/components/navbar/NavBar'
 import { ROUTES, productPath } from '@/router/routes'
 import {
-  BUSINESSES,
-  PRODUCTS,
   type CatalogProduct,
   type Category as CategoryName,
 } from '@/services/catalog/products'
+import { useCatalog } from '@/services/catalog/useCatalog'
 import { formatPrice } from '@/utils/currency'
+import { matchesSearch } from '@/utils/search'
 import cuatroCafePromo from '@/assets/images/negocios/cuatro-cafe-08.webp'
 import cuatroCafeChilaquiles from '@/assets/images/negocios/cuatro-cafe-03.webp'
 import kunderaLocal from '@/assets/images/negocios/kundera-06.webp'
@@ -68,9 +68,9 @@ const CATEGORIES: readonly Category[] = [
 ]
 
 function productLink(product: CatalogProduct) {
-  return product.id === 'principito'
+  return product.slug === 'principito'
     ? ROUTES.productDetail
-    : productPath(product.id)
+    : productPath(product.slug)
 }
 
 const focusRing =
@@ -81,11 +81,27 @@ export function HomePage() {
   const [business, setBusiness] = useState('')
   const [category, setCategory] = useState('')
 
+  const [searchParams] = useSearchParams()
+  const searchQuery = (searchParams.get('q') ?? '').trim()
+
+  const catalogState = useCatalog()
+  const businesses =
+    catalogState.status === 'ready' ? catalogState.catalog.businesses : []
+  const products =
+    catalogState.status === 'ready' ? catalogState.catalog.products : []
+
   const slide = SLIDES[slideIndex]
-  const visibleProducts = PRODUCTS.filter(
+  const selectedBusiness = businesses.find((item) => item.slug === business)
+  const visibleProducts = products.filter(
     (product) =>
-      (!business || product.business === business) &&
-      (!category || product.category === category),
+      (!business || product.business.slug === business) &&
+      (!category || product.category === category) &&
+      matchesSearch(searchQuery, [
+        product.name,
+        product.description,
+        product.category,
+        product.business.name,
+      ]),
   )
 
   function showPrevious() {
@@ -176,21 +192,21 @@ export function HomePage() {
       <div
         role="group"
         aria-label="Filtrar por establecimiento"
-        className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
+        className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
       >
-        {BUSINESSES.map((item) => (
+        {businesses.map((item) => (
           <button
-            key={item}
+            key={item.slug}
             type="button"
-            aria-pressed={business === item}
-            onClick={() => setBusiness(business === item ? '' : item)}
-            className={`rounded-full border-2 px-4 py-2 text-sm font-bold transition-colors motion-reduce:transition-none ${
-              business === item
+            aria-pressed={business === item.slug}
+            onClick={() => setBusiness(business === item.slug ? '' : item.slug)}
+            className={`rounded-full border-2 px-4 py-2 text-sm font-bold uppercase transition-colors motion-reduce:transition-none ${
+              business === item.slug
                 ? 'border-brand-400 bg-brand-100 text-navy-900'
                 : 'border-line bg-surface text-ink hover:border-brand-200'
             } ${focusRing}`}
           >
-            {item}
+            {item.name}
           </button>
         ))}
       </div>
@@ -210,7 +226,7 @@ export function HomePage() {
               category === name ? 'bg-brand-100 text-navy-900' : 'text-ink'
             } ${focusRing}`}
           >
-            <span className="flex h-12 w-full items-center justify-center rounded-xl bg-amber-50">
+            <span className="flex h-12 w-full items-center justify-center rounded-xl bg-amber-50 dark:bg-surface-secondary">
               <Icon aria-hidden="true" size={28} />
             </span>
             <span className="text-sm font-semibold">{name}</span>
@@ -220,15 +236,29 @@ export function HomePage() {
 
       <section aria-labelledby="products-title" className="mt-8">
         <h2 id="products-title" className="mb-4 text-xl font-bold text-ink">
-          Productos
+          {searchQuery ? `Resultados para «${searchQuery}»` : 'Productos'}
         </h2>
 
-        {visibleProducts.length > 0 ? (
+        {catalogState.status === 'loading' ? (
+          <p
+            role="status"
+            className="rounded-xl border border-line p-8 text-center text-sm text-ink-muted"
+          >
+            Cargando productos…
+          </p>
+        ) : catalogState.status === 'error' ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-red-300 p-8 text-center text-sm text-red-700 dark:text-red-400"
+          >
+            {catalogState.message}
+          </p>
+        ) : visibleProducts.length > 0 ? (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {visibleProducts.map((product) => (
               <li
                 key={product.id}
-                className="flex flex-col overflow-hidden rounded-2xl border-2 border-line bg-amber-50"
+                className="flex flex-col overflow-hidden rounded-2xl border-2 border-line bg-amber-50 dark:bg-surface"
               >
                 <img
                   src={product.image}
@@ -241,7 +271,7 @@ export function HomePage() {
                     <p className="line-clamp-2 text-sm font-bold text-ink">
                       {product.name}
                     </p>
-                    <p className="text-xs text-ink-muted">{product.business}</p>
+                    <p className="text-xs text-ink-muted">{product.business.name}</p>
                   </div>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-bold text-success">
@@ -261,9 +291,11 @@ export function HomePage() {
           </ul>
         ) : (
           <p className="rounded-xl border border-line p-8 text-center text-sm text-ink-muted">
-            {business && !category
-              ? `${business} todavía no tiene productos.`
-              : 'No hay productos con estos filtros.'}
+            {searchQuery
+              ? `No encontramos productos para «${searchQuery}». Revisa la ortografía o quita algún filtro.`
+              : selectedBusiness && !category
+                ? `${selectedBusiness.name} todavía no tiene productos.`
+                : 'No hay productos con estos filtros.'}
           </p>
         )}
       </section>

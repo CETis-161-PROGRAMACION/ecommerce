@@ -1,7 +1,15 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import {
   CartContext,
   buildCartItemId,
+  loadStoredCart,
+  storeCart,
   type CartItem,
   type NewCartItem,
 } from '@/services/cart/cart'
@@ -11,7 +19,11 @@ interface CartProviderProps {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-  const [items, setItems] = useState<CartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>(loadStoredCart)
+
+  useEffect(() => {
+    storeCart(items)
+  }, [items])
 
   const addItem = useCallback((newItem: NewCartItem) => {
     const id = buildCartItemId(newItem)
@@ -47,9 +59,11 @@ export function CartProvider({ children }: CartProviderProps) {
     setItems((current) => current.filter((item) => item.business !== business))
   }, [])
 
+  const clear = useCallback(() => setItems([]), [])
+
   const value = useMemo(
-    () => ({ items, addItem, updateQuantity, removeItem, clearBusiness }),
-    [items, addItem, updateQuantity, removeItem, clearBusiness],
+    () => ({ items, addItem, updateQuantity, removeItem, clearBusiness, clear }),
+    [items, addItem, updateQuantity, removeItem, clearBusiness, clear],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

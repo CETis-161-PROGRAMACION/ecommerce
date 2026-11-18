@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -12,29 +12,67 @@ import {
   UserRound,
 } from 'lucide-react'
 
-import { ROUTES } from '@/router/routes'
-import { deliveryOrdersDemo } from './deliveryOrders.data'
+import { ROUTES, deliveryOrderPath } from '@/router/routes'
+import {
+  acceptOrder,
+  fetchAvailableOrders,
+  type DriverOrder,
+} from '@/services/driver/driver'
+import { useApplication } from '@/services/driver/useApplication'
+import { usePolled } from '@/services/driver/usePolled'
+import { useSession } from '@/services/session/session'
+import { formatPrice } from '@/utils/currency'
 
-const establecimientos = [
-  'Todos',
-  'KUNDERA',
-  'Santori',
-  'CUATRO CAFÉ',
-  'TU MESA',
-]
+function timeAgo(isoDate: string) {
+  const minutes = Math.max(
+    0,
+    Math.round((Date.now() - new Date(isoDate).getTime()) / 60000),
+  )
+  if (minutes < 1) return 'Hace un momento'
+  if (minutes < 60) return `Hace ${minutes} min`
+  return `Hace ${Math.floor(minutes / 60)} h`
+}
 
 export function DeliveryOrdersPage() {
   const navigate = useNavigate()
 
+  const { profile } = useSession()
+  const application = useApplication()
+  const isApproved = application.data?.status === 'approved'
+  const loadOrders = useCallback(
+    () => (isApproved ? fetchAvailableOrders() : Promise.resolve<DriverOrder[]>([])),
+    [isApproved],
+  )
+  const orders = usePolled(loadOrders)
+
   const [establecimientoActual, setEstablecimientoActual] =
     useState('Todos')
+  const [acceptingId, setAcceptingId] = useState('')
+  const [acceptError, setAcceptError] = useState('')
 
-  const pedidosFiltrados = deliveryOrdersDemo.filter((pedido) => {
-    return (
+  const todos = orders.data ?? []
+  const establecimientos = ['Todos', ...new Set(todos.map((p) => p.businessName))]
+  const pedidosFiltrados = todos.filter(
+    (pedido) =>
       establecimientoActual === 'Todos' ||
-      pedido.establishment === establecimientoActual
-    )
-  })
+      pedido.businessName === establecimientoActual,
+  )
+
+  async function handleAccept(orderId: string) {
+    setAcceptingId(orderId)
+    setAcceptError('')
+    try {
+      await acceptOrder(orderId)
+      navigate(deliveryOrderPath(orderId))
+    } catch (caught) {
+      setAcceptError(
+        caught instanceof Error ? caught.message : 'No pudimos aceptar el pedido.',
+      )
+      orders.reload()
+    } finally {
+      setAcceptingId('')
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background p-4 sm:p-6">
@@ -71,7 +109,7 @@ export function DeliveryOrdersPage() {
               </div>
 
               <h2 className="mt-3 text-lg font-bold text-ink">
-                Pablito Peréz 777
+                {profile?.fullName ?? 'Repartidor'}
               </h2>
 
               <p className="text-sm text-ink-muted">
@@ -90,7 +128,7 @@ export function DeliveryOrdersPage() {
                     Vehículo
                   </p>
                   <p className="text-sm font-semibold text-ink">
-                    Yamaha 125
+                    {application.data?.vehicle ?? 'Sin registrar'}
                   </p>
                 </div>
               </div>
@@ -114,7 +152,7 @@ export function DeliveryOrdersPage() {
               onClick={() => navigate(ROUTES.deliveryHome)}
               className="mt-6 w-full rounded-xl border border-line px-4 py-3 text-sm font-semibold text-ink transition hover:bg-surface-secondary"
             >
-              Ir al catálogo
+              Ir al inicio
             </button>
           </aside>
 
@@ -129,6 +167,28 @@ export function DeliveryOrdersPage() {
                 Revisa los pedidos pendientes y selecciona uno para entregar.
               </p>
             </div>
+
+            {application.data && !isApproved && (
+              <p
+                role="status"
+                className="mb-6 rounded-xl border border-line bg-surface p-4 text-sm font-semibold text-ink"
+              >
+                Tu solicitud de repartidor aún no está aprobada, así que todavía
+                no puedes ver ni aceptar pedidos.
+              </p>
+            )}
+
+            {orders.error && (
+              <p role="alert" className="mb-4 text-sm font-semibold text-red-600 dark:text-red-400">
+                {orders.error}
+              </p>
+            )}
+
+            {acceptError && (
+              <p role="alert" className="mb-4 text-sm font-semibold text-red-600 dark:text-red-400">
+                {acceptError}
+              </p>
+            )}
 
             {/* Filtros */}
             <div className="mb-6">
@@ -172,17 +232,17 @@ export function DeliveryOrdersPage() {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
                         <span className="text-xs font-semibold text-ink-muted">
-                          PEDIDO #{pedido.id}
+                          PEDIDO #{pedido.id.slice(0, 8).toUpperCase()}
                         </span>
 
                         <h3 className="mt-1 text-lg font-bold text-ink">
-                          {pedido.establishment}
+                          {pedido.businessName}
                         </h3>
                       </div>
 
                       <div className="flex items-center gap-2 rounded-full bg-brand-100 px-3 py-2 text-xs font-semibold text-navy-900">
                         <Clock3 size={15} />
-                        {pedido.time}
+                        {timeAgo(pedido.createdAt)}
                       </div>
                     </div>
 
@@ -197,7 +257,7 @@ export function DeliveryOrdersPage() {
                           </p>
 
                           <p className="text-sm font-semibold text-ink">
-                            {pedido.customer}
+                            {pedido.recipientName ?? 'Cliente'}
                           </p>
                         </div>
 
@@ -205,7 +265,7 @@ export function DeliveryOrdersPage() {
                           <Phone size={16} className="text-ink-muted" />
 
                           <span className="text-sm text-ink">
-                            {pedido.phone}
+                            {pedido.recipientPhone ?? 'Sin teléfono'}
                           </span>
                         </div>
 
@@ -216,7 +276,7 @@ export function DeliveryOrdersPage() {
                           />
 
                           <span className="text-sm text-ink">
-                            {pedido.address}
+                            {pedido.deliveryAddress ?? 'Sin dirección'}
                           </span>
                         </div>
                       </div>
@@ -232,12 +292,12 @@ export function DeliveryOrdersPage() {
                         </div>
 
                         <ul className="space-y-1">
-                          {pedido.products.map((producto, index) => (
+                          {pedido.items.map((item) => (
                             <li
-                              key={index}
+                              key={item.id}
                               className="text-sm text-ink-muted"
                             >
-                              {producto}
+                              {item.quantity} × {item.name}
                             </li>
                           ))}
                         </ul>
@@ -252,26 +312,17 @@ export function DeliveryOrdersPage() {
                         </p>
 
                         <p className="text-xl font-bold text-ink">
-                          {pedido.total.toLocaleString('es-MX', {
-                            style: 'currency',
-                            currency: 'MXN',
-                          })}
+                          {formatPrice(pedido.total)}
                         </p>
                       </div>
 
                       <button
                         type="button"
-                        onClick={() =>
-                          navigate(
-                            ROUTES.deliveryOrderDetail.replace(
-                              ':pedidoId',
-                              String(pedido.id),
-                            ),
-                          )
-                        }
-                        className="rounded-xl bg-brand-400 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-500"
+                        disabled={acceptingId !== ''}
+                        onClick={() => handleAccept(pedido.id)}
+                        className="rounded-xl bg-brand-400 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        Aceptar pedido
+                        {acceptingId === pedido.id ? 'Aceptando…' : 'Aceptar pedido'}
                       </button>
                     </div>
                   </article>
@@ -288,7 +339,9 @@ export function DeliveryOrdersPage() {
                   </p>
 
                   <p className="mt-1 text-sm text-ink-muted">
-                    Prueba seleccionando otro establecimiento.
+                    {orders.loading
+                      ? 'Cargando…'
+                      : 'Cuando un cliente pida a domicilio, aparecerá aquí.'}
                   </p>
                 </div>
               )}

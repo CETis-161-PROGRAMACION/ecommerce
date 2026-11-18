@@ -1,5 +1,9 @@
+/** Cargo por servicio por cada negocio del pedido; coincide con `place_order` en la base. */
 export const SERVICE_FEE = 25
-export const RECIPIENT_NAME = 'Michell Hernandez'
-export const SAVED_ADDRESSES = ['Adoquinada #19', 'Centro #17A'] as const
 
-export type SavedAddress = (typeof SAVED_ADDRESSES)[number]
+export type PickupMethod = 'delivery' | 'pickup'
+
+export const PICKUP_METHODS: readonly { value: PickupMethod; label: string }[] = [
+  { value: 'delivery', label: 'A domicilio' },
+  { value: 'pickup', label: 'Recoger en tienda' },
+]

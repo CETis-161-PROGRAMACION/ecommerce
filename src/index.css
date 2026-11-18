@@ -29,11 +29,13 @@
   --font-sans: 'Open Sans', system-ui, sans-serif;
   --color-background: #ffffff;
   --color-surface: #ffffff;
+  --color-surface-secondary: #f4f4f7;
 
   /* Marca */
   --color-brand-400: #6b9bea;
   --color-brand-100: #c8d9fb;
   --color-brand-200: #b2c9f7;
+  --color-brand-500: #5588e0;
   --color-navy-900: #2a2d5e;
 
   /* Texto y bordes */
@@ -85,6 +87,13 @@
   color-scheme: dark;
   --color-background: #171821;
   --color-surface: #222431;
+  --color-surface-secondary: #2b2e3e;
+
+  /* Los fondos de marca se oscurecen y el texto navy se aclara para que
+     "bg-brand-100 text-navy-900" siga siendo legible. */
+  --color-brand-100: #2d3869;
+  --color-brand-200: #3a4880;
+  --color-navy-900: #dbe5ff;
   --color-ink: #f1f1f5;
   --color-ink-muted: #b5b6c5;
   --color-line: #414354;

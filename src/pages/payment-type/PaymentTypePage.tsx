@@ -1,28 +1,21 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
 import { ROUTES } from '@/router/routes'
+import { useCheckout } from '@/services/order/checkout'
 import {
   PAYMENT_METHODS,
-  isPaymentMethod,
   type PaymentMethod,
-  type PaymentMethodState,
 } from '@/services/payment/paymentMethods'
-
-const PROFILE_NAME = 'Michell Hernández'
-const PROFILE_PHONE = '+52 3332260919'
+import { useSession } from '@/services/session/session'
 
 export function PaymentTypePage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const state = location.state as PaymentMethodState | null
-  const requestedMethod = state?.paymentMethod
-  const currentMethod = isPaymentMethod(requestedMethod)
-    ? requestedMethod
-    : undefined
+  const { draft, update } = useCheckout()
+  const { profile } = useSession()
 
   function handleSelect(method: PaymentMethod) {
-    const nextState: PaymentMethodState = { paymentMethod: method }
-    navigate(ROUTES.infoPedido, { state: nextState })
+    update({ paymentMethod: method })
+    navigate(ROUTES.infoPedido)
   }
 
   return (
@@ -42,8 +35,12 @@ export function PaymentTypePage() {
           </svg>
         </div>
 
-        <h1 className="mt-3 text-base font-bold text-ink">{PROFILE_NAME}</h1>
-        <p className="text-sm font-semibold text-ink">{PROFILE_PHONE}</p>
+        <h1 className="mt-3 text-base font-bold text-ink">
+          {profile?.fullName ?? 'Tu perfil'}
+        </h1>
+        {profile?.phone && (
+          <p className="text-sm font-semibold text-ink">+52 {profile.phone}</p>
+        )}
 
         <fieldset className="mt-4 w-full">
           <legend className="mx-auto mb-3 flex items-center gap-2 text-sm font-bold text-ink">
@@ -65,22 +62,19 @@ export function PaymentTypePage() {
           <div className="flex flex-col gap-4">
             {PAYMENT_METHODS.map((method) => (
               <button
-                key={method}
+                key={method.value}
                 type="button"
-                aria-pressed={currentMethod === method}
-                onClick={() => handleSelect(method)}
-                className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md border border-line bg-background px-4 py-3 text-left text-sm text-ink transition-colors hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 motion-reduce:transition-none"
+                aria-pressed={draft.paymentMethod === method.value}
+                onClick={() => handleSelect(method.value)}
+                className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md border border-line bg-background px-4 py-3 text-left text-sm text-ink transition-colors hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 motion-reduce:transition-none aria-pressed:border-success aria-pressed:bg-success/10"
               >
-                {method}
-                {method === 'Tarjeta de crédito' && (
-                  <span aria-hidden="true" className="flex">
-                    <span className="size-5 rounded-full bg-red-500" />
-                    <span className="-ml-2 size-5 rounded-full bg-amber-500/90" />
-                  </span>
-                )}
+                {method.label}
               </button>
             ))}
           </div>
+          <p className="mt-4 text-xs text-ink-muted">
+            El pago se realiza al recibir tu pedido.
+          </p>
         </fieldset>
       </div>
     </NavBar>

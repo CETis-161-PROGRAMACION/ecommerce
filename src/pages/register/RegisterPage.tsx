@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
 import { ROUTES } from '@/router/routes'
-import { registerUser } from '@/services/auth'
+import { signUp } from '@/services/auth'
 
 interface DatosRegistro {
   nombre: string
+  correo: string
   dia: string
   mes: string
   anio: string
@@ -17,6 +18,7 @@ interface DatosRegistro {
 
 const datosIniciales: DatosRegistro = {
   nombre: '',
+  correo: '',
   dia: '',
   mes: '',
   anio: '',
@@ -26,6 +28,7 @@ const datosIniciales: DatosRegistro = {
 }
 
 const EDAD_MINIMA = 13
+const PATRON_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /** Devuelve un mensaje de error, o "" si la fecha es válida. */
 function validarFecha(dia: string, mes: string, anio: string): string {
@@ -77,6 +80,11 @@ export function RegisterPage() {
       return
     }
 
+    if (!PATRON_CORREO.test(datos.correo.trim())) {
+      setError('Ingresa un correo electrónico válido.')
+      return
+    }
+
     const errorFecha = validarFecha(datos.dia, datos.mes, datos.anio)
     if (errorFecha) {
       setError(errorFecha)
@@ -100,15 +108,25 @@ export function RegisterPage() {
 
     setEnviando(true)
     try {
-      await registerUser({
-        nombre: datos.nombre.trim(),
-        fechaNacimiento: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
-        telefono: datos.telefono,
-        contrasena: datos.contrasena,
+      const correo = datos.correo.trim().toLowerCase()
+      const { needsConfirmation } = await signUp({
+        email: correo,
+        password: datos.contrasena,
+        fullName: datos.nombre.trim(),
+        birthDate: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
+        phone: datos.telefono,
       })
-      navigate(ROUTES.confirmCode, { state: { telefono: datos.telefono } })
-    } catch {
-      setError('No pudimos crear tu cuenta. Inténtalo de nuevo.')
+      if (needsConfirmation) {
+        navigate(ROUTES.confirmCode, { state: { correo } })
+      } else {
+        navigate(ROUTES.home, { replace: true })
+      }
+    } catch (causa) {
+      setError(
+        causa instanceof Error
+          ? causa.message
+          : 'No pudimos crear tu cuenta. Inténtalo de nuevo.',
+      )
     } finally {
       setEnviando(false)
     }
@@ -138,6 +156,26 @@ export function RegisterPage() {
               className={inputClass}
               value={datos.nombre}
               onChange={(e) => actualizar('nombre', e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Correo electrónico */}
+          <div>
+            <label
+              htmlFor="correo"
+              className="mb-2 block text-base font-bold text-ink"
+            >
+              Correo electrónico:
+            </label>
+            <input
+              id="correo"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              className={inputClass}
+              value={datos.correo}
+              onChange={(e) => actualizar('correo', e.target.value)}
               required
             />
           </div>
@@ -273,7 +311,7 @@ export function RegisterPage() {
         {error && (
           <p
             role="alert"
-            className="mt-5 text-center text-sm font-semibold text-red-600"
+            className="mt-5 text-center text-sm font-semibold text-red-600 dark:text-red-400"
           >
             {error}
           </p>
@@ -286,7 +324,7 @@ export function RegisterPage() {
             disabled={enviando}
             className="w-full max-w-[280px] bg-brand-100 py-3.5 text-base font-medium text-ink hover:bg-brand-200"
           >
-            {enviando ? 'Creando cuenta…' : 'Iniciar sesión'}
+            {enviando ? 'Creando cuenta…' : 'Crear cuenta'}
           </Button>
         </div>
       </form>

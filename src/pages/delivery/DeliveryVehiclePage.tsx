@@ -6,14 +6,23 @@ import {
   type ChangeEvent,
   type FormEvent,
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { ROUTES } from '@/router/routes'
+import { submitApplication } from '@/services/driver/driver'
+import { useSession } from '@/services/session/session'
 
 const REQUIRED_DOCUMENTS = ['Licencia de conducir'] as const
 const ACCEPTED_IMAGES = 'image/png,image/jpeg,image/webp'
 
 export function DeliveryVehiclePage() {
   const inputId = useId()
+  const vehicleId = useId()
+  const navigate = useNavigate()
+  const { session } = useSession()
+  const [vehicle, setVehicle] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [message, setMessage] = useState('')
@@ -33,8 +42,21 @@ export function DeliveryVehiclePage() {
     setHasError(false)
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    const userId = session?.user.id
+    if (!userId) {
+      setHasError(true)
+      setMessage('Tu sesión expiró. Inicia sesión de nuevo.')
+      return
+    }
+
+    if (vehicle.trim().length < 2) {
+      setHasError(true)
+      setMessage('Describe tu vehículo (por ejemplo: Moto Yamaha 125).')
+      return
+    }
 
     if (!file) {
       setHasError(true)
@@ -42,10 +64,22 @@ export function DeliveryVehiclePage() {
       return
     }
 
+    setIsSubmitting(true)
     setHasError(false)
-    setMessage(
-      'La foto es válida. La solicitud se enviará cuando conectemos el servicio de registro.',
-    )
+    setMessage('')
+    try {
+      await submitApplication({ userId, vehicle, license: file })
+      navigate(ROUTES.deliveryHome, { replace: true })
+    } catch (caught) {
+      setHasError(true)
+      setMessage(
+        caught instanceof Error
+          ? caught.message
+          : 'No pudimos enviar tu solicitud.',
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -59,6 +93,25 @@ export function DeliveryVehiclePage() {
             >
               Ingresar datos y permisos del vehículo
             </h2>
+            <label
+              htmlFor={vehicleId}
+              className="mb-2 block text-sm font-bold text-ink"
+            >
+              Vehículo
+            </label>
+            <input
+              id={vehicleId}
+              type="text"
+              maxLength={60}
+              placeholder="Moto Yamaha 125"
+              value={vehicle}
+              onChange={(event) => {
+                setVehicle(event.target.value)
+                setMessage('')
+                setHasError(false)
+              }}
+              className="mb-5 h-12 w-full rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none placeholder:text-ink-muted focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+            />
             <ul className="flex flex-col gap-1 text-sm text-ink">
               {REQUIRED_DOCUMENTS.map((document) => (
                 <li key={document}>
@@ -122,9 +175,10 @@ export function DeliveryVehiclePage() {
         <div className="mt-8 flex justify-center">
           <Button
             type="submit"
+            disabled={isSubmitting}
             className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200"
           >
-            Solicitar permiso
+            {isSubmitting ? 'Enviando…' : 'Solicitar permiso'}
           </Button>
         </div>
       </form>

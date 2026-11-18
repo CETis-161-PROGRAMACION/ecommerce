@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
-import { resendCode, verifyCode } from '@/services/auth'
+import { resendSignupCode, verifySignupCode } from '@/services/auth'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 
 const LONGITUD = 6
@@ -17,7 +17,9 @@ const COOLDOWN_SEGUNDOS = 30
 export function ConfirmCodePage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const telefono = (location.state as { telefono?: string } | null)?.telefono
+  const estado = location.state as { correo?: string; next?: string } | null
+  const correo = estado?.correo
+  const destino = estado?.next ?? ROUTES.home
 
   const [digitos, setDigitos] = useState<string[]>(Array(LONGITUD).fill(''))
   const [error, setError] = useState('')
@@ -37,12 +39,12 @@ export function ConfirmCodePage() {
   // Al terminar con éxito, pasa al inicio de sesión
   useEffect(() => {
     if (!exito) return
-    const id = setTimeout(() => navigate(ROUTES.login), 1500)
+    const id = setTimeout(() => navigate(destino, { replace: true }), 1500)
     return () => clearTimeout(id)
-  }, [exito, navigate])
+  }, [exito, navigate, destino])
 
   // Sin pasar por el registro no hay nada que confirmar
-  if (!telefono) {
+  if (!correo) {
     return <Navigate to={ROUTES.register} replace />
   }
 
@@ -96,16 +98,16 @@ export function ConfirmCodePage() {
 
     setVerificando(true)
     try {
-      const { ok } = await verifyCode(telefono!, codigo)
-      if (ok) {
-        setExito(true)
-      } else {
-        setError('El código es incorrecto. Revísalo e inténtalo de nuevo.')
-        setDigitos(Array(LONGITUD).fill(''))
-        casillas.current[0]?.focus()
-      }
-    } catch {
-      setError('No pudimos verificar el código. Inténtalo de nuevo.')
+      await verifySignupCode(correo!, codigo)
+      setExito(true)
+    } catch (causa) {
+      setError(
+        causa instanceof Error
+          ? causa.message
+          : 'No pudimos verificar el código. Inténtalo de nuevo.',
+      )
+      setDigitos(Array(LONGITUD).fill(''))
+      casillas.current[0]?.focus()
     } finally {
       setVerificando(false)
     }
@@ -115,27 +117,28 @@ export function ConfirmCodePage() {
     setReenviando(true)
     setError('')
     try {
-      await resendCode(telefono!)
+      await resendSignupCode(correo!)
       setDigitos(Array(LONGITUD).fill(''))
       casillas.current[0]?.focus()
       setCooldown(COOLDOWN_SEGUNDOS)
-    } catch {
-      setError('No pudimos reenviar el código. Inténtalo más tarde.')
+    } catch (causa) {
+      setError(
+        causa instanceof Error
+          ? causa.message
+          : 'No pudimos reenviar el código. Inténtalo más tarde.',
+      )
     } finally {
       setReenviando(false)
     }
   }
 
-  const ultimos = telefono.slice(-4)
-
   return (
     <AuthLayout title='Confirmar Código'>
-        <h1 className="text-2xl font-extrabold text-blue-900">
-          Confirma tu número
+        <h1 className="text-2xl font-extrabold text-navy-900">
+          Confirma tu correo
         </h1>
         <p className="mt-3 text-sm">
-          Enviamos un código de {LONGITUD} dígitos al número terminado en{' '}
-          <strong>{ultimos}</strong>.
+          Enviamos un código de {LONGITUD} dígitos a <strong>{correo}</strong>.
         </p>
 
         <form onSubmit={manejarEnvio} className="mt-8">
@@ -160,7 +163,7 @@ export function ConfirmCodePage() {
                   autoFocus={i === 0}
                   aria-label={`Dígito ${i + 1} de ${LONGITUD}`}
                   aria-invalid={error ? true : undefined}
-                  className="h-14 w-12 rounded-lg border border-gray-300 text-center text-xl font-bold outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 aria-[invalid=true]:border-red-500"
+                  className="h-14 w-12 rounded-lg border border-line bg-surface text-ink text-center text-xl font-bold outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100 aria-[invalid=true]:border-red-500"
                 />
               ))}
             </div>
@@ -180,7 +183,7 @@ export function ConfirmCodePage() {
               role="status"
               className="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-800"
             >
-              Número confirmado. Te llevamos al inicio de sesión…
+              Correo confirmado. Te llevamos al inicio…
             </p>
           )}
 
@@ -201,16 +204,13 @@ export function ConfirmCodePage() {
               type="button"
               onClick={manejarReenvio}
               disabled={reenviando || exito}
-              className="font-semibold text-blue-900 underline disabled:opacity-60"
+              className="font-semibold text-navy-900 underline disabled:opacity-60"
             >
               {reenviando ? 'Reenviando…' : 'Reenviar código'}
             </button>
           )}
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-500">
-          Modo demo: el código válido es 123456.
-        </p>
       </AuthLayout>
   )
 }

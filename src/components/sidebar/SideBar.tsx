@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
+import { signOut } from '@/services/auth'
+import { useSession } from '@/services/session/session'
 
 interface SideBarProps {
   isOpen: boolean
@@ -9,17 +11,17 @@ interface SideBarProps {
 
 interface MenuEntry {
   label: string
-  to?: string
+  to: string
 }
 
 const MENU_ENTRIES: readonly MenuEntry[] = [
-  { label: 'Pedidos Recientes' },
-  { label: 'Cuenta' },
-  { label: 'Ajustes' },
-  { label: 'Ayuda' },
-  { label: 'Acerca de' },
+  { label: 'Inicio', to: ROUTES.home },
+  { label: 'Pedidos Recientes', to: ROUTES.orders },
+  { label: 'Cuenta', to: ROUTES.account },
+  { label: 'Ajustes', to: ROUTES.settings },
+  { label: 'Ayuda', to: ROUTES.help },
+  { label: 'Acerca de', to: ROUTES.about },
   { label: 'Iniciar como repartidor', to: ROUTES.deliveryAccess },
-  { label: 'Cerrar Sesión', to: ROUTES.login },
 ]
 
 const itemClass =
@@ -27,6 +29,20 @@ const itemClass =
 
 export function SideBar({ isOpen, onClose }: SideBarProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const navigate = useNavigate()
+  const { status } = useSession()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  async function handleSignOut() {
+    setIsSigningOut(true)
+    try {
+      await signOut()
+      onClose()
+      navigate(ROUTES.login, { replace: true })
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return
@@ -75,26 +91,35 @@ export function SideBar({ isOpen, onClose }: SideBarProps) {
           <ul className="flex flex-col">
             {MENU_ENTRIES.map((entry) => (
               <li key={entry.label}>
-                {entry.to ? (
-                  <Link
-                    to={entry.to}
-                    onClick={onClose}
-                    className={`${itemClass} transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400`}
-                  >
-                    {entry.label}
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className={`${itemClass} cursor-not-allowed text-ink-muted`}
-                  >
-                    <span>{entry.label}</span>
-                    <span className="text-xs">Próximamente</span>
-                  </button>
-                )}
+                <Link
+                  to={entry.to}
+                  onClick={onClose}
+                  className={`${itemClass} transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400`}
+                >
+                  {entry.label}
+                </Link>
               </li>
             ))}
+            <li>
+              {status === 'signed-in' ? (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  disabled={isSigningOut}
+                  className={`${itemClass} transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400 disabled:opacity-60`}
+                >
+                  {isSigningOut ? 'Cerrando sesión…' : 'Cerrar Sesión'}
+                </button>
+              ) : (
+                <Link
+                  to={ROUTES.login}
+                  onClick={onClose}
+                  className={`${itemClass} transition-colors hover:bg-brand-100 hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-brand-400`}
+                >
+                  Iniciar sesión
+                </Link>
+              )}
+            </li>
           </ul>
         </nav>
       </aside>

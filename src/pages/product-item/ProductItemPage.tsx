@@ -4,7 +4,7 @@ import NavBar from '@/components/navbar/NavBar'
 import { Button } from '@/components/ui/Button'
 import { ROUTES } from '@/router/routes'
 import { useCart } from '@/services/cart/cart'
-import { businessLabel, findProduct } from '@/services/catalog/products'
+import { useCatalog } from '@/services/catalog/useCatalog'
 import { formatPrice } from '@/utils/currency'
 
 const MAX_QUANTITY = 20
@@ -14,12 +14,26 @@ const focusRing =
 
 export function ProductItemPage() {
   const { productId } = useParams()
-  const product = findProduct(productId)
+  const catalogState = useCatalog()
+  const product =
+    catalogState.status === 'ready'
+      ? catalogState.catalog.products.find((item) => item.slug === productId)
+      : undefined
   const id = useId()
   const navigate = useNavigate()
   const { addItem } = useCart()
   const [quantity, setQuantity] = useState(1)
   const [comments, setComments] = useState('')
+
+  if (catalogState.status === 'loading') {
+    return (
+      <NavBar>
+        <p role="status" className="py-12 text-center text-sm text-ink-muted">
+          Cargando producto…
+        </p>
+      </NavBar>
+    )
+  }
 
   if (!product) {
     return (
@@ -42,13 +56,12 @@ export function ProductItemPage() {
     )
   }
 
-  const business = businessLabel(product.business)
-
   function handleAdd() {
     if (!product) return
     const note = comments.trim()
     addItem({
-      business,
+      productId: product.id,
+      business: product.business.name,
       name: product.name,
       options: note ? [`Nota: ${note}`] : [],
       price: product.price,
@@ -70,7 +83,7 @@ export function ProductItemPage() {
         <div className="flex flex-col gap-5">
           <div>
             <p className="inline-block rounded-full border border-line px-4 py-1 text-xs font-bold text-ink">
-              {product.business}
+              {product.business.name}
             </p>
             <h1 className="mt-3 text-2xl font-bold text-ink sm:text-3xl">
               {product.name}

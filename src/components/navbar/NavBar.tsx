@@ -1,5 +1,14 @@
 
-import { useState, type ReactNode } from 'react'
+import {
+    useEffect,
+    useRef,
+    useState,
+    type ChangeEvent,
+    type FormEvent,
+    type ReactNode,
+} from 'react'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { ROUTES } from '@/router/routes'
 import { SideBar } from '@/components/sidebar/SideBar'
 import menuIcon from '@/components/ui/icons/menu.svg'
 import searchIcon from '@/components/ui/icons/search.svg'
@@ -12,6 +21,52 @@ interface NavBarProps {
 
 export default function NavBar({ children, mainClassName }: NavBarProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const isHome = location.pathname === ROUTES.home
+    const [query, setQuery] = useState(() =>
+        isHome ? (searchParams.get('q') ?? '') : '',
+    )
+    const searchTimer = useRef<number | undefined>(undefined)
+
+    useEffect(() => {
+        const timer = searchTimer
+        return () => window.clearTimeout(timer.current)
+    }, [])
+
+    // En el inicio filtra al momento; en otras pantallas lleva al inicio con la búsqueda.
+    function applySearch(value: string) {
+        const trimmed = value.trim()
+        if (isHome) {
+            setSearchParams(trimmed ? { q: trimmed } : {}, { replace: true })
+        } else if (trimmed) {
+            navigate({
+                pathname: ROUTES.home,
+                search: `?q=${encodeURIComponent(trimmed)}`,
+            })
+        }
+    }
+
+    function handleSearchChange(event: ChangeEvent<HTMLInputElement>) {
+        const value = event.target.value
+        setQuery(value)
+        if (!isHome) return
+        window.clearTimeout(searchTimer.current)
+        searchTimer.current = window.setTimeout(() => applySearch(value), 250)
+    }
+
+    function handleSearchClear() {
+        window.clearTimeout(searchTimer.current)
+        setQuery('')
+        applySearch('')
+    }
+
+    function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        window.clearTimeout(searchTimer.current)
+        applySearch(query)
+    }
 
     return (
         <div className="flex min-h-screen flex-col items-center px-4 py-6 sm:px-6 sm:py-10 motion-safe:animate-page-enter">
@@ -33,6 +88,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                         alt=""
                         width={32}
                         height={32}
+                        className="dark:brightness-200"
                     />
                 </button>
 
@@ -42,32 +98,40 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                 aria-hidden="true"
                 width={28}
                 height={28}
-                className="shrink-0 sm:h-10 sm:w-10"
+                className="shrink-0 sm:h-10 sm:w-10 dark:brightness-200"
                 />
 
-                <div className="relative min-w-0 flex-1">
+                <form
+                role="search"
+                onSubmit={handleSearchSubmit}
+                className="relative min-w-0 flex-1"
+                >
                 <input
                 type="search"
-                name="search"
-                placeholder="Buscar..."
-                aria-label="Buscar"
-                className="h-10 w-full rounded border border-line p-2 pr-10 text-sm leading-relaxed text-ink"
+                name="q"
+                value={query}
+                onChange={handleSearchChange}
+                placeholder="Buscar productos..."
+                aria-label="Buscar productos"
+                autoComplete="off"
+                className="h-10 w-full rounded border border-line bg-surface p-2 pr-9 text-sm leading-relaxed text-ink placeholder:text-ink-muted focus:border-brand-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-100"
                 />
-                <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                className="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-ink-muted"
-                >
-                <rect x="9" y="3" width="6" height="11" rx="3" />
-                <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
-                </svg>
-                </div>
+                {query && (
+                    <button
+                    type="button"
+                    onClick={handleSearchClear}
+                    aria-label="Borrar búsqueda"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 text-ink-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-brand-400"
+                    >
+                    <span aria-hidden="true" className="text-sm leading-none">
+                        ✕
+                    </span>
+                    </button>
+                )}
+                </form>
 
-                <button
-                type="button"
+                <Link
+                to={ROUTES.account}
                 aria-label="Perfil"
                 className="mr-12 shrink-0 sm:mr-8"
                 >
@@ -76,8 +140,9 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                     alt=""
                     width={32}
                     height={32}
+                    className="dark:brightness-200"
                 />
-                </button>
+                </Link>
 
 
             </header>

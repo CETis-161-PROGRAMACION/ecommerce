@@ -1,39 +1,72 @@
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
-import { ROUTES } from "@/router/routes"
+import { Button } from '@/components/ui/Button'
+import { TextField } from '@/components/ui/TextField'
+import { ROUTES } from '@/router/routes'
+import { requestPasswordReset } from '@/services/auth'
 
-
-// TODO: Implementar la pantalla de recuperación de datos. Elementos previstos
-// por la referencia:
-// - Campo de número de teléfono (PhoneField).
-// - Texto que informe sobre el futuro envío de un SMS para recuperar la
-//   contraseña.
-// - Botón Siguiente.
-// No enviar mensajes ni afirmar que se enviará un SMS: conectar un servicio
-// real cuando exista.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function RecoveryPage() {
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const normalized = email.trim().toLowerCase()
+    if (!EMAIL_PATTERN.test(normalized)) {
+      setError('Ingresa un correo electrónico válido.')
+      return
+    }
+
+    setIsSubmitting(true)
+    setError('')
+    try {
+      await requestPasswordReset(normalized)
+      navigate(ROUTES.codeConfirm, { state: { email: normalized } })
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : 'No pudimos enviar el correo. Inténtalo de nuevo.',
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <AuthLayout title="Recuperar datos">
-      <p className="w-1/2 mr-3 mb-3 font-bold text-xl"> Número de teléfono: </p>
-
-        <div className="flex w-full max-w-md">
-          <select className="mb-6 mr-3 w-12 col-start-1 rounded border row-start-1  border-line bg-surface p-2 text-sm leading-relaxed text-ink appearance-none ">
-            <option value="+52"> +52 </option>
-            <option value="+1"> +1 </option>
-            <option value="+57"> +57 </option>
-          </select>
-
-            <input type="tel" placeholder="" className="mb-6 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden" />
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        <TextField
+          label="Correo electrónico"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value)
+            setError('')
+          }}
+          error={error || undefined}
+        />
+        <p className="text-center text-sm font-semibold text-ink">
+          Te enviaremos un correo con un código para que puedas recuperar tu
+          contraseña.
+        </p>
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full max-w-[280px]"
+          >
+            {isSubmitting ? 'Enviando…' : 'Siguiente'}
+          </Button>
         </div>
-            <div className="flex flex-col text-center mr-3 ml-3 font-bold">
-            <a>Te enviaremos un SMS para que</a>
-            <a className="mb-4"> puedas recuperar tu contraseña</a>
-            </div>
-
-            <div className="flex justify-center">
-            <a   href={ROUTES.recovery} type="button" className="mb-4 w-50 rounded-full bg-blue-200 p-2 text-sm font-semibold text-black focus:outline-none focus:outline-2 focus:ring-offset-1 hover:bg-blue-300 text-center"> Siguiente </a>  
-            
-        </div>
+      </form>
     </AuthLayout>
   )
 }

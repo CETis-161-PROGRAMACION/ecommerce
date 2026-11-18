@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { LoginPage } from '@/pages/login/LoginPage'
 import { RecoveryPage } from '@/pages/recovery/RecoveryPage'
@@ -30,7 +31,17 @@ import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
 import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
 
 import { CodeConfirm } from '@/pages/recovery/CodeConfirm'
-import { InfoTarjetaPage } from '@/pages/info-tarjeta/InfoTarjetaPage'
+import { OrdersPage } from '@/pages/orders/OrdersPage'
+import { AccountPage } from '@/pages/account/AccountPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
+import { HelpPage } from '@/pages/help/HelpPage'
+import { AboutPage } from '@/pages/about/AboutPage'
+import { RequireAuth, RequireDriver } from '@/router/guards'
+
+const auth = (element: ReactElement) => <RequireAuth>{element}</RequireAuth>
+const driver = (element: ReactElement) => (
+  <RequireDriver>{element}</RequireDriver>
+)
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -43,23 +54,34 @@ const routes = [
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.productItem, element: <ProductItemPage /> },
-  { path: ROUTES.userDestiny, element: <UserDestiny /> },
+  { path: ROUTES.userDestiny, element: auth(<UserDestiny />) },
   { path: ROUTES.businessInfo, element: <BusinessInfoPage /> },
   { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
-  { path: ROUTES.clienteDireccion, element: <AddressPage /> },
-  { path: ROUTES.infoPedido, element: <OrderInfoPage /> },
-  { path: ROUTES.tipoPago, element: <PaymentTypePage /> },
-  { path: ROUTES.pedidoEnCamino, element: <OrderTrackingPage /> },
-  { path: ROUTES.pedidoEntregado, element: <OrderDeliveredPage /> },
+  { path: ROUTES.clienteDireccion, element: auth(<AddressPage />) },
+  { path: ROUTES.infoPedido, element: auth(<OrderInfoPage />) },
+  { path: ROUTES.tipoPago, element: auth(<PaymentTypePage />) },
+  { path: ROUTES.pedidoEnCamino, element: auth(<OrderTrackingPage />) },
+  { path: ROUTES.pedidoEntregado, element: auth(<OrderDeliveredPage />) },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
-  { path: ROUTES.deliveryVehicle, element: <DeliveryVehiclePage /> },
-  { path: ROUTES.deliveryHome, element: <DeliveryHomePage /> },
-  { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
-  { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
-  { path: ROUTES.infoTarjeta, element: <InfoTarjetaPage /> },
+  {
+    path: ROUTES.deliveryVehicle,
+    element: (
+      <RequireAuth redirectTo={ROUTES.deliveryLogin}>
+        <DeliveryVehiclePage />
+      </RequireAuth>
+    ),
+  },
+  { path: ROUTES.deliveryHome, element: driver(<DeliveryHomePage />) },
+  { path: ROUTES.deliveryOrders, element: driver(<DeliveryOrdersPage />) },
+  { path: ROUTES.deliveryOrderDetail, element: driver(<DeliveryOrderDetailPage />) },
+  { path: ROUTES.orders, element: auth(<OrdersPage />) },
+  { path: ROUTES.account, element: auth(<AccountPage />) },
+  { path: ROUTES.settings, element: <SettingsPage /> },
+  { path: ROUTES.help, element: <HelpPage /> },
+  { path: ROUTES.about, element: <AboutPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 

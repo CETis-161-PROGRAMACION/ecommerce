@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
 import { ROUTES } from '@/router/routes'
+import { signUp } from '@/services/auth'
 
 interface DatosRepartidor {
   nombre: string
+  correo: string
   dia: string
   mes: string
   anio: string
@@ -17,6 +19,7 @@ interface DatosRepartidor {
 
 const datosIniciales: DatosRepartidor = {
   nombre: '',
+  correo: '',
   dia: '',
   mes: '',
   anio: '',
@@ -25,6 +28,9 @@ const datosIniciales: DatosRepartidor = {
   confirmarContrasena: '',
 }
 
+const PATRON_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const EDAD_MINIMA = 18
+
 const inputClass =
   'h-12 w-full rounded-lg border border-line bg-surface px-3 text-sm text-ink ' +
   'placeholder:text-ink-muted outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
@@ -32,6 +38,7 @@ const inputClass =
 export function DeliveryRegisterPage() {
   const [datos, setDatos] = useState<DatosRepartidor>(datosIniciales)
   const [mensaje, setMensaje] = useState('')
+  const [enviando, setEnviando] = useState(false)
   const navigate = useNavigate()
 
   function actualizar(campo: keyof DatosRepartidor, valor: string) {
@@ -39,11 +46,16 @@ export function DeliveryRegisterPage() {
     setMensaje('')
   }
 
-  function manejarRegistro(evento: FormEvent<HTMLFormElement>) {
+  async function manejarRegistro(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
 
     if (!datos.nombre.trim()) {
       setMensaje('Ingresa tu nombre completo.')
+      return
+    }
+
+    if (!PATRON_CORREO.test(datos.correo.trim())) {
+      setMensaje('Ingresa un correo electrónico válido.')
       return
     }
 
@@ -66,6 +78,19 @@ export function DeliveryRegisterPage() {
       return
     }
 
+    const hoy = new Date()
+    let edad = hoy.getFullYear() - anio
+    if (
+      hoy.getMonth() < mes - 1 ||
+      (hoy.getMonth() === mes - 1 && hoy.getDate() < dia)
+    ) {
+      edad -= 1
+    }
+    if (edad < EDAD_MINIMA) {
+      setMensaje(`Debes tener al menos ${EDAD_MINIMA} años para ser repartidor.`)
+      return
+    }
+
     if (!/^[0-9]{10}$/.test(datos.telefono)) {
       setMensaje('El teléfono debe contener 10 dígitos.')
       return
@@ -81,7 +106,33 @@ export function DeliveryRegisterPage() {
       return
     }
 
-    navigate(ROUTES.deliveryVehicle)
+    setEnviando(true)
+    try {
+      const correo = datos.correo.trim().toLowerCase()
+      const { needsConfirmation } = await signUp({
+        email: correo,
+        password: datos.contrasena,
+        fullName: datos.nombre.trim(),
+        birthDate: `${datos.anio}-${datos.mes.padStart(2, '0')}-${datos.dia.padStart(2, '0')}`,
+        phone: datos.telefono,
+        role: 'driver',
+      })
+      if (needsConfirmation) {
+        navigate(ROUTES.confirmCode, {
+          state: { correo, next: ROUTES.deliveryVehicle },
+        })
+      } else {
+        navigate(ROUTES.deliveryVehicle, { replace: true })
+      }
+    } catch (causa) {
+      setMensaje(
+        causa instanceof Error
+          ? causa.message
+          : 'No pudimos crear tu cuenta. Inténtalo de nuevo.',
+      )
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -99,6 +150,22 @@ export function DeliveryRegisterPage() {
               className={inputClass}
               value={datos.nombre}
               onChange={(e) => actualizar('nombre', e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="correo-repartidor" className="mb-2 block text-sm font-bold text-ink">
+              Correo electrónico
+            </label>
+            <input
+              id="correo-repartidor"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              className={inputClass}
+              value={datos.correo}
+              onChange={(e) => actualizar('correo', e.target.value)}
               required
             />
           </div>
@@ -207,14 +274,18 @@ export function DeliveryRegisterPage() {
         </div>
 
         {mensaje && (
-          <p role="status" className="mt-5 text-center text-sm font-semibold text-ink">
+          <p role="alert" className="mt-5 text-center text-sm font-semibold text-ink">
             {mensaje}
           </p>
         )}
 
         <div className="mt-8 flex justify-center">
-          <Button type="submit" className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200">
-            Siguiente
+          <Button
+            type="submit"
+            disabled={enviando}
+            className="w-full max-w-md bg-brand-100 text-navy-900 hover:bg-brand-200"
+          >
+            {enviando ? 'Creando cuenta…' : 'Siguiente'}
           </Button>
         </div>
       </form>

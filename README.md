@@ -9,8 +9,8 @@ Proyecto del **CETis 161**. Base frontend de la aplicación web de comercio elec
 - **Contexto:** proyecto escolar del CETis 161.
 - **Descripción:** aplicación web que conecta comercios locales con sus clientes (pedidos a domicilio, en sucursal y reservaciones), según la documentación de propuesta del repositorio (`Vic/`).
 - **Objetivo general:** ofrecer una base frontend limpia, consistente, accesible y verificable sobre la cual cada estudiante pueda desarrollar una pantalla de forma independiente.
-- **Alcance de la fase actual:** base frontend con sistema de diseño, componentes reutilizables, enrutador inicial, pantalla splash y placeholders de autenticación.
-- **Funcionalidades todavía no implementadas:** backend, autenticación real, envío de SMS, persistencia de datos, integraciones con proveedores externos, pagos, catálogo, geolocalización, reseñas y registro de usuarios.
+- **Alcance de la fase actual:** aplicación conectada a Supabase (autenticación con correo y contraseña, catálogo, carrito, pedidos, seguimiento con chat, calificaciones, cuenta, ajustes, ayuda y panel de repartidor).
+- **Funcionalidades todavía no implementadas:** pasarela de pagos en línea (solo efectivo o tarjeta contra entrega), geolocalización con mapa, notificaciones push, panel de administración (las solicitudes de repartidor se aprueban a mano en la tabla `driver_applications`) y un aviso de privacidad legal definitivo.
 =======
 Esta plantilla ofrece una configuración mínima para que React funcione en Vite con HMR y algunas reglas de ESLint.
 
@@ -259,32 +259,33 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 - Tailwind CSS v4 se integra mediante el plugin `@tailwindcss/vite` registrado en `vite.config.ts`. No existe `tailwind.config.js`.
 - El alias `@` apunta a `src/` tanto en Vite (`vite.config.ts`) como en TypeScript (`tsconfig.app.json`).
 
+## Configuración de Supabase
+
+1. Copia `.env.example` a `.env.local` y rellena `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` (Project Settings > API). Usa solo la clave publicable; nunca la `service_role`. `.env.local` no se sube a git.
+2. En Authentication > Sign In / Providers, el proyecto usa correo y contraseña. Con "Confirm email" activo el registro pide un código que llega al correo (la plantilla debe incluir `{{ .Token }}`); con "Confirm email" apagado entra directo.
+3. Para aprobar a un repartidor: `update driver_applications set status = 'approved' where "userId" = '<id>';`
+
 ## Sistema de rutas
 
-| Ruta                         | Componente        | Estado                                                                |
-| ---------------------------- | ----------------- | --------------------------------------------------------------------- |
-| `/repartidor/registro/vehiculo` | `DeliveryVehiclePage` | Paso 2 del registro de repartidor; la solicitud aún no se envía |
-| `/producto/:productId`        | `ProductItemPage` | Detalle de cualquier producto del catálogo (datos de ejemplo) |
-| `/`                          | `SplashPage`      | Funcional, con redirección automática a `/iniciar-sesion` a los 2.5 s |
-| `/iniciar-sesion`            | `LoginPage`       | Placeholder                                                           |
-| `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |
-| `/registro/confirmar-codigo` | `ConfirmCodePage` | Placeholder                                                           |
-| `/info/pedido`               | `OrderInfoPage`   | Muestra el carrito agrupado por negocio; el envío del pedido aún no existe |
-| `/pedido/tipo-de-pago`       | `PaymentTypePage` | Elige el método de pago y regresa a la información del pedido          |
-| `/pedido/en-camino`          | `OrderTrackingPage` | Seguimiento del pedido; estado, contacto y llegada estimada pendientes de backend |
-| `/pedido/entregado`          | `OrderDeliveredPage` | Pedido entregado con calificación; la calificación aún no se guarda |
+Las rutas se definen en `src/router/routes.ts` (`ROUTES`) y el enrutador en `src/router/index.tsx`. Las pantallas que requieren sesión usan `RequireAuth` y las del repartidor `RequireDriver` (`src/router/guards.tsx`).
 
-- Las constantes de rutas viven en `src/router/routes.ts` (`ROUTES`); el enrutador (React Router DOM, `createBrowserRouter`) en `src/router/index.tsx`.
+| Ruta | Pantalla | Acceso |
+| ---- | -------- | ------ |
+| `/` | `SplashPage` | Público; redirige a `/iniciar-sesion` |
+| `/iniciar-sesion`, `/registro/privacidad`, `/registro`, `/registro/confirmar-codigo`, `/recuperar-datos/confirm-recovery`, `/confirmar-codigo` | Inicio de sesión, aviso de privacidad, registro y recuperación de contraseña | Público |
+| `/inicio` | `HomePage` (catálogo y buscador `?q=`) | Público |
+| `/producto/:productId`, `/negocio/:slug`, `/negocio/:slug/menu`, `/sucursales` | Producto, negocio, menú y sucursales | Público |
+| `/ajustes`, `/ayuda`, `/acerca-de` | Tema y contraseña, preguntas frecuentes e información del proyecto | Público (la contraseña requiere sesión) |
+| `/info/pedido`, `/pedido/tipo-de-pago`, `/pedido/direccion-cliente`, `/pedido/direccion-destinatario` | Información del pedido, pago, dirección y destinatario | Sesión |
+| `/pedido/en-camino/:orderId`, `/pedido/entregado/:orderId` | Seguimiento (con chat) y pedido entregado | Sesión |
+| `/pedidos`, `/cuenta` | Historial y datos de la cuenta | Sesión |
+| `/repartidor`, `/repartidor/iniciar-sesion`, `/repartidor/registro` | Acceso, inicio de sesión y registro de repartidor | Público |
+| `/repartidor/registro/vehiculo` | Vehículo y foto de la licencia | Sesión |
+| `/repartidor/inicio`, `/repartidor/pedidos`, `/repartidor/pedidos/:pedidoId` | Panel, pedidos disponibles y detalle de entrega | Repartidor |
+
 - No dupliques cadenas de rutas: usa `ROUTES.xxx`.
 - El splash usa `useNavigate` con `replace` y limpia su temporizador al desmontar. Respeta `prefers-reduced-motion`.
-- No se usan rutas privadas ni control de permisos en esta fase.
-
-## Estado de las pantallas
-
-- `SplashPage` es **funcional** (redirección automática).
-- `LoginPage`, `RecoveryPage` y `ConfirmCodePage` son **placeholders documentados con `TODO`**.
-- Las **pantallas 4 y 5** están pendientes de especificación: su contenido, nombre y rutas no están definidos; no se inventan.
-- **No existe autenticación ni envío real de SMS** en esta fase.
+- El tema (claro, oscuro o automático) se guarda en `localStorage` y se cambia desde el botón flotante o en Ajustes.
 
 ## Procedimiento para crear una pantalla nueva
 
