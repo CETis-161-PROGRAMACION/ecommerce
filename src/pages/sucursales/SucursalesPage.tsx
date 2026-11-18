@@ -17,7 +17,7 @@ const sucursales = [
     nombre: 'Santori',
     direccion: 'Manuel Acuña 1A, Barrio Alto, 45300 Tala, Jalisco.',
     mapa: 'https://maps.google.com/maps?q=20.655763,-103.702891&z=17&output=embed',
-    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.655763-103.702891',
+    indicaciones: 'https://www.google.com/maps/dir/?api=1&destination=20.655763,-103.702891',
   },
   {
     nombre: 'Café Tostado',
@@ -35,7 +35,7 @@ export function SucursalesPage() {
           <h1 className="text-2xl font-bold text-ink">
             Sucursales
           </h1>
-          <p className="text-sm text-ink/70">
+          <p className="text-sm text-ink-muted">
             Encuentra nuestros establecimientos en Tala, Jalisco.
           </p>
         </header>
@@ -50,7 +50,7 @@ export function SucursalesPage() {
                 <h2 className="text-xl font-bold text-ink">
                   {sucursal.nombre}
                 </h2>
-                <p className="text-sm text-ink/70">
+                <p className="text-sm text-ink-muted">
                   {sucursal.direccion}
                 </p>
               </div>
