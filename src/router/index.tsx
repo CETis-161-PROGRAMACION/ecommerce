@@ -17,8 +17,12 @@ import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
 import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
 import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+
+import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
+
 import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
 import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
+
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -30,6 +34,7 @@ const routes = [
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.userDestiny, element: <UserDestiny /> },
+  { path: ROUTES.businessInfo, element: <BusinessInfoPage /> }, 
   { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
