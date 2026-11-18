@@ -36,6 +36,15 @@ export function PrivacyPage() {
               un proyecto escolar del CETis 161.
             </p>
 
+            <h3 className="mt-4 font-semibold text-ink">Edad para usar la app</h3>
+            <p className="mt-1">
+              Web E-commerce está dirigida a personas mayores de edad (18 años
+              o más). Si eres menor de edad, necesitas la supervisión de tu
+              madre, padre o tutor para usar la aplicación, hacer pedidos y
+              aceptar estas políticas. No se permite el registro a menores de 13
+              años. Para ser repartidor es obligatorio tener 18 años cumplidos.
+            </p>
+
             <h3 className="mt-4 font-semibold text-ink">Datos que recibimos</h3>
             <ul className="mt-1 list-disc space-y-1 pl-5">
               <li>
