@@ -15,6 +15,8 @@ import { AddressPage } from '@/pages/address/AddressPage'
 import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
 import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
 import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
+import { CodeConfirm } from '@/pages/recovery/CodeConfirm'
+import { InfoTarjetaPage } from '@/pages/info-tarjeta/InfoTarjetaPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -22,6 +24,7 @@ const routes = [
   { path: ROUTES.recovery, element: <RecoveryPage /> },
   { path: ROUTES.register, element: <RegisterPage /> },
   { path: ROUTES.confirmCode, element: <ConfirmCodePage /> },
+  { path: ROUTES.codeConfirm, element: <CodeConfirm /> },
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
@@ -31,6 +34,7 @@ const routes = [
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
+  { path: ROUTES.infoTarjeta, element: <InfoTarjetaPage/>},
   { path: '*', element: <NotFoundPage /> },
 ]
 
