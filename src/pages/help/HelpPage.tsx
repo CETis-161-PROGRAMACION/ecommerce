@@ -53,7 +53,7 @@ const QUESTIONS: readonly Question[] = [
 
 export function HelpPage() {
   return (
-    <NavBar mainClassName="max-w-2xl">
+    <NavBar mainClassName="max-w-2xl" backTo={ROUTES.home}>
       <h1 className="mb-2 text-2xl font-bold text-ink">Ayuda</h1>
       <p className="mb-6 text-sm text-ink-muted">
         Respuestas a las dudas más comunes.

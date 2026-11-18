@@ -39,7 +39,7 @@ export function RecoveryPage() {
   }
 
   return (
-    <AuthLayout title="Recuperar datos">
+    <AuthLayout title="Recuperar datos" backTo={ROUTES.login}>
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <TextField
           label="Correo electrónico"

@@ -57,7 +57,7 @@ export function UserDestiny() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.infoPedido}>
       <div className="mx-auto flex w-full max-w-xl flex-col items-center">
         <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">
           Web E-commerce

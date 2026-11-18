@@ -138,7 +138,7 @@ export function RegisterPage() {
     'focus:border-brand-400 focus:ring-2 focus:ring-brand-100'
 
   return (
-    <AuthLayout title="Registro" mainClassName="w-full">
+    <AuthLayout title="Registro" mainClassName="w-full" backTo={ROUTES.privacy}>
       <form onSubmit={manejarRegistro} noValidate className="w-full">
         <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-2 lg:gap-x-20">
           {/* Nombre completo */}

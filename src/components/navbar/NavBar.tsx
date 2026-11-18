@@ -10,6 +10,7 @@ import {
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
 import { SideBar } from '@/components/sidebar/SideBar'
+import { BackLink } from '@/components/ui/BackLink'
 import menuIcon from '@/components/ui/icons/menu.svg'
 import searchIcon from '@/components/ui/icons/search.svg'
 import personIcon from '@/components/ui/icons/person.svg'
@@ -17,9 +18,11 @@ import personIcon from '@/components/ui/icons/person.svg'
 interface NavBarProps {
     children: ReactNode
     mainClassName?: string
+    /** Ruta a la que regresa el botón «Regresar»; sin ella no se muestra. */
+    backTo?: string
 }
 
-export default function NavBar({ children, mainClassName }: NavBarProps) {
+export default function NavBar({ children, mainClassName, backTo }: NavBarProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
@@ -147,6 +150,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
 
             </header>
             <main className={`w-full ${mainClassName ?? 'max-w-7xl'}`}>
+                {backTo && <BackLink to={backTo} />}
                 {children}
             </main>
         </div>

@@ -88,7 +88,7 @@ export function OrderTrackingPage() {
 
   if (state.status === 'loading') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.orders}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando pedido…
         </p>
@@ -98,7 +98,7 @@ export function OrderTrackingPage() {
 
   if (state.status === 'error') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.orders}>
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-12 text-center">
           <p role="alert" className="text-ink">
             {state.message}
@@ -156,7 +156,7 @@ export function OrderTrackingPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.orders}>
       <h1 className="sr-only">Seguimiento del pedido</h1>
 
       <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">

@@ -13,7 +13,7 @@ export function AccountPage() {
 
   if (!profileLoaded) {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.home}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando tu cuenta…
         </p>
@@ -23,7 +23,7 @@ export function AccountPage() {
 
   if (!profile || !session) {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.home}>
         <p role="alert" className="py-12 text-center text-sm text-ink">
           No pudimos cargar los datos de tu cuenta.
         </p>
@@ -33,7 +33,7 @@ export function AccountPage() {
 
   // El formulario se monta solo con el perfil cargado, así parte de sus valores reales.
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.home}>
       <AccountForm
         key={profile.id}
         userId={profile.id}

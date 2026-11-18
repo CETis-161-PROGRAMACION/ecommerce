@@ -25,7 +25,7 @@ export function SettingsPage() {
   const { status } = useSession()
 
   return (
-    <NavBar mainClassName="max-w-md">
+    <NavBar mainClassName="max-w-md" backTo={ROUTES.home}>
       <h1 className="mb-6 text-2xl font-bold text-ink">Ajustes</h1>
 
       <section aria-labelledby="appearance-title" className="mb-10">

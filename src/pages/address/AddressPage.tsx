@@ -86,7 +86,7 @@ export function AddressPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.infoPedido}>
       <div className="mb-8 flex flex-col items-center text-center">
         <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">
           Web E-commerce

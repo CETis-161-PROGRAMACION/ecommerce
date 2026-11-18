@@ -79,7 +79,7 @@ export function CodeConfirm() {
   }
 
   return (
-    <AuthLayout title="Recuperar datos">
+    <AuthLayout title="Recuperar datos" backTo={ROUTES.recovery}>
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <p className="text-sm text-ink">
           Enviamos un código de {CODE_LENGTH} dígitos a{' '}

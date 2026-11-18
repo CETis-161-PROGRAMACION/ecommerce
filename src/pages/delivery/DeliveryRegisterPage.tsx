@@ -136,7 +136,7 @@ export function DeliveryRegisterPage() {
   }
 
   return (
-    <AuthLayout title="Registro de repartidor" mainClassName="w-full">
+    <AuthLayout title="Registro de repartidor" mainClassName="w-full" backTo={ROUTES.deliveryAccess}>
       <form onSubmit={manejarRegistro} noValidate className="w-full">
         <div className="grid grid-cols-1 gap-x-10 gap-y-5 md:grid-cols-2">
           <div>

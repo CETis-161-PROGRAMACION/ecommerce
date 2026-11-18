@@ -11,7 +11,7 @@ export function PrivacyPage() {
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
 
   return (
-    <AuthLayout title="">
+    <AuthLayout title="" backTo={ROUTES.login}>
       <header className="mb-8 flex items-center gap-6 sm:gap-8">
         <Logo className="h-28 w-28 shrink-0 sm:h-32 sm:w-32" />
 
@@ -34,6 +34,15 @@ export function PrivacyPage() {
             <p>
               Esta política describe qué datos usa Web E-commerce y para qué. Es
               un proyecto escolar del CETis 161.
+            </p>
+
+            <h3 className="mt-4 font-semibold text-ink">Edad para usar la app</h3>
+            <p className="mt-1">
+              Web E-commerce está dirigida a personas mayores de edad (18 años
+              o más). Si eres menor de edad, necesitas la supervisión de tu
+              madre, padre o tutor para usar la aplicación, hacer pedidos y
+              aceptar estas políticas. No se permite el registro a menores de 13
+              años. Para ser repartidor es obligatorio tener 18 años cumplidos.
             </p>
 
             <h3 className="mt-4 font-semibold text-ink">Datos que recibimos</h3>

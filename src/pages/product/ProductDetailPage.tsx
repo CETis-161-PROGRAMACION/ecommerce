@@ -156,7 +156,7 @@ export function ProductDetailPage() {
 
   if (catalogState.status !== 'ready' || !product) {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.home}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           {catalogState.status === 'loading'
             ? 'Cargando producto…'
