@@ -52,7 +52,7 @@ export function PhoneField({
         />
       </div>
       {error ? (
-        <p id={errorId} className="text-sm text-red-600">
+        <p id={errorId} className="text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       ) : null}

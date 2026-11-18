@@ -6,15 +6,36 @@
   @apply rounded-xl border border-line bg-brand-100 p-4 text-sm leading-relaxed text-navy-900
 }
 
+.caja {
+  background-color: #e19a49;
+  color: black;
+  border: white solid 1px;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 16px;
+}
+
+.caja2 {
+  @apply 
+  bg-amber-500
+  text-black
+  border border-white
+  p-3
+  mt-2
+  rounded-xl
+}
+
 @theme {
   --font-sans: 'Open Sans', system-ui, sans-serif;
   --color-background: #ffffff;
   --color-surface: #ffffff;
+  --color-surface-secondary: #f4f4f7;
 
   /* Marca */
   --color-brand-400: #6b9bea;
   --color-brand-100: #c8d9fb;
   --color-brand-200: #b2c9f7;
+  --color-brand-500: #5588e0;
   --color-navy-900: #2a2d5e;
 
   /* Texto y bordes */
@@ -24,6 +45,8 @@
   --color-success: #4caf50;
 
   --animate-fade-in: fade-in 0.7s ease-out both;
+  --animate-splash-exit: splash-exit 0.4s ease-in both;
+  --animate-page-enter: page-enter 0.35s ease-out both;
 
   @keyframes fade-in {
     from {
@@ -36,12 +59,41 @@
       transform: scale(1);
     }
   }
+
+  @keyframes splash-exit {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .dark {
   color-scheme: dark;
   --color-background: #171821;
   --color-surface: #222431;
+  --color-surface-secondary: #2b2e3e;
+
+  /* Los fondos de marca se oscurecen y el texto navy se aclara para que
+     "bg-brand-100 text-navy-900" siga siendo legible. */
+  --color-brand-100: #2d3869;
+  --color-brand-200: #3a4880;
+  --color-navy-900: #dbe5ff;
   --color-ink: #f1f1f5;
   --color-ink-muted: #b5b6c5;
   --color-line: #414354;

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { LoginPage } from '@/pages/login/LoginPage'
 import { RecoveryPage } from '@/pages/recovery/RecoveryPage'
@@ -6,16 +7,87 @@ import { PrivacyPage } from '@/pages/privacy/PrivacyPage'
 import { SplashPage } from '@/pages/splash/SplashPage'
 import { ROUTES } from '@/router/routes'
 import { HomePage } from '@/pages/home/HomePage'
+import { SucursalesPage } from '@/pages/sucursales/SucursalesPage'
+import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
+import { MenuPage } from '@/pages/menu/MenuPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
+import { ProductItemPage } from '@/pages/product-item/ProductItemPage'
 import { RegisterPage } from '@/pages/register/RegisterPage'
+import { AddressPage } from '@/pages/address/AddressPage'
+import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
+import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
+import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
+import { DeliveryVehiclePage } from '@/pages/delivery/DeliveryVehiclePage'
+import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
+import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+import { OrderInfoPage } from '@/pages/order-info/OrderInfoPage'
+import { PaymentTypePage } from '@/pages/payment-type/PaymentTypePage'
+import { OrderTrackingPage } from '@/pages/order-tracking/OrderTrackingPage'
+import { OrderDeliveredPage } from '@/pages/order-delivered/OrderDeliveredPage'
 
-export const router = createBrowserRouter([
+import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
+
+import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
+import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
+
+import { CodeConfirm } from '@/pages/recovery/CodeConfirm'
+import { OrdersPage } from '@/pages/orders/OrdersPage'
+import { AccountPage } from '@/pages/account/AccountPage'
+import { SettingsPage } from '@/pages/settings/SettingsPage'
+import { HelpPage } from '@/pages/help/HelpPage'
+import { AboutPage } from '@/pages/about/AboutPage'
+import { RequireAuth, RequireDriver } from '@/router/guards'
+
+const auth = (element: ReactElement) => <RequireAuth>{element}</RequireAuth>
+const driver = (element: ReactElement) => (
+  <RequireDriver>{element}</RequireDriver>
+)
+
+const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
   { path: ROUTES.login, element: <LoginPage /> },
   { path: ROUTES.recovery, element: <RecoveryPage /> },
+  { path: ROUTES.register, element: <RegisterPage /> },
   { path: ROUTES.confirmCode, element: <ConfirmCodePage /> },
+  { path: ROUTES.codeConfirm, element: <CodeConfirm /> },
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
-  { path: ROUTES.register, element: <RegisterPage /> },
-])
+  { path: ROUTES.productItem, element: <ProductItemPage /> },
+  { path: ROUTES.userDestiny, element: auth(<UserDestiny />) },
+  { path: ROUTES.businessInfo, element: <BusinessInfoPage /> },
+  { path: ROUTES.sucursales, Component: SucursalesPage },
+  { path: ROUTES.menu, element: <MenuPage /> },
+  { path: ROUTES.clienteDireccion, element: auth(<AddressPage />) },
+  { path: ROUTES.infoPedido, element: auth(<OrderInfoPage />) },
+  { path: ROUTES.tipoPago, element: auth(<PaymentTypePage />) },
+  { path: ROUTES.pedidoEnCamino, element: auth(<OrderTrackingPage />) },
+  { path: ROUTES.pedidoEntregado, element: auth(<OrderDeliveredPage />) },
+  { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
+  { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
+  { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
+  {
+    path: ROUTES.deliveryVehicle,
+    element: (
+      <RequireAuth redirectTo={ROUTES.deliveryLogin}>
+        <DeliveryVehiclePage />
+      </RequireAuth>
+    ),
+  },
+  { path: ROUTES.deliveryHome, element: driver(<DeliveryHomePage />) },
+  { path: ROUTES.deliveryOrders, element: driver(<DeliveryOrdersPage />) },
+  { path: ROUTES.deliveryOrderDetail, element: driver(<DeliveryOrderDetailPage />) },
+  { path: ROUTES.orders, element: auth(<OrdersPage />) },
+  { path: ROUTES.account, element: auth(<AccountPage />) },
+  { path: ROUTES.settings, element: <SettingsPage /> },
+  { path: ROUTES.help, element: <HelpPage /> },
+  { path: ROUTES.about, element: <AboutPage /> },
+  { path: '*', element: <NotFoundPage /> },
+]
+
+export const router = createBrowserRouter(
+  routes.map((route) => ({
+    ...route,
+    errorElement: <NotFoundPage />,
+  })),
+)

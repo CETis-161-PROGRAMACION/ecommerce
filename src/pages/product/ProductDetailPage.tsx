@@ -1,6 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
-import productImage from '@/assets/images/principito.png'
+import NavBar from '@/components/navbar/NavBar'
+import { ROUTES } from '@/router/routes'
+import { useCart } from '@/services/cart/cart'
+import { useCatalog } from '@/services/catalog/useCatalog'
+import { useCheckout } from '@/services/order/checkout'
 
 interface SelectionGroupProps<T extends string> {
   title: string
@@ -86,6 +91,8 @@ type Extra = (typeof EXTRAS)[number]
 type DeliveryMethod = (typeof DELIVERY_METHODS)[number]
 type Sweetener = (typeof SWEETENERS)[number]
 
+const PRODUCT_SLUG = 'principito'
+
 export function ProductDetailPage() {
   const [size, setSize] = useState<Size | null>(null)
   const [milkType, setMilkType] = useState<MilkType | null>(null)
@@ -95,6 +102,42 @@ export function ProductDetailPage() {
   )
   const [sweetener, setSweetener] = useState<Sweetener | null>(null)
   const [comments, setComments] = useState('')
+  const { addItem } = useCart()
+  const checkout = useCheckout()
+  const navigate = useNavigate()
+  const catalogState = useCatalog()
+  const product =
+    catalogState.status === 'ready'
+      ? catalogState.catalog.products.find((item) => item.slug === PRODUCT_SLUG)
+      : undefined
+
+  function handleNext() {
+    if (!product) return
+    const note = comments.trim()
+    const options = [
+      size && `Tamaño ${size}`,
+      milkType && `Leche ${milkType}`,
+      ...extras,
+      sweetener,
+      note && `Nota: ${note}`,
+    ].filter((option): option is string => Boolean(option))
+
+    addItem({
+      productId: product.id,
+      business: product.business.name,
+      name: product.name,
+      options,
+      price: product.price,
+      image: product.image,
+    })
+    // El método de entrega es del pedido completo, no de este producto.
+    if (deliveryMethod) {
+      checkout.update({
+        pickupMethod: deliveryMethod === 'A domicilio' ? 'delivery' : 'pickup',
+      })
+    }
+    navigate(ROUTES.infoPedido)
+  }
 
   function toggleSingle<T extends string>(
     setter: (updater: (current: T | null) => T | null) => void,
@@ -111,17 +154,29 @@ export function ProductDetailPage() {
     )
   }
 
+  if (catalogState.status !== 'ready' || !product) {
+    return (
+      <NavBar>
+        <p role="status" className="py-12 text-center text-sm text-ink-muted">
+          {catalogState.status === 'loading'
+            ? 'Cargando producto…'
+            : 'Este producto no está disponible por ahora.'}
+        </p>
+      </NavBar>
+    )
+  }
+
   return (
     <main className="mx-auto w-full max-w-[1280px] px-4 py-8 xl:px-0 xl:py-0">
       <div className="flex flex-col gap-8 xl:relative xl:block xl:h-[980px]">
         <h1 className="text-[30px] font-bold uppercase leading-[44px] text-ink xl:absolute xl:left-[81px] xl:top-[20px]">
-          PRINCIPITO
+          {product.name.toUpperCase()}
         </h1>
 
         <div className="w-full max-w-[274px] overflow-hidden rounded-[26px] border-[3px] border-line/60 xl:absolute xl:left-[61px] xl:top-[83px] xl:h-[546px] xl:w-[274px] xl:max-w-none">
           <img
-            src={productImage}
-            alt="Café Principito Kunder Libros y Café"
+            src={product.image}
+            alt={product.imageAlt}
             className="h-full w-full object-cover"
           />
         </div>
@@ -191,6 +246,7 @@ export function ProductDetailPage() {
 
         <Button
           type="button"
+          onClick={handleNext}
           className="w-full bg-brand-100! py-4 text-xl font-normal text-navy-900! hover:bg-brand-200! xl:absolute xl:left-[82px] xl:top-[865px] xl:h-[64px] xl:w-[1115px] xl:py-0"
         >
           Siguiente
