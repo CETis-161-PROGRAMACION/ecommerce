@@ -10,6 +10,7 @@ export const ROUTES = {
   deliveryAccess: '/repartidor',
   deliveryLogin: '/repartidor/iniciar-sesion',
   deliveryRegister: '/repartidor/registro',
+  deliveryVehicle: '/repartidor/registro/vehiculo',
   deliveryHome: '/repartidor/inicio',
   deliveryOrders: '/repartidor/pedidos',
   deliveryOrderDetail: '/repartidor/pedidos/:pedidoId',
