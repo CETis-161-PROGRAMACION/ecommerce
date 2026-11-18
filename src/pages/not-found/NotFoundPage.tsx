@@ -14,6 +14,7 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
   [ROUTES.privacy]: 'Aviso de privacidad',
   [ROUTES.home]: 'Home',
   [ROUTES.productDetail]: 'Detalle del producto',
+  [ROUTES.productItem]: 'Producto',
   [ROUTES.menu]: 'Menú',
   [ROUTES.infoPedido]: 'Información del pedido',
   [ROUTES.tipoPago]: 'Tipo de pago',
@@ -34,7 +35,7 @@ const ROUTE_LABELS: Record<AppRoute, string> = {
 }
 
 const SUGGESTABLE_ROUTES = Object.values(ROUTES).filter(
-  (route) => route !== ROUTES.splash,
+  (route) => route !== ROUTES.splash && !route.includes(':'),
 )
 
 export function NotFoundPage() {

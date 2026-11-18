@@ -2,14 +2,20 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Coffee, Croissant, Utensils, type LucideIcon } from 'lucide-react'
 import NavBar from '@/components/navbar/NavBar'
-import { ROUTES } from '@/router/routes'
+import { ROUTES, productPath } from '@/router/routes'
+import {
+  BUSINESSES,
+  PRODUCTS,
+  type CatalogProduct,
+  type Category as CategoryName,
+} from '@/services/catalog/products'
+import { formatPrice } from '@/utils/currency'
 import cuatroCafePromo from '@/assets/images/negocios/cuatro-cafe-08.webp'
 import cuatroCafeChilaquiles from '@/assets/images/negocios/cuatro-cafe-03.webp'
 import kunderaLocal from '@/assets/images/negocios/kundera-06.webp'
 import kunderaLatte from '@/assets/images/negocios/kundera-02.webp'
 import santoriPromo from '@/assets/images/negocios/santori-02.webp'
 import donaMaryPizza from '@/assets/images/negocios/dona-mary-07.webp'
-import principitoImage from '@/assets/images/principito.png'
 
 interface Slide {
   name: string
@@ -18,17 +24,8 @@ interface Slide {
 }
 
 interface Category {
-  name: string
+  name: CategoryName
   Icon: LucideIcon
-}
-
-interface Product {
-  id: string
-  name: string
-  business: string
-  category: string
-  image: string
-  to: string
 }
 
 const SLIDES: readonly Slide[] = [
@@ -64,26 +61,17 @@ const SLIDES: readonly Slide[] = [
   },
 ]
 
-const BUSINESSES = ['KUNDERA', 'CUATRO CAFÉ', 'TU MESA'] as const
-
 const CATEGORIES: readonly Category[] = [
   { name: 'Café', Icon: Coffee },
   { name: 'Postres', Icon: Croissant },
   { name: 'Comidas', Icon: Utensils },
 ]
 
-const PRODUCTS: readonly Product[] = [
-  {
-    id: 'principito',
-    name: 'Principito',
-    business: 'KUNDERA',
-    category: 'Café',
-    image: principitoImage,
-    to: ROUTES.productDetail,
-  },
-]
-
-const RECOMMENDED_PLACEHOLDERS = 3
+function productLink(product: CatalogProduct) {
+  return product.id === 'principito'
+    ? ROUTES.productDetail
+    : productPath(product.id)
+}
 
 const focusRing =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400'
@@ -99,7 +87,6 @@ export function HomePage() {
       (!business || product.business === business) &&
       (!category || product.category === category),
   )
-  const hasFilters = Boolean(business || category)
 
   function showPrevious() {
     setSlideIndex((index) => (index === 0 ? SLIDES.length - 1 : index - 1))
@@ -189,7 +176,7 @@ export function HomePage() {
       <div
         role="group"
         aria-label="Filtrar por establecimiento"
-        className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3"
+        className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
       >
         {BUSINESSES.map((item) => (
           <button
@@ -236,48 +223,47 @@ export function HomePage() {
           Productos
         </h2>
 
-        {visibleProducts.length > 0 || !hasFilters ? (
+        {visibleProducts.length > 0 ? (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {visibleProducts.map((product) => (
               <li
                 key={product.id}
-                className="flex flex-col rounded-2xl border-2 border-line bg-amber-50 p-3"
+                className="flex flex-col overflow-hidden rounded-2xl border-2 border-line bg-amber-50"
               >
                 <img
                   src={product.image}
-                  alt={`${product.name} de ${product.business}`}
-                  className="h-32 w-full rounded-xl object-contain sm:h-40"
+                  alt={product.imageAlt}
+                  loading="lazy"
+                  className="aspect-square w-full object-cover"
                 />
-                <div className="mt-3 flex flex-wrap items-end justify-between gap-2">
+                <div className="flex flex-1 flex-col gap-2 p-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-ink uppercase">
+                    <p className="line-clamp-2 text-sm font-bold text-ink">
                       {product.name}
                     </p>
                     <p className="text-xs text-ink-muted">{product.business}</p>
                   </div>
-                  <Link
-                    to={product.to}
-                    className={`shrink-0 rounded-lg bg-brand-100 px-2 py-1.5 text-xs font-semibold text-navy-900 hover:bg-brand-200 ${focusRing}`}
-                  >
-                    Pedir ahora
-                  </Link>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-bold text-success">
+                      {formatPrice(product.price)}
+                    </p>
+                    <Link
+                      to={productLink(product)}
+                      aria-label={`Pedir ${product.name}`}
+                      className={`shrink-0 rounded-lg bg-brand-100 px-2 py-1.5 text-xs font-semibold text-navy-900 hover:bg-brand-200 ${focusRing}`}
+                    >
+                      Pedir ahora
+                    </Link>
+                  </div>
                 </div>
               </li>
             ))}
-
-            {!hasFilters &&
-              Array.from({ length: RECOMMENDED_PLACEHOLDERS }, (_, index) => (
-                <li
-                  key={`recommended-${index}`}
-                  className="flex min-h-52 items-center justify-center rounded-2xl border-2 border-line bg-surface p-4 text-center text-xs text-ink-muted"
-                >
-                  Producto recomendado
-                </li>
-              ))}
           </ul>
         ) : (
           <p className="rounded-xl border border-line p-8 text-center text-sm text-ink-muted">
-            No hay productos con estos filtros.
+            {business && !category
+              ? `${business} todavía no tiene productos.`
+              : 'No hay productos con estos filtros.'}
           </p>
         )}
       </section>

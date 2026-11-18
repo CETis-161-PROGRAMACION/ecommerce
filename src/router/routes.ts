@@ -15,6 +15,7 @@ export const ROUTES = {
   deliveryOrders: '/repartidor/pedidos',
   deliveryOrderDetail: '/repartidor/pedidos/:pedidoId',
   productDetail: '/producto/principito',
+  productItem: '/producto/:productId',
   menu: '/sucursal/menu',
   infoPedido: '/info/pedido',
   tipoPago: '/pedido/tipo-de-pago',
@@ -28,3 +29,7 @@ export const ROUTES = {
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
+
+export function productPath(productId: string) {
+  return ROUTES.productItem.replace(':productId', encodeURIComponent(productId))
+}
