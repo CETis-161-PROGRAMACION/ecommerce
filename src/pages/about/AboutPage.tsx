@@ -1,4 +1,5 @@
 import NavBar from '@/components/navbar/NavBar'
+import { ROUTES } from '@/router/routes'
 import { useCatalog } from '@/services/catalog/useCatalog'
 
 export function AboutPage() {
@@ -7,7 +8,7 @@ export function AboutPage() {
     catalogState.status === 'ready' ? catalogState.catalog.businesses : []
 
   return (
-    <NavBar mainClassName="max-w-2xl">
+    <NavBar mainClassName="max-w-2xl" backTo={ROUTES.home}>
       <h1 className="mb-2 text-2xl font-bold text-ink">Acerca de</h1>
       <p className="mb-6 text-sm font-semibold uppercase tracking-wider text-ink-muted">
         Web E-commerce

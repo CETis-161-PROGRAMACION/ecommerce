@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { BackLink } from '@/components/ui/BackLink'
 import { Logo } from '@/components/ui/Logo'
 import { ROUTES } from '@/router/routes'
 
@@ -6,12 +7,15 @@ interface AuthLayoutProps {
   title: string
   children: ReactNode
   mainClassName?: string
+  /** Ruta a la que regresa el botón «Regresar»; sin ella no se muestra. */
+  backTo?: string
 }
 
-export function AuthLayout({ title, children, mainClassName }: AuthLayoutProps) {
+export function AuthLayout({ title, children, mainClassName, backTo }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 sm:px-8 sm:py-12 motion-safe:animate-page-enter">
       <div className="w-full max-w-5xl">
+        {backTo ? <BackLink to={backTo} /> : null}
         {title ? (
           <header className="mb-8 flex items-center gap-5 sm:mb-10 sm:gap-6">
             <a href={ROUTES.home}>

@@ -64,7 +64,7 @@ export function OrderDeliveredPage() {
 
   if (state.status === 'loading') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.orders}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando pedido…
         </p>
@@ -74,7 +74,7 @@ export function OrderDeliveredPage() {
 
   if (state.status === 'error') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.orders}>
         <p role="alert" className="py-12 text-center text-ink">
           {state.message}
         </p>
@@ -110,7 +110,7 @@ export function OrderDeliveredPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.orders}>
       <h1 className="sr-only">Pedido entregado</h1>
 
       <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">

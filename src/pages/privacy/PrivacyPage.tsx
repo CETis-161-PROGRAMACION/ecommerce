@@ -11,7 +11,7 @@ export function PrivacyPage() {
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
 
   return (
-    <AuthLayout title="">
+    <AuthLayout title="" backTo={ROUTES.login}>
       <header className="mb-8 flex items-center gap-6 sm:gap-8">
         <Logo className="h-28 w-28 shrink-0 sm:h-32 sm:w-32" />
 

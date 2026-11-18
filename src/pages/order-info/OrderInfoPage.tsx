@@ -236,7 +236,7 @@ export function OrderInfoPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.home}>
       <h1 className="mb-6 text-2xl font-bold text-ink sm:text-3xl">
         Información de pedido
       </h1>

@@ -133,7 +133,7 @@ export function ConfirmCodePage() {
   }
 
   return (
-    <AuthLayout title='Confirmar Código'>
+    <AuthLayout title="Confirmar Código" backTo={ROUTES.register}>
         <h1 className="text-2xl font-extrabold text-navy-900">
           Confirma tu correo
         </h1>

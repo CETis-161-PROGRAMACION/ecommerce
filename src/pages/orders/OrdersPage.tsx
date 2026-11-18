@@ -51,7 +51,7 @@ export function OrdersPage() {
   }, [])
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.home}>
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <h1 className="text-2xl font-bold text-ink">Pedidos recientes</h1>
 

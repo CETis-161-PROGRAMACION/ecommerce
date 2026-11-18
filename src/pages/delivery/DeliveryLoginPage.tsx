@@ -38,7 +38,7 @@ export function DeliveryLoginPage() {
   }
 
   return (
-    <AuthLayout title="Acceso del repartidor">
+    <AuthLayout title="Acceso del repartidor" backTo={ROUTES.deliveryAccess}>
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
         <TextField
           label="Correo electrónico"

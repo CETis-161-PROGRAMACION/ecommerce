@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
-import { ROUTES, productPath } from '@/router/routes'
+import { ROUTES, businessPath, productPath } from '@/router/routes'
 import { useCatalog } from '@/services/catalog/useCatalog'
 import { formatPrice } from '@/utils/currency'
 import { isOpenAt } from '@/utils/schedule'
@@ -14,7 +14,7 @@ export function MenuPage() {
 
   if (catalogState.status === 'loading') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.sucursales}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando menú…
         </p>
@@ -29,7 +29,7 @@ export function MenuPage() {
 
   if (!business || catalogState.status !== 'ready') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.sucursales}>
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-12 text-center">
           <h1 className="text-2xl font-bold text-ink">Menú no encontrado</h1>
           <Link
@@ -54,7 +54,7 @@ export function MenuPage() {
     : null
 
   return (
-    <NavBar>
+    <NavBar backTo={businessPath(business.slug)}>
       <h1 className="sr-only">Menú de {business.name}</h1>
 
       <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[auto_minmax(0,1fr)] md:gap-12">

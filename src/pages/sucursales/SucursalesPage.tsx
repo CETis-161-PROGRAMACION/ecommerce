@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import NavBar from '@/components/navbar/NavBar'
-import { businessPath } from '@/router/routes'
+import { ROUTES, businessPath } from '@/router/routes'
 import { useCatalog } from '@/services/catalog/useCatalog'
 import { branchDirectionsUrl, branchMapUrl } from '@/utils/maps'
 
@@ -27,7 +27,7 @@ export function SucursalesPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.home}>
       <section className="mx-auto w-full max-w-6xl space-y-6">
         <header className="space-y-2">
           <h1 className="text-2xl font-bold text-ink">Sucursales</h1>

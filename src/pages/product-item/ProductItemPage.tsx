@@ -27,7 +27,7 @@ export function ProductItemPage() {
 
   if (catalogState.status === 'loading') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.home}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando producto…
         </p>
@@ -37,7 +37,7 @@ export function ProductItemPage() {
 
   if (!product) {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.home}>
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-12 text-center">
           <h1 className="text-2xl font-bold text-ink">
             Producto no encontrado
@@ -72,7 +72,7 @@ export function ProductItemPage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.home}>
       <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2 md:gap-12">
         <img
           src={product.image}

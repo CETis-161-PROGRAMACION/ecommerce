@@ -14,7 +14,7 @@ export function BusinessInfoPage() {
 
   if (catalogState.status === 'loading') {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.sucursales}>
         <p role="status" className="py-12 text-center text-sm text-ink-muted">
           Cargando negocio…
         </p>
@@ -35,7 +35,7 @@ export function BusinessInfoPage() {
 
   if (!business || !branch) {
     return (
-      <NavBar>
+      <NavBar backTo={ROUTES.sucursales}>
         <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-12 text-center">
           <h1 className="text-2xl font-bold text-ink">Negocio no encontrado</h1>
           <Link
@@ -54,7 +54,7 @@ export function BusinessInfoPage() {
     : null
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.sucursales}>
       <h1 className="sr-only">Información de {business.name}</h1>
 
       <section className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">

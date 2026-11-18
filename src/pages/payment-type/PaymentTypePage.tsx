@@ -19,7 +19,7 @@ export function PaymentTypePage() {
   }
 
   return (
-    <NavBar>
+    <NavBar backTo={ROUTES.infoPedido}>
       <div className="mx-auto flex w-full max-w-sm flex-col items-center">
         <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">
           Perfil
