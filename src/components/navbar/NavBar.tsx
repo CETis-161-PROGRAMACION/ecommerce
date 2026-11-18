@@ -1,6 +1,9 @@
 
 import { useState, type ReactNode } from 'react'
 import { SideBar } from '@/components/sidebar/SideBar'
+import menuIcon from '@/components/ui/icons/menu.svg'
+import searchIcon from '@/components/ui/icons/search.svg'
+import personIcon from '@/components/ui/icons/person.svg'
 
 interface NavBarProps {
     children: ReactNode
@@ -26,7 +29,7 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                     className="shrink-0 cursor-pointer"
                 >
                     <img
-                        src="/src/components/ui/icons/menu.svg"
+                        src={menuIcon}
                         alt=""
                         width={32}
                         height={32}
@@ -34,28 +37,42 @@ export default function NavBar({ children, mainClassName }: NavBarProps) {
                 </button>
 
                 <img
-                src="/src/components/ui/icons/search.svg"
-                alt="Icono de Buscar"
+                src={searchIcon}
+                alt=""
+                aria-hidden="true"
                 width={28}
                 height={28}
                 className="shrink-0 sm:h-10 sm:w-10"
                 />
 
+                <div className="relative min-w-0 flex-1">
                 <input
                 type="search"
                 name="search"
                 placeholder="Buscar..."
                 aria-label="Buscar"
-                className="min-w-0 flex-1 rounded border border-line p-2 text-sm h-10 leading-relaxed text-ink"
+                className="h-10 w-full rounded border border-line p-2 pr-10 text-sm leading-relaxed text-ink"
                 />
+                <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                className="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-ink-muted"
+                >
+                <rect x="9" y="3" width="6" height="11" rx="3" />
+                <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+                </svg>
+                </div>
 
                 <button
                 type="button"
                 aria-label="Perfil"
-                className="shrink-0 mr-8"
+                className="mr-12 shrink-0 sm:mr-8"
                 >
                 <img
-                    src="/src/components/ui/icons/person.svg"
+                    src={personIcon}
                     alt=""
                     width={32}
                     height={32}
