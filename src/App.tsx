@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '@/router'
+import { CartProvider } from '@/services/cart/CartProvider'
 
 export default function App() {
   const [isDark, setIsDark] = useState(() => {
@@ -17,7 +18,9 @@ export default function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
       <button
         type="button"
         aria-label={`Cambiar a tema ${isDark ? 'claro' : 'oscuro'}`}

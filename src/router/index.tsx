@@ -18,6 +18,10 @@ import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
 import { DeliveryVehiclePage } from '@/pages/delivery/DeliveryVehiclePage'
 import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+import { OrderInfoPage } from '@/pages/order-info/OrderInfoPage'
+import { PaymentTypePage } from '@/pages/payment-type/PaymentTypePage'
+import { OrderTrackingPage } from '@/pages/order-tracking/OrderTrackingPage'
+import { OrderDeliveredPage } from '@/pages/order-delivered/OrderDeliveredPage'
 
 import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
 
@@ -42,6 +46,10 @@ const routes = [
   { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
+  { path: ROUTES.infoPedido, element: <OrderInfoPage /> },
+  { path: ROUTES.tipoPago, element: <PaymentTypePage /> },
+  { path: ROUTES.pedidoEnCamino, element: <OrderTrackingPage /> },
+  { path: ROUTES.pedidoEntregado, element: <OrderDeliveredPage /> },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
