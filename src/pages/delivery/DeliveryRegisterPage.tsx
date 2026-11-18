@@ -1,7 +1,9 @@
 
 import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
+import { ROUTES } from '@/router/routes'
 
 interface DatosRepartidor {
   nombre: string
@@ -30,6 +32,7 @@ const inputClass =
 export function DeliveryRegisterPage() {
   const [datos, setDatos] = useState<DatosRepartidor>(datosIniciales)
   const [mensaje, setMensaje] = useState('')
+  const navigate = useNavigate()
 
   function actualizar(campo: keyof DatosRepartidor, valor: string) {
     setDatos((anterior) => ({ ...anterior, [campo]: valor }))
@@ -78,9 +81,7 @@ export function DeliveryRegisterPage() {
       return
     }
 
-    setMensaje(
-      'Los datos son válidos. El registro se habilitará cuando conectemos el servicio de autenticación.',
-    )
+    navigate(ROUTES.deliveryVehicle)
   }
 
   return (
