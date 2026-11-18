@@ -18,12 +18,9 @@ export const ROUTES = {
   infoPedido: '/info/pedido',
   sucursales: '/sucursales',
   clienteDireccion: '/pedido/direccion-cliente',
-<<<<<<< HEAD
   userDestiny: '/pedido/direccion-destinatario',
   businessInfo: '/informacion-negocio',
-=======
-  infoTarjeta:'/informacion-tarjeta',
->>>>>>> feature/info-tarjeta
+  infoTarjeta: '/informacion-tarjeta',
 } as const
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]

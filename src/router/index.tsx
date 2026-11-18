@@ -15,7 +15,6 @@ import { AddressPage } from '@/pages/address/AddressPage'
 import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
 import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
 import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
-<<<<<<< HEAD
 import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
 
@@ -24,10 +23,8 @@ import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
 import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
 import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
 
-=======
 import { CodeConfirm } from '@/pages/recovery/CodeConfirm'
 import { InfoTarjetaPage } from '@/pages/info-tarjeta/InfoTarjetaPage'
->>>>>>> feature/info-tarjeta
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -40,20 +37,17 @@ const routes = [
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
   { path: ROUTES.userDestiny, element: <UserDestiny /> },
-  { path: ROUTES.businessInfo, element: <BusinessInfoPage /> }, 
+  { path: ROUTES.businessInfo, element: <BusinessInfoPage /> },
   { path: ROUTES.sucursales, Component: SucursalesPage },
   { path: ROUTES.menu, element: <MenuPage /> },
   { path: ROUTES.clienteDireccion, element: <AddressPage /> },
   { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
   { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
   { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
-<<<<<<< HEAD
   { path: ROUTES.deliveryHome, element: <DeliveryHomePage /> },
   { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
   { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
-=======
-  { path: ROUTES.infoTarjeta, element: <InfoTarjetaPage/>},
->>>>>>> feature/info-tarjeta
+  { path: ROUTES.infoTarjeta, element: <InfoTarjetaPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 
