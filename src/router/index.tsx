@@ -13,7 +13,17 @@ import { SucursalesPage } from '@/pages/sucursales/SucursalesPage'
 import { MenuPage } from '@/pages/menu/MenuPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
 import { AddressPage } from '@/pages/address/AddressPage'
+
+import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
+import { DeliveryLoginPage } from '@/pages/delivery/DeliveryLoginPage'
+import { DeliveryRegisterPage } from '@/pages/delivery/DeliveryRegisterPage'
+import { DeliveryVehiclePage } from '@/pages/delivery/DeliveryVehiclePage'
+import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { UserDestiny } from '@/pages/user-destiny/UserDestiny'
+import { OrderInfoPage } from '@/pages/order-info/OrderInfoPage'
+import { PaymentTypePage } from '@/pages/payment-type/PaymentTypePage'
+import { OrderTrackingPage } from '@/pages/order-tracking/OrderTrackingPage'
+import { OrderDeliveredPage } from '@/pages/order-delivered/OrderDeliveredPage'
 
 import { BusinessInfoPage } from '@/pages/business-info/BusinessInfoPage'
 import { InfoTarjetaPage } from '@/pages/info-tarjeta/InfoTarjetaPage'
@@ -25,8 +35,12 @@ import { DeliveryHomePage } from '@/pages/delivery/DeliveryHomePage'
 import { DeliveryOrdersPage } from '@/pages/delivery/DeliveryOrdersPage'
 import { DeliveryOrderDetailPage } from '@/pages/delivery/DeliveryOrderDetailPage'
 
+
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { ROUTES } from '@/router/routes'
+
+import { CodeConfirm } from '@/pages/recovery/CodeConfirm'
+import { InfoTarjetaPage } from '@/pages/info-tarjeta/InfoTarjetaPage'
 
 const routes = [
   { path: ROUTES.splash, element: <SplashPage /> },
@@ -54,6 +68,21 @@ const routes = [
   { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
   { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
 
+  { path: ROUTES.sucursales, Component: SucursalesPage },
+  { path: ROUTES.menu, element: <MenuPage /> },
+  { path: ROUTES.clienteDireccion, element: <AddressPage /> },
+  { path: ROUTES.infoPedido, element: <OrderInfoPage /> },
+  { path: ROUTES.tipoPago, element: <PaymentTypePage /> },
+  { path: ROUTES.pedidoEnCamino, element: <OrderTrackingPage /> },
+  { path: ROUTES.pedidoEntregado, element: <OrderDeliveredPage /> },
+  { path: ROUTES.deliveryAccess, element: <DeliveryAccessPage /> },
+  { path: ROUTES.deliveryLogin, element: <DeliveryLoginPage /> },
+  { path: ROUTES.deliveryRegister, element: <DeliveryRegisterPage /> },
+  { path: ROUTES.deliveryVehicle, element: <DeliveryVehiclePage /> },
+  { path: ROUTES.deliveryHome, element: <DeliveryHomePage /> },
+  { path: ROUTES.deliveryOrders, element: <DeliveryOrdersPage /> },
+  { path: ROUTES.deliveryOrderDetail, element: <DeliveryOrderDetailPage /> },
+  { path: ROUTES.infoTarjeta, element: <InfoTarjetaPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]
 

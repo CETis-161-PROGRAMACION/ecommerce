@@ -1,4 +1,5 @@
 import NavBar from "@/components/navbar/NavBar";
+import accountIcon from '@/components/ui/icons/account.svg'
 
 
 export function AddressPage() {
@@ -9,7 +10,7 @@ export function AddressPage() {
                     web e-commerce
                 </h2>
 
-                <img src="/src/components/ui/icons/account.svg" alt="Foto de la cuenta" className="h-40 w-40 my-4 fill-current text-black" />
+                <img src={accountIcon} alt="" className="h-40 w-40 my-4 fill-current text-black" />
 
                 <p className="capitalize text-2xl font-bold">ingresar dirección</p>
             </div>
