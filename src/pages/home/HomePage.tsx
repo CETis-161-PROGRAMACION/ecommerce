@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Coffee, Croissant, Utensils, type LucideIcon } from 'lucide-react'
 import NavBar from '@/components/navbar/NavBar'
-import { ROUTES, productPath } from '@/router/routes'
+import { ROUTES, businessPath, productPath } from '@/router/routes'
 import {
   type CatalogProduct,
   type Category as CategoryName,
@@ -271,7 +271,12 @@ export function HomePage() {
                     <p className="line-clamp-2 text-sm font-bold text-ink">
                       {product.name}
                     </p>
-                    <p className="text-xs text-ink-muted">{product.business.name}</p>
+                    <Link
+                      to={businessPath(product.business.slug)}
+                      className={`text-xs text-ink-muted underline-offset-2 hover:text-ink hover:underline ${focusRing}`}
+                    >
+                      {product.business.name}
+                    </Link>
                   </div>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-bold text-success">

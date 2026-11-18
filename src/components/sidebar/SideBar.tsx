@@ -16,6 +16,7 @@ interface MenuEntry {
 
 const MENU_ENTRIES: readonly MenuEntry[] = [
   { label: 'Inicio', to: ROUTES.home },
+  { label: 'Sucursales y cómo llegar', to: ROUTES.sucursales },
   { label: 'Pedidos Recientes', to: ROUTES.orders },
   { label: 'Cuenta', to: ROUTES.account },
   { label: 'Ajustes', to: ROUTES.settings },

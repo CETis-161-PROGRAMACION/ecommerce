@@ -486,6 +486,13 @@ export function OrderInfoPage() {
                 ))}
               </fieldset>
             )}
+
+            <Link
+              to={ROUTES.tipoPago}
+              className={`mt-2 block text-center text-xs font-semibold text-brand-500 underline underline-offset-2 ${focusRing}`}
+            >
+              Ver pantalla de métodos de pago
+            </Link>
           </section>
 
           {isDelivery && isSignedIn && (
