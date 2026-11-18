@@ -2,40 +2,64 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Coffee, Croissant, Utensils, type LucideIcon } from 'lucide-react'
 import NavBar from '@/components/navbar/NavBar'
-import { ROUTES } from '@/router/routes'
-import cafeTostadoLogo from '@/assets/images/cft.png'
-import santoriLogo from '@/assets/images/san.png'
-import donaMaryLogo from '@/assets/images/dnm.png'
-import kunderaLogo from '@/assets/images/kundera_logo.png'
-import principitoImage from '@/assets/images/principito.png'
+import { ROUTES, productPath } from '@/router/routes'
+import {
+  BUSINESSES,
+  PRODUCTS,
+  type CatalogProduct,
+  type Category as CategoryName,
+} from '@/services/catalog/products'
+import { formatPrice } from '@/utils/currency'
+import cuatroCafePromo from '@/assets/images/negocios/cuatro-cafe-08.webp'
+import cuatroCafeChilaquiles from '@/assets/images/negocios/cuatro-cafe-03.webp'
+import kunderaLocal from '@/assets/images/negocios/kundera-06.webp'
+import kunderaLatte from '@/assets/images/negocios/kundera-02.webp'
+import santoriPromo from '@/assets/images/negocios/santori-02.webp'
+import donaMaryPizza from '@/assets/images/negocios/dona-mary-07.webp'
 
 interface Slide {
   name: string
   image: string
+  alt: string
 }
 
 interface Category {
-  name: string
+  name: CategoryName
   Icon: LucideIcon
 }
 
-interface Product {
-  id: string
-  name: string
-  business: string
-  category: string
-  image: string
-  to: string
-}
-
 const SLIDES: readonly Slide[] = [
-  { name: 'Café Tostado', image: cafeTostadoLogo },
-  { name: 'Kundera', image: kunderaLogo },
-  { name: 'Santori', image: santoriLogo },
-  { name: 'Doña Mary', image: donaMaryLogo },
+  {
+    name: 'Cuatro Café',
+    image: cuatroCafePromo,
+    alt: 'Promoción de Cuatro Café: "Ni las sombras se resisten", capuchino con arte de luna y estrella',
+  },
+  {
+    name: 'Cuatro Café: desayunos',
+    image: cuatroCafeChilaquiles,
+    alt: 'Desayuno de Cuatro Café con chilaquiles, tocino y frijoles',
+  },
+  {
+    name: 'Kundera',
+    image: kunderaLocal,
+    alt: 'Interior de Kundera con el letrero "Libros + Café" y una mesa',
+  },
+  {
+    name: 'Kundera: café',
+    image: kunderaLatte,
+    alt: 'Café con arte latte junto a un libro abierto en Kundera',
+  },
+  {
+    name: 'Santori',
+    image: santoriPromo,
+    alt: 'Promoción de Santori: Caramel Macchiato',
+  },
+  {
+    name: 'Doña Mary',
+    image: donaMaryPizza,
+    alt: 'Pizza de Doña Mary con boneless y aderezo',
+  },
 ]
-
-const BUSINESSES = ['KUNDERA', 'CUATRO CAFÉ', 'TU MESA'] as const
 
 const CATEGORIES: readonly Category[] = [
   { name: 'Café', Icon: Coffee },
@@ -43,18 +67,11 @@ const CATEGORIES: readonly Category[] = [
   { name: 'Comidas', Icon: Utensils },
 ]
 
-const PRODUCTS: readonly Product[] = [
-  {
-    id: 'principito',
-    name: 'Principito',
-    business: 'KUNDERA',
-    category: 'Café',
-    image: principitoImage,
-    to: ROUTES.productDetail,
-  },
-]
-
-const RECOMMENDED_PLACEHOLDERS = 3
+function productLink(product: CatalogProduct) {
+  return product.id === 'principito'
+    ? ROUTES.productDetail
+    : productPath(product.id)
+}
 
 const focusRing =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400'
@@ -70,7 +87,6 @@ export function HomePage() {
       (!business || product.business === business) &&
       (!category || product.category === category),
   )
-  const hasFilters = Boolean(business || category)
 
   function showPrevious() {
     setSlideIndex((index) => (index === 0 ? SLIDES.length - 1 : index - 1))
@@ -91,12 +107,18 @@ export function HomePage() {
       >
         <div
           aria-live="polite"
-          className="flex h-48 items-center justify-center px-12 pt-6 pb-10 sm:h-72"
+          className="relative flex h-56 items-center justify-center overflow-hidden sm:h-80"
         >
           <img
             src={slide.image}
-            alt={slide.name}
-            className="max-h-full max-w-full object-contain"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-xl"
+          />
+          <img
+            src={slide.image}
+            alt={slide.alt}
+            className="relative h-full w-auto max-w-full object-contain py-3 shadow-lg"
           />
         </div>
 
@@ -104,7 +126,7 @@ export function HomePage() {
           type="button"
           onClick={showPrevious}
           aria-label="Anterior"
-          className={`absolute top-1/2 left-2 -translate-y-1/2 rounded-full p-2 text-ink hover:bg-brand-100 sm:left-4 ${focusRing}`}
+          className={`absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-surface/80 p-2 text-ink shadow hover:bg-brand-100 sm:left-4 ${focusRing}`}
         >
           <svg
             aria-hidden="true"
@@ -121,7 +143,7 @@ export function HomePage() {
           type="button"
           onClick={showNext}
           aria-label="Siguiente"
-          className={`absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-2 text-ink hover:bg-brand-100 sm:right-4 ${focusRing}`}
+          className={`absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-surface/80 p-2 text-ink shadow hover:bg-brand-100 sm:right-4 ${focusRing}`}
         >
           <svg
             aria-hidden="true"
@@ -135,7 +157,7 @@ export function HomePage() {
           </svg>
         </button>
 
-        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-surface/80 px-3 py-1.5">
           {SLIDES.map((item, index) => (
             <button
               key={item.name}
@@ -154,7 +176,7 @@ export function HomePage() {
       <div
         role="group"
         aria-label="Filtrar por establecimiento"
-        className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3"
+        className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
       >
         {BUSINESSES.map((item) => (
           <button
@@ -201,48 +223,47 @@ export function HomePage() {
           Productos
         </h2>
 
-        {visibleProducts.length > 0 || !hasFilters ? (
+        {visibleProducts.length > 0 ? (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {visibleProducts.map((product) => (
               <li
                 key={product.id}
-                className="flex flex-col rounded-2xl border-2 border-line bg-amber-50 p-3"
+                className="flex flex-col overflow-hidden rounded-2xl border-2 border-line bg-amber-50"
               >
                 <img
                   src={product.image}
-                  alt={`${product.name} de ${product.business}`}
-                  className="h-32 w-full rounded-xl object-contain sm:h-40"
+                  alt={product.imageAlt}
+                  loading="lazy"
+                  className="aspect-square w-full object-cover"
                 />
-                <div className="mt-3 flex flex-wrap items-end justify-between gap-2">
+                <div className="flex flex-1 flex-col gap-2 p-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-ink uppercase">
+                    <p className="line-clamp-2 text-sm font-bold text-ink">
                       {product.name}
                     </p>
                     <p className="text-xs text-ink-muted">{product.business}</p>
                   </div>
-                  <Link
-                    to={product.to}
-                    className={`shrink-0 rounded-lg bg-brand-100 px-2 py-1.5 text-xs font-semibold text-navy-900 hover:bg-brand-200 ${focusRing}`}
-                  >
-                    Pedir ahora
-                  </Link>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-bold text-success">
+                      {formatPrice(product.price)}
+                    </p>
+                    <Link
+                      to={productLink(product)}
+                      aria-label={`Pedir ${product.name}`}
+                      className={`shrink-0 rounded-lg bg-brand-100 px-2 py-1.5 text-xs font-semibold text-navy-900 hover:bg-brand-200 ${focusRing}`}
+                    >
+                      Pedir ahora
+                    </Link>
+                  </div>
                 </div>
               </li>
             ))}
-
-            {!hasFilters &&
-              Array.from({ length: RECOMMENDED_PLACEHOLDERS }, (_, index) => (
-                <li
-                  key={`recommended-${index}`}
-                  className="flex min-h-52 items-center justify-center rounded-2xl border-2 border-line bg-surface p-4 text-center text-xs text-ink-muted"
-                >
-                  Producto recomendado
-                </li>
-              ))}
           </ul>
         ) : (
           <p className="rounded-xl border border-line p-8 text-center text-sm text-ink-muted">
-            No hay productos con estos filtros.
+            {business && !category
+              ? `${business} todavía no tiene productos.`
+              : 'No hay productos con estos filtros.'}
           </p>
         )}
       </section>

@@ -10,6 +10,7 @@ import { SucursalesPage } from '@/pages/sucursales/SucursalesPage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { MenuPage } from '@/pages/menu/MenuPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
+import { ProductItemPage } from '@/pages/product-item/ProductItemPage'
 import { RegisterPage } from '@/pages/register/RegisterPage'
 import { AddressPage } from '@/pages/address/AddressPage'
 import { DeliveryAccessPage } from '@/pages/delivery/DeliveryAccessPage'
@@ -41,6 +42,7 @@ const routes = [
   { path: ROUTES.privacy, element: <PrivacyPage /> },
   { path: ROUTES.home, element: <HomePage /> },
   { path: ROUTES.productDetail, element: <ProductDetailPage /> },
+  { path: ROUTES.productItem, element: <ProductItemPage /> },
   { path: ROUTES.userDestiny, element: <UserDestiny /> },
   { path: ROUTES.businessInfo, element: <BusinessInfoPage /> },
   { path: ROUTES.sucursales, Component: SucursalesPage },

@@ -186,6 +186,7 @@ Distinción de responsabilidades:
 - **Layouts** (`src/components/layout/`): estructuras de presentación compartidas.
 - **Plantillas copiables** (`src/plantillas/`): esqueletos de referencia para nuevas pantallas.
 - **Servicios** (`src/services/`): se creará para las futuras integraciones con APIs cuando existan.
+- **Catálogo** (`src/services/catalog/products.ts`): negocios, categorías y productos. Las fotos son de cada negocio, pero **los nombres, precios y descripciones son datos de ejemplo** (`CATALOG_IS_SAMPLE = true`) hasta tener la información real.
 - **Carrito** (`src/services/cart/`): `CartProvider` envuelve la app y `useCart()` permite agregar, cambiar cantidad y eliminar productos. El estado vive en memoria: se pierde al recargar la página hasta que exista un backend.
 - **Tipos** (`src/types/`): se creará para los tipos compartidos cuando existan.
 - **Utilidades** (`src/utils/`): funciones auxiliares independientes de las páginas.
@@ -263,6 +264,7 @@ Estructura común: logotipo a la izquierda, título en mayúsculas, subtítulo `
 | Ruta                         | Componente        | Estado                                                                |
 | ---------------------------- | ----------------- | --------------------------------------------------------------------- |
 | `/repartidor/registro/vehiculo` | `DeliveryVehiclePage` | Paso 2 del registro de repartidor; la solicitud aún no se envía |
+| `/producto/:productId`        | `ProductItemPage` | Detalle de cualquier producto del catálogo (datos de ejemplo) |
 | `/`                          | `SplashPage`      | Funcional, con redirección automática a `/iniciar-sesion` a los 2.5 s |
 | `/iniciar-sesion`            | `LoginPage`       | Placeholder                                                           |
 | `/recuperar-datos`           | `RecoveryPage`    | Placeholder                                                           |

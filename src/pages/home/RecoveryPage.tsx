@@ -1,6 +1,5 @@
 import { AuthLayout } from '@/components/layout/AuthLayout'
 
-
 // TODO: Implementar la pantalla de recuperación de datos. Elementos previstos
 // por la referencia:
 // - Campo de número de teléfono (PhoneField).
@@ -19,17 +18,18 @@ export function RecoveryPage() {
         <p className="text-xl font-bold">Información de la tarjeta</p>
       </div>
       <div className="flex">
+        <input
+          type="tel"
+          placeholder=""
+          className="mb-6 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden"
+        />
 
-        <input type="tel" placeholder="" className="mb-6 w-full rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden" />
-
-        <div className= "gap-4 rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden flex">
-  <div className="flex-1">DD</div>
-  <div className="flex-1">MM</div>
-  <div className="flex-1">AA</div>
-
+        <div className="gap-4 rounded border border-line bg-surface p-2 text-sm leading-relaxed text-ink focus:border-indigo-600 focus:outline-hidden flex">
+          <div className="flex-1">DD</div>
+          <div className="flex-1">MM</div>
+          <div className="flex-1">AA</div>
         </div>
       </div>
-    
     </AuthLayout>
   )
 }
